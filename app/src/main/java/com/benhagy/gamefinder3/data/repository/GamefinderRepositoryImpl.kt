@@ -21,7 +21,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Loading())
             val remoteListings = try {
-                api.getGames()
+                api.getGames(search = query)
             } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data - IO exception!"))
@@ -34,7 +34,7 @@ class GamefinderRepositoryImpl @Inject constructor(
 
             emit(
                 Resource.Success(
-                    data = remoteListings?.map { it.toListedGame() })
+                    data = remoteListings?.results?.map { it.toListedGame() })
             )
         }
 

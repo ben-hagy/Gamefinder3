@@ -1,4 +1,4 @@
-package com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel
+package com.benhagy.gamefinder3.presentation.home_search_screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.benhagy.gamefinder3.presentation.home_search_screen.ListedGameItem
+import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
+import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenEvent
+import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -28,9 +30,6 @@ fun HomeSearchScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeSearchScreenViewModel = hiltViewModel()
 ) {
-//    val swipeRefreshState = rememberSwipeRefreshState(
-//        isRefreshing = viewModel.state.isRefreshing
-//    )
     val state = viewModel.state
     Column(
         modifier = Modifier.fillMaxSize()
@@ -59,7 +58,7 @@ fun HomeSearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            //TODO
+                            navigator.navigate(GameDetailsScreenDestination)
                         }
                         .padding(16.dp)
                 )

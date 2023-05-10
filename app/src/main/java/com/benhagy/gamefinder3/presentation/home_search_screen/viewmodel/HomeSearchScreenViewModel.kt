@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
+import com.benhagy.gamefinder3.util.Constants.SEARCH_DELAY_TIME
 import com.benhagy.gamefinder3.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -28,14 +29,11 @@ class HomeSearchScreenViewModel @Inject constructor(
 
     fun onEvent(event: HomeSearchScreenEvent) {
         when (event) {
-//            is HomeSearchScreenEvent.Refresh -> {
-//                getGamesList(fetchFromRemote = true)
-//            }
             is HomeSearchScreenEvent.OnSearchQueryChanged -> {
                 state = state.copy(searchQuery = event.query)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
-                    delay(500L)
+                    delay(SEARCH_DELAY_TIME)
                     getGamesList()
                 }
             }
