@@ -10,7 +10,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GamfinderRepositoryImpl @Inject constructor(
+class GamefinderRepositoryImpl @Inject constructor(
     private val api: GamefinderApi
 ) : GamefinderRepository {
 
