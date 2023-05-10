@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.benhagy.gamefinder3.ui.theme.Gamefinder3Theme
+import com.benhagy.gamefinder3.presentation.ui.theme.Gamefinder3Theme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

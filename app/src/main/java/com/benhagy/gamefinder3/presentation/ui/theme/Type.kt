@@ -1,4 +1,4 @@
-package com.benhagy.gamefinder3.ui.theme
+package com.benhagy.gamefinder3.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
