@@ -48,7 +48,7 @@ fun ListedGameItem(
                 Text(
                     text = game.released.toString(),
                     fontFamily = montserratFonts,
-                    fontWeight = FontWeight.Light,
+                    fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }

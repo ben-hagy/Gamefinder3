@@ -58,7 +58,7 @@ fun HomeSearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            navigator.navigate(GameDetailsScreenDestination)
+                            navigator.navigate(GameDetailsScreenDestination(game.id))
                         }
                         .padding(16.dp)
                 )
