@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
+import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import com.benhagy.gamefinder3.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GameDetailsScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    repository: GamefinderRepository
+    useCaseContainer: UseCaseContainer
 ) : ViewModel() {
     var state by mutableStateOf(GameDetailsScreenState())
 
@@ -24,7 +25,7 @@ class GameDetailsScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val id = savedStateHandle.get<Int>("id") ?: return@launch
             state = state.copy(isLoading = true)
-            val gameDetailsResult = async { repository.getGameDetails(id) }
+            val gameDetailsResult = async { useCaseContainer.getGameDetails(id) }
             when (val result = gameDetailsResult.await()) {
                 is Resource.Success -> {
                     state = state.copy(

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
+import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import com.benhagy.gamefinder3.util.Constants.SEARCH_DELAY_TIME
 import com.benhagy.gamefinder3.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeSearchScreenViewModel @Inject constructor(
-    private val repository: GamefinderRepository
+    private val useCaseContainer: UseCaseContainer
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeSearchScreenState())
@@ -44,7 +45,7 @@ class HomeSearchScreenViewModel @Inject constructor(
         query: String = state.searchQuery.lowercase(), fetchFromRemote: Boolean = false
     ) {
         viewModelScope.launch {
-            repository.getGamesList(fetchFromRemote, query).collect { result ->
+            useCaseContainer.getAndSearchGamesList(fetchFromRemote, query).collect { result ->
                     when (result) {
                         is Resource.Success -> {
                             result.data?.let { listings ->
