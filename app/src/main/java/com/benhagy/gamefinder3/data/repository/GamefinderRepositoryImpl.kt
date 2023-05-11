@@ -41,6 +41,33 @@ class GamefinderRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun filterGamesListByClickedGenre(
+        fetchFromRemote: Boolean,
+        genreId: String
+    ): Flow<Resource<List<ListedGame>>> {
+        return flow {
+            emit(Resource.Loading())
+            val remoteListings = try {
+                api.getGames(genres = genreId)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data - IO exception!"))
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data - Http error!"))
+                null
+            }
+
+            emit(
+                Resource.Success(
+                    data = remoteListings?.results?.map { it.toListedGame() }
+                )
+            )
+        }
+    }
+
+
     override suspend fun getGenresList(fetchFromRemote: Boolean): Flow<Resource<List<Genre>>> {
         return flow {
             emit(Resource.Loading())

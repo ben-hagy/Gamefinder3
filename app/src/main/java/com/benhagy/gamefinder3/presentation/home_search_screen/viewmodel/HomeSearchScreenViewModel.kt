@@ -39,6 +39,13 @@ class HomeSearchScreenViewModel @Inject constructor(
                     getGamesList()
                 }
             }
+            is HomeSearchScreenEvent.OnGenreButtonClicked -> {
+                state = state.copy(genreId = event.genreId)
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    filterGamesListByClickedGenre(genreId = event.genreId)
+                }
+            }
         }
     }
 
@@ -47,6 +54,30 @@ class HomeSearchScreenViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             useCaseContainer.getAndSearchGamesList(fetchFromRemote, query).collect { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            result.data?.let { listings ->
+                                state = state.copy(
+                                    games = listings
+                                )
+                            }
+                        }
+
+                        is Resource.Error -> Unit
+                        is Resource.Loading -> {
+                            state = state.copy(isLoading = result.isLoading)
+                        }
+                    }
+                }
+
+        }
+    }
+
+    private fun filterGamesListByClickedGenre(
+        genreId: String, fetchFromRemote: Boolean = false
+    ) {
+        viewModelScope.launch {
+            useCaseContainer.filterGamesByClickedGenre(fetchFromRemote, genreId).collect { result ->
                     when (result) {
                         is Resource.Success -> {
                             result.data?.let { listings ->
@@ -85,6 +116,5 @@ class HomeSearchScreenViewModel @Inject constructor(
             }
         }
     }
-
 
 }

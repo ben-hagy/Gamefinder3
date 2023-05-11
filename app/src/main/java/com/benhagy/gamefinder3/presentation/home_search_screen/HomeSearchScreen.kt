@@ -61,7 +61,8 @@ fun HomeSearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            //TODO: search games list via genre id
+                            viewModel.onEvent(
+                                event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString()))
                         }
                         .padding(4.dp)
                 )

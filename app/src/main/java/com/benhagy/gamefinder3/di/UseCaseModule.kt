@@ -1,6 +1,7 @@
 package com.benhagy.gamefinder3.di
 
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
+import com.benhagy.gamefinder3.domain.usecases.FilterGamesByClickedGenre
 import com.benhagy.gamefinder3.domain.usecases.GetAndSearchGamesList
 import com.benhagy.gamefinder3.domain.usecases.GetGameDetails
 import com.benhagy.gamefinder3.domain.usecases.GetGenres
@@ -21,7 +22,8 @@ object UseCaseModule {
         return UseCaseContainer(
             getAndSearchGamesList = GetAndSearchGamesList(repository),
             getGameDetails = GetGameDetails(repository),
-            getGenres = GetGenres(repository)
+            getGenres = GetGenres(repository),
+            filterGamesByClickedGenre = FilterGamesByClickedGenre(repository)
         )
     }
 }

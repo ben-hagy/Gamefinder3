@@ -14,9 +14,16 @@ interface GamefinderRepository {
         query: String
     ): Flow<Resource<List<ListedGame>>>
 
+    suspend fun filterGamesListByClickedGenre(
+        fetchFromRemote: Boolean,
+        genreId: String
+    ): Flow<Resource<List<ListedGame>>>
+
     suspend fun getGenresList(
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Genre>>>
 
     suspend fun getGameDetails(id: Int): Resource<GameDetails>
+
+
 }

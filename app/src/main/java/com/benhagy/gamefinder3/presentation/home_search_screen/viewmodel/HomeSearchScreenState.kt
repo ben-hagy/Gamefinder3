@@ -10,5 +10,6 @@ data class HomeSearchScreenState(
     val genres: List<Genre> = emptyList(),
     val isLoading: Boolean = false,
 //    val isRefreshing: Boolean = false,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val genreId: String = "1"
 )
