@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -71,41 +70,6 @@ fun ListedGenreItem(
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Clip
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun GenreCardPreview() {
-    val name = "Adventure"
-//    val imgSrc = R.drawable.test_img
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 4.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(4.dp)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
-                alpha = 0.1f
-            ),
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .clipToBounds(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            AsyncImage(
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(60.dp)
-                    .clipToBounds()
-                    .clip(CircleShape),
-                model = "src",
-                contentDescription = name,
             )
         }
     }
