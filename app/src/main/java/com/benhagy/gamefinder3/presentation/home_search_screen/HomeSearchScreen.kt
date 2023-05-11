@@ -61,6 +61,7 @@ fun HomeSearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
+                            viewModel.onEvent(HomeSearchScreenEvent.OnSearchQueryChanged(""))
                             viewModel.onEvent(
                                 event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString()))
                         }
