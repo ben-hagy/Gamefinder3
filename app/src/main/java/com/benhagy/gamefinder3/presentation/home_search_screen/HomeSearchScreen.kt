@@ -2,10 +2,14 @@ package com.benhagy.gamefinder3.presentation.home_search_screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -48,8 +52,31 @@ fun HomeSearchScreen(
             singleLine = true,
             placeholder = { Text(text = "Search...", fontFamily = montserratFonts) }
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyRow {
+            items(state.genres.size) { i ->
+                val genre = state.genres[i]
+                ListedGenreItem(
+                    genre = genre,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            //TODO: search games list via genre id
+                        }
+                        .padding(4.dp)
+                )
+                if (i < state.genres.size) {
+                    Divider(
+                        modifier = Modifier.padding(
+                            vertical = 16.dp
+                        )
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp))
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxHeight()
         ) {
             items(state.games.size) { i ->
                 val game = state.games[i]

@@ -2,6 +2,7 @@ package com.benhagy.gamefinder3.data.remote
 
 import com.benhagy.gamefinder3.data.remote.responses.GameDetailsResponse
 import com.benhagy.gamefinder3.data.remote.responses.GamesListResponse
+import com.benhagy.gamefinder3.data.remote.responses.GenresResponse
 import com.benhagy.gamefinder3.data.remote.responses.ListedGameResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -29,5 +30,12 @@ interface GamefinderApi {
     suspend fun getGameDetails(
         @Path("id") id: Int,
     ): GameDetailsResponse
+
+    @GET("genres")
+    suspend fun getGenres(
+        @Query("page") page: Int? = null,
+        @Query("page_size") pageSize: Int? = null,
+        @Query("ordering") ordering: String? = null,
+    ): GenresResponse
 
 }

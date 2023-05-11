@@ -4,5 +4,7 @@ data class ListedGame(
     val id: Int,
     val name: String,
     val released: String?,
-    val backgroundImage: String?
+    val backgroundImage: String?,
+    val platforms: List<Platform>,
+    val esrbRating: Esrb?
 )

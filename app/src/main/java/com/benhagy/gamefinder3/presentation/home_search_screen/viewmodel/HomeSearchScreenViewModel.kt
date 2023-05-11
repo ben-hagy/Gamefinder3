@@ -25,6 +25,7 @@ class HomeSearchScreenViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     init {
+        getGenresList()
         getGamesList()
     }
 
@@ -62,6 +63,26 @@ class HomeSearchScreenViewModel @Inject constructor(
                     }
                 }
 
+        }
+    }
+
+    private fun getGenresList(fetchFromRemote: Boolean = false) {
+        viewModelScope.launch {
+            useCaseContainer.getGenres(fetchFromRemote).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { listings ->
+                            state = state.copy(
+                                genres = listings
+                            )
+                        }
+                    }
+                    is Resource.Error -> Unit
+                    is Resource.Loading -> {
+                        state = state.copy(isLoading = result.isLoading)
+                    }
+                }
+            }
         }
     }
 

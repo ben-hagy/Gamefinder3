@@ -3,6 +3,7 @@ package com.benhagy.gamefinder3.di
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
 import com.benhagy.gamefinder3.domain.usecases.GetAndSearchGamesList
 import com.benhagy.gamefinder3.domain.usecases.GetGameDetails
+import com.benhagy.gamefinder3.domain.usecases.GetGenres
 import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import dagger.Module
 import dagger.Provides
@@ -19,7 +20,8 @@ object UseCaseModule {
     fun provideUseCaseContainer(repository: GamefinderRepository): UseCaseContainer {
         return UseCaseContainer(
             getAndSearchGamesList = GetAndSearchGamesList(repository),
-            getGameDetails = GetGameDetails(repository)
+            getGameDetails = GetGameDetails(repository),
+            getGenres = GetGenres(repository)
         )
     }
 }
