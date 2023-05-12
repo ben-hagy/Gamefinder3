@@ -105,8 +105,7 @@ fun HomeSearchScreen(
                         .clickable {
                             navigator.navigate(GameDetailsScreenDestination(game.id))
                         }
-                        .padding(8.dp)
-                        .wrapContentSize(align = Alignment.Center)
+                        .padding(4.dp)
                 )
                 if (i < state.games.size) {
                     Divider(
