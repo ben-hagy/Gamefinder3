@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +43,7 @@ fun HomeSearchScreen(
     viewModel: HomeSearchScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
-    val listState = rememberLazyListState()
+    val listState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier.fillMaxSize()
@@ -83,8 +88,9 @@ fun HomeSearchScreen(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        LazyColumn(
+        LazyVerticalGrid(
             modifier = Modifier.fillMaxHeight(),
+            columns = GridCells.Fixed(2),
             state = listState
         ) {
             if (state.isRefreshing) {
@@ -99,7 +105,8 @@ fun HomeSearchScreen(
                         .clickable {
                             navigator.navigate(GameDetailsScreenDestination(game.id))
                         }
-                        .padding(16.dp)
+                        .padding(8.dp)
+                        .wrapContentSize(align = Alignment.Center)
                 )
                 if (i < state.games.size) {
                     Divider(
