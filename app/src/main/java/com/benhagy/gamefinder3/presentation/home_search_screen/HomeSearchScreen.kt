@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +27,7 @@ import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +38,8 @@ fun HomeSearchScreen(
     viewModel: HomeSearchScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -63,7 +68,8 @@ fun HomeSearchScreen(
                         .clickable {
                             viewModel.onEvent(HomeSearchScreenEvent.OnSearchQueryChanged(""))
                             viewModel.onEvent(
-                                event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString()))
+                                event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString())
+                            )
                         }
                         .padding(4.dp)
                 )
@@ -78,8 +84,12 @@ fun HomeSearchScreen(
         }
         Spacer(modifier = Modifier.height(4.dp))
         LazyColumn(
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.fillMaxHeight(),
+            state = listState
         ) {
+            if (state.isRefreshing) {
+                coroutineScope.launch { listState.animateScrollToItem(0) }
+            }
             items(state.games.size) { i ->
                 val game = state.games[i]
                 ListedGameItem(

@@ -9,7 +9,7 @@ data class HomeSearchScreenState(
     val games: List<ListedGame> = emptyList(),
     val genres: List<Genre> = emptyList(),
     val isLoading: Boolean = false,
-//    val isRefreshing: Boolean = false,
+    val isRefreshing: Boolean = false,
     val searchQuery: String = "",
     val genreId: String = "1"
 )
