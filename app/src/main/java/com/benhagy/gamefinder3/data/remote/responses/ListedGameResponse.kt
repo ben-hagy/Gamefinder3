@@ -10,6 +10,7 @@ data class ListedGameResponse(
     @SerializedName("background_image")
     val backgroundImage: String?,
 //    val metacritic: Int?,
+    @SerializedName("parent_platforms")
     val platforms: List<PlatformResponse>,
 //    val genres: List<GenreResponse>,
 //    val tags: List<TagResponse>,

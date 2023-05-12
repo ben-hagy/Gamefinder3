@@ -61,24 +61,24 @@ fun ListedGameItem(
         )
     ) {
         AsyncImage(
+            model = game.backgroundImage ?: "",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .clip(
-                    RoundedCornerShape(12.dp)
-                )
                 .fillMaxWidth()
                 .padding(4.dp)
-                .height(120.dp)
-                .clipToBounds(),
-            contentScale = ContentScale.Crop,
-            model = game.backgroundImage ?: "",
+                .clip(
+                    RoundedCornerShape(8.dp)
+                )
+                .height(120.dp),
             contentDescription = game.name
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp),
+                .height(90.dp),
         ) {
-            PlatformsList(platforms = game.platforms)
+            //platforms list returning null right now...
+//            PlatformsList(platforms = game.platforms)
             Text(
                 text = game.name,
                 fontFamily = montserratFonts,
