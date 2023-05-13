@@ -1,0 +1,12 @@
+                    AsyncImage(
+                        model = screenshot.screenshots[0].image,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                            .clip(
+                                RoundedCornerShape(8.dp)
+                            )
+                            .height(120.dp),
+                        contentDescription = null
+                    )

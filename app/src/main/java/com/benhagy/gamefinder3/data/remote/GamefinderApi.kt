@@ -1,6 +1,7 @@
 package com.benhagy.gamefinder3.data.remote
 
 import com.benhagy.gamefinder3.data.remote.responses.GameDetailsResponse
+import com.benhagy.gamefinder3.data.remote.responses.GameScreenshotsResponse
 import com.benhagy.gamefinder3.data.remote.responses.GamesListResponse
 import com.benhagy.gamefinder3.data.remote.responses.GenresResponse
 import com.benhagy.gamefinder3.data.remote.responses.ListedGameResponse
@@ -37,5 +38,10 @@ interface GamefinderApi {
         @Query("page_size") pageSize: Int? = null,
         @Query("ordering") ordering: String? = null,
     ): GenresResponse
+
+    @GET("games/{id}/screenshots")
+    suspend fun getGameScreenshots(
+        @Path("id") id: Int,
+    ): GameScreenshotsResponse
 
 }

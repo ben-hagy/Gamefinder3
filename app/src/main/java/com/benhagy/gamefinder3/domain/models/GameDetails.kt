@@ -15,5 +15,6 @@ data class GameDetails(
     val publishers: List<Publisher>,
     val genres: List<Genre>,
     val tags: List<Tag>,
-    val esrb: Esrb?
+    val esrb: Esrb?,
+    val screenshots: List<Screenshot> = emptyList()
 )

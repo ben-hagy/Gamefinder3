@@ -24,28 +24,21 @@ class GameDetailsScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val id = savedStateHandle.get<Int>("id") ?: return@launch
-            state = state.copy(isLoading = true)
-            val gameDetailsResult = async { useCaseContainer.getGameDetails(id) }
-            when (val result = gameDetailsResult.await()) {
-                is Resource.Success -> {
-                    state = state.copy(
-                        gameDetails = result.data,
-                        isLoading = false,
-                        error = null
-                    )
+            useCaseContainer.getGameDetails(id).collect { result ->
+                when(result) {
+                    is Resource.Success -> {
+                        result.data.let { details ->
+                            state = state.copy(
+                                gameDetails = details
+                            )
+                        }
+                    }
+                    is Resource.Error -> Unit
+                    is Resource.Loading -> {
+                        state = state.copy(isLoading = result.isLoading)
+                    }
                 }
-
-                is Resource.Error -> {
-                    state = state.copy(
-                        isLoading = false,
-                        error = result.message,
-                        gameDetails = null
-                    )
-                }
-
-                else -> Unit
             }
-
         }
     }
 

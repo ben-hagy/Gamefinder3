@@ -90,20 +90,39 @@ class GamefinderRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getGameDetails(id: Int): Resource<GameDetails> {
-        return try {
-            val result = api.getGameDetails(id)
-            Resource.Success(result.toGameDetails())
+    override suspend fun getGameDetails(id: Int): Flow<Resource<GameDetails>> = flow {
+        emit(Resource.Loading())
+        val remoteGameDetails = try {
+            api.getGameDetails(id)
         } catch (e: IOException) {
             e.printStackTrace()
-            Resource.Error(
-                message = "Couldn't load game information - IO Error!"
-            )
+            emit(Resource.Error("Couldn't load data - IO exception!"))
+            null
         } catch (e: HttpException) {
             e.printStackTrace()
-            Resource.Error(
-                message = "Couldn't load game information - Http Error!"
-            )
+            emit(Resource.Error("Couldn't load data - Http error!"))
+            null
         }
+
+        val remoteScreenshots = try {
+            api.getGameScreenshots(id)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            emit(Resource.Error("Couldn't load data - IO exception!"))
+            null
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            emit(Resource.Error("Couldn't load data - Http error!"))
+            null
+        }
+        val screenshots = remoteScreenshots?.results?.map { it.toScreenshot() }
+        var game = remoteGameDetails?.toGameDetails()
+        game = screenshots?.let { game?.copy(screenshots = it) }
+
+        emit(
+            Resource.Success(
+                data = game
+            )
+        )
     }
 }

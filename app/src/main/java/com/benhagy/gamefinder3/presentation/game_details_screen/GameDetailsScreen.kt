@@ -1,5 +1,6 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,18 +22,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun GameDetailsScreen(
@@ -38,6 +46,7 @@ fun GameDetailsScreen(
     viewModel: GameDetailsScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+    val pagerState = rememberPagerState()
     if (state.error == null) {
         Column(
             modifier = Modifier
@@ -63,34 +72,33 @@ fun GameDetailsScreen(
                     )
                 }
             }
-            state.gameDetails?.let { game ->
-                Text(
-                    text = game.name.toString(),
-                    fontFamily = montserratFonts,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = game.description.toString(),
-                    fontFamily = montserratFonts,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    maxLines = 8
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            if(state.isLoading) {
-                CircularProgressIndicator()
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                state.gameDetails?.let { gameDetails ->
+                    HorizontalPager(
+                        pageCount = gameDetails.screenshots.size,
+                        state = pagerState,
+                        key = { gameDetails.screenshots[it] }
+                    ) { index ->
+                        AsyncImage(
+                            model = gameDetails.screenshots[index].image,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .clip(
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .height(120.dp),
+                            contentDescription = null
+                        )
+                    }
+                }
+
+
             }
         }
     }
 }
+

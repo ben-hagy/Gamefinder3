@@ -18,7 +18,7 @@ data class GameDetailsResponse(
     val publishers: List<PublisherResponse>,
     val genres: List<GenreResponse>,
     val tags: List<TagResponse>,
-    val esrb: EsrbResponse?
+    val esrb: EsrbResponse?,
 ) {
     fun toGameDetails(): GameDetails {
         return GameDetails(
@@ -31,7 +31,7 @@ data class GameDetailsResponse(
             website = website,
             rating = rating,
             playtime = playtime,
-            platforms = platforms.map { it.toPlatform() },
+            platforms = platforms.map { it.platform.toPlatform() },
             developers = developers.map { it.toDeveloper() },
             publishers = publishers.map { it.toPublisher() },
             genres = genres.map { it.toGenre() },

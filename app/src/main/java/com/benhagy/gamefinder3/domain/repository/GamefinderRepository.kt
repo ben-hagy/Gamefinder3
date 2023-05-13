@@ -23,7 +23,7 @@ interface GamefinderRepository {
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Genre>>>
 
-    suspend fun getGameDetails(id: Int): Resource<GameDetails>
+    suspend fun getGameDetails(id: Int): Flow<Resource<GameDetails>>
 
 
 }

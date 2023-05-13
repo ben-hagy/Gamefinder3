@@ -1,13 +1,9 @@
 package com.benhagy.gamefinder3.data.remote.responses
 
-import com.benhagy.gamefinder3.domain.models.Platform
-
+import com.google.gson.annotations.SerializedName
 
 data class PlatformResponse(
-    val id: Int?,
-    val name: String?,
-) {
-    fun toPlatform(): Platform {
-        return Platform(id = id, name = name)
-    }
-}
+    val platform: PlatformResponseObjects,
+    @SerializedName("released_at")
+    val releasedAt: String?
+)
