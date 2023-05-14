@@ -2,7 +2,6 @@ package com.benhagy.gamefinder3.presentation.game_details_screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +26,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +35,7 @@ import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDe
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.benhagy.gamefinder3.util.parse
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -47,6 +47,7 @@ fun GameDetailsScreen(
 ) {
     val state = viewModel.state
     val pagerState = rememberPagerState()
+    val scroll = rememberScrollState(0)
     if (state.error == null) {
         Column(
             modifier = Modifier
@@ -90,12 +91,28 @@ fun GameDetailsScreen(
                                 .clip(
                                     RoundedCornerShape(8.dp)
                                 )
-                                .height(120.dp),
+                                .height(300.dp),
                             contentDescription = null
                         )
                     }
                 }
-
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                state.gameDetails?.let { gameDetails ->
+                    Text(
+                        text = parse(gameDetails.description.toString()),
+                        fontFamily = montserratFonts,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp,
+                        modifier = Modifier
+                            .height(400.dp)
+                            .verticalScroll(scroll)
+                            .padding(4.dp)
+                    )
+                }
 
             }
         }
