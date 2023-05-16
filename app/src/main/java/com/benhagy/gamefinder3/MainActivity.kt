@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.benhagy.gamefinder3.presentation.NavGraphs
+import com.benhagy.gamefinder3.presentation.bottom_nav_bar.BottomNavigationBar
 import com.benhagy.gamefinder3.presentation.ui.theme.Gamefinder3Theme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Gamefinder3Theme {
-                DestinationsNavHost(navGraph = NavGraphs.root)
+                BottomNavigationBar()
             }
         }
     }
