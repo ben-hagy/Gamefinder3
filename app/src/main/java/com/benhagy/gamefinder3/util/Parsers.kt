@@ -14,6 +14,11 @@ import android.graphics.Typeface
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.text.HtmlCompat
 
+/* these two functions take a Spanned HTML object and parse them into an Annotated String for use
+in Text Composables. The description of each game detail object is an HTML-formatted string.
+ */
+
+
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     val spanned = this@toAnnotatedString
     append(spanned.toString())
@@ -34,4 +39,16 @@ fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
 
 fun parse(input: String): AnnotatedString {
     return HtmlCompat.fromHtml(input, HtmlCompat.FROM_HTML_MODE_LEGACY).toAnnotatedString()
+}
+
+// below is a potential parser for the platforms list to shorten titles eg "Playstation 5" = "PS5"
+
+fun parsePlatformsListToShortNames(list: List<String>): List<String> {
+    val returnList = emptyList<String>()
+    for(item in list) {
+        when(item) {
+            //todo
+        }
+    }
+    return returnList
 }
