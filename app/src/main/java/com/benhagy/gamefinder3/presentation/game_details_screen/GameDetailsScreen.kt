@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,11 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenEvent
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.benhagy.gamefinder3.util.parse
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -50,6 +53,7 @@ fun GameDetailsScreen(
     val state = viewModel.state
     val pagerState = rememberPagerState()
     val scroll = rememberScrollState(0)
+    val coroutineScope = rememberCoroutineScope()
     if (state.error == null) {
         Column(
             modifier = Modifier
@@ -82,6 +86,23 @@ fun GameDetailsScreen(
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Center
                     )
+                }
+                IconButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            viewModel.onEvent(
+                                GameDetailsScreenEvent.SaveGameAsFavorite(game = state.gameDetails!!)
+                            )
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_favorite_unfilled),
+                        contentDescription = "Add to favorites",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(28.dp)
+                    )
+
                 }
             }
             Spacer(modifier = Modifier.height(2.dp))

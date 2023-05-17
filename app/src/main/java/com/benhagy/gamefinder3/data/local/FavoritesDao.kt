@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface FavoritesDao {
 
     @Upsert
-    fun upsertFavorite(favorite: FavoriteGameEntity)
+    fun upsertFavorite(game: FavoriteGameEntity)
 
     @Query("SELECT * FROM favorites")
     fun getAllFavorites(): Flow<List<FavoriteGameEntity>>

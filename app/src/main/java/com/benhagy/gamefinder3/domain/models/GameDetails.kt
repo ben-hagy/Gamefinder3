@@ -1,5 +1,7 @@
 package com.benhagy.gamefinder3.domain.models
 
+import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
+
 data class GameDetails(
     val id: Int?,
     val name: String?,
@@ -17,4 +19,11 @@ data class GameDetails(
     val tags: List<Tag>,
     val esrb: Esrb?,
     val screenshots: List<Screenshot> = emptyList()
-)
+) {
+    fun toFavoriteGameEntity(): FavoriteGameEntity {
+        return FavoriteGameEntity(
+            id = id, name = name, released = released, backgroundImage = backgroundImage
+        )
+    }
+}
+

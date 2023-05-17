@@ -1,5 +1,6 @@
 package com.benhagy.gamefinder3.domain.repository
 
+import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
 import com.benhagy.gamefinder3.domain.models.GameDetails
 import com.benhagy.gamefinder3.domain.models.Genre
 import com.benhagy.gamefinder3.domain.models.ListedGame
@@ -24,6 +25,14 @@ interface GamefinderRepository {
     ): Flow<Resource<List<Genre>>>
 
     suspend fun getGameDetails(id: Int): Flow<Resource<GameDetails>>
+
+    suspend fun addGameToFavorites(game: GameDetails)
+
+    suspend fun getAllFavorites(): Flow<List<FavoriteGameEntity>>
+
+    suspend fun removeGameFromFavorites(id: Int)
+
+    suspend fun isFavorite(id: Int): Boolean
 
 
 }
