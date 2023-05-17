@@ -10,7 +10,7 @@ data class ListedGameResponse(
     @SerializedName("background_image")
     val backgroundImage: String?,
 //    val metacritic: Int?,
-    val platforms: List<PlatformResponse>,
+    val platforms: List<PlatformResponse>?,
 //    val genres: List<GenreResponse>,
 //    val tags: List<TagResponse>,
     val esrbRating: EsrbResponse?,
@@ -22,7 +22,7 @@ data class ListedGameResponse(
             name = name,
             released = released,
             backgroundImage = backgroundImage,
-            platforms = platforms.map { it.platform.toPlatform() },
+            platforms = platforms?.map { it.platform.toPlatform() },
             esrbRating = esrbRating?.toEsrb()
         )
     }

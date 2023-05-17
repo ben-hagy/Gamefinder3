@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,8 +16,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.rounded.RemoveCircle
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenEvent
 import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenViewModel
@@ -58,6 +66,18 @@ fun HomeSearchScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
+            trailingIcon = {
+                Icon(
+                    Icons.Filled.Clear,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable {
+                            viewModel.onEvent(
+                                HomeSearchScreenEvent.OnSearchClearClicked
+                            )
+                        }
+                )
+            },
             maxLines = 1,
             singleLine = true,
             placeholder = { Text(text = "Search...", fontFamily = montserratFonts) }
@@ -116,5 +136,6 @@ fun HomeSearchScreen(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(30.dp))
     }
 }

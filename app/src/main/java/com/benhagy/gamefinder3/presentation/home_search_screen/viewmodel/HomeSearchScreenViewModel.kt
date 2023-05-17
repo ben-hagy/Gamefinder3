@@ -47,6 +47,13 @@ class HomeSearchScreenViewModel @Inject constructor(
                 }
                 state = state.copy(isRefreshing = false)
             }
+            is HomeSearchScreenEvent.OnSearchClearClicked -> {
+                state = state.copy(searchQuery = "")
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    getGamesList()
+                }
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.benhagy.gamefinder3.presentation.bottom_nav_bar
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,7 +45,10 @@ fun BottomBar(
 ) {
     val currentDestination: NavDestination? = navController.currentDestination
 
-    BottomAppBar {
+    BottomAppBar(
+        containerColor = MaterialTheme.colorScheme.background,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         BottomNavItem.values().forEach { destination ->
             NavigationBarItem(
                 selected = currentDestination == destination.direction,
@@ -80,17 +84,14 @@ fun BottomBar(
                     Icon(
                         destination.icon,
                         contentDescription = destination.label,
-                        modifier = Modifier.background(MaterialTheme.colorScheme.onBackground)
+//                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 label = {
                     Text(
                         text = destination.label,
-                        color = Color.White
-                ) },
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
-            // color of nav items?
+//                        color = MaterialTheme.colorScheme.onBackground
+                ) }
             )
         }
     }

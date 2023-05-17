@@ -78,7 +78,7 @@ fun ListedGameItem(
                 .height(90.dp),
         ) {
             //platforms list returning null right now...
-            PlatformsList(platforms = game.platforms)
+            PlatformsList(platforms = game.platforms ?: emptyList())
             Text(
                 text = game.name,
                 fontFamily = montserratFonts,
