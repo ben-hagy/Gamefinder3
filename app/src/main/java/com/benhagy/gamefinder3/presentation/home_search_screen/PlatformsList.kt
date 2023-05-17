@@ -15,8 +15,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.domain.models.Platform
+import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 
 @Composable
 fun PlatformsList(
@@ -25,7 +27,7 @@ fun PlatformsList(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = 4.dp, vertical = 4.dp)
     ) {
         items(platforms.size) { i ->
             val platform = platforms[i].name.toString()
@@ -35,17 +37,18 @@ fun PlatformsList(
                     .clip(RoundedCornerShape(8.dp))
                     .padding(horizontal = 2.dp)
                     .background(
-                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                     )
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
                         .align(Alignment.Center),
                     text = platform,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.SemiBold,
-                    ),
+                    fontFamily = montserratFonts,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

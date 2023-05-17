@@ -77,7 +77,6 @@ fun ListedGameItem(
                 .fillMaxWidth()
                 .height(90.dp),
         ) {
-            //platforms list returning null right now...
             PlatformsList(platforms = game.platforms ?: emptyList())
             Text(
                 text = game.name,
