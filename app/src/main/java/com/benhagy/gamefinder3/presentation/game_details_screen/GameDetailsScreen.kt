@@ -15,6 +15,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,7 +54,7 @@ fun GameDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -69,10 +71,24 @@ fun GameDetailsScreen(
                         painter = painterResource(id = R.drawable.ic_back_arrow),
                         contentDescription = "Go back",
                         tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                state.gameDetails?.let { gameDetails ->
+                    Text(
+                        text = gameDetails.name.toString(),
+                        fontFamily = montserratFonts,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(2.dp))
+            Divider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -84,20 +100,20 @@ fun GameDetailsScreen(
                     ) { index ->
                         AsyncImage(
                             model = gameDetails.screenshots[index].image,
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
                                 .clip(
                                     RoundedCornerShape(8.dp)
                                 )
-                                .height(300.dp),
+                                .height(240.dp),
                             contentDescription = null
                         )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -107,6 +123,7 @@ fun GameDetailsScreen(
                         fontFamily = montserratFonts,
                         fontWeight = FontWeight.Medium,
                         fontSize = 13.sp,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
                             .height(400.dp)
                             .verticalScroll(scroll)
