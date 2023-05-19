@@ -71,7 +71,7 @@ fun parse(input: String): AnnotatedString {
 // below is a parser to take a date and convert it to a prettier, formatted date
 
 fun parseReleaseDate(input: String?): String {
-    if (input == null) {
+    if ( input?.length != 10) {
         return "Unknown release date"
     } else {
         val year = input.take(4)
