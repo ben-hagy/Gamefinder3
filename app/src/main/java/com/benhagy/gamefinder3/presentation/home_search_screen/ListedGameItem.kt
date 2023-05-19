@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.domain.models.Platform
+import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 
 @Composable
@@ -80,9 +81,7 @@ fun ListedGameItem(
             PlatformsList(platforms = game.platforms ?: emptyList())
             Text(
                 text = game.name,
-                fontFamily = montserratFonts,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = Typography.titleMedium,
                 modifier = modifier.padding(4.dp),
                 textAlign = TextAlign.Center
             )

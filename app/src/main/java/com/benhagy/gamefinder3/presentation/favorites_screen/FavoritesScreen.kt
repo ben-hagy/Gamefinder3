@@ -16,14 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenViewModel
-import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
+import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -41,9 +39,7 @@ fun FavoritesScreen(
     ) {
         Text(
             text = "Favorite Games",
-            fontFamily = montserratFonts,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.SemiBold,
+            style = Typography.titleLarge,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(2.dp))
@@ -51,7 +47,7 @@ fun FavoritesScreen(
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.onBackground
         )
-        Spacer(modifier = Modifier.height(3.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxHeight()

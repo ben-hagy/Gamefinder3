@@ -18,14 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.domain.models.Genre
-import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
+import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 
 @Composable
 fun ListedGenreItem(
@@ -63,10 +61,8 @@ fun ListedGenreItem(
             Divider(thickness = 4.dp, color = MaterialTheme.colorScheme.onBackground)
             Text(
                 text = genre.name!!,
-                fontFamily = montserratFonts,
+                style = Typography.labelSmall,
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Clip

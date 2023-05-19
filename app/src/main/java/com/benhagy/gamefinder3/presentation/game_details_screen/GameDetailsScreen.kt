@@ -23,7 +23,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,22 +37,21 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenEvent
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
-import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
+import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parse
+import com.benhagy.gamefinder3.util.parseReleaseDate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun GameDetailsScreen(
@@ -63,10 +61,10 @@ fun GameDetailsScreen(
 ) {
     // variables for states and local context
     val state = viewModel.state
-    val pagerState = rememberPagerState()
-    val scroll = rememberScrollState(0)
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val pagerState = rememberPagerState() // for image scroller
+    val scroll = rememberScrollState(0) // for text scroller
+    val coroutineScope = rememberCoroutineScope() // for async tasks
+    val context = LocalContext.current // for the toasts
 
     state.gameDetails?.let { gameDetails ->
 
@@ -80,6 +78,7 @@ fun GameDetailsScreen(
                     .fillMaxSize()
                     .padding(8.dp)
             ) {
+                // first row with back button and favorites icon buttons
                 Row(
                     modifier = Modifier
                         .background(color = MaterialTheme.colorScheme.background)
@@ -87,6 +86,7 @@ fun GameDetailsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    //back button
                     IconButton(
                         onClick = {
                             navigator.popBackStack()
@@ -99,6 +99,9 @@ fun GameDetailsScreen(
                             modifier = Modifier.size(28.dp)
                         )
                     }
+                    // favorite buttons
+                    // onClick handles changing the icon via isFavorite state update in viewmodel,
+                    // performing the addition/removal, and showing toast
                     IconButton(
                         onClick = {
                             coroutineScope.launch {
@@ -111,7 +114,6 @@ fun GameDetailsScreen(
                                         "${gameDetails.name} removed from Favorites.",
                                         Toast.LENGTH_LONG
                                     ).show()
-
 
 
                                 } else {
@@ -141,7 +143,9 @@ fun GameDetailsScreen(
 
                     }
                 }
+                // second row with game icon, name, release date
                 Row {
+                    // game icon
                     AsyncImage(
                         model = gameDetails.backgroundImage ?: "",
                         contentDescription = null,
@@ -158,44 +162,45 @@ fun GameDetailsScreen(
                             )
                             .clip(CircleShape)
                     )
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .padding(8.dp)
+                    ) {
+                        // game name
                         Text(
                             modifier = Modifier.padding(
                                 vertical = 4.dp, horizontal = 8.dp
                             ),
                             text = gameDetails.name.toString(),
-                            fontFamily = montserratFonts,
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.SemiBold
+                            style = Typography.titleLarge
                         )
                         Row(
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        ) {
-                            Row {
+//                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .padding(2.dp)
+                        ){
+                            // release date
+                            Row(
+                                verticalAlignment = Alignment.Bottom
+                                ) {
                                 Icon(
-                                    modifier = Modifier.size(16.dp),
+                                    modifier = Modifier
+                                        .padding(2.dp)
+                                        .size(16.dp),
                                     imageVector = Icons.Rounded.Schedule,
                                     contentDescription = "Released",
                                 )
+                                Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    modifier = Modifier.padding(
-                                        horizontal = 4.dp
-                                    ),
-                                    text = gameDetails.released ?: "Unknown",
-                                    style = MaterialTheme.typography.bodySmall.copy(
-                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                        fontWeight = FontWeight.Normal
-                                    ),
+                                    text = parseReleaseDate(gameDetails.released.toString()),
+                                    style = Typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onBackground,
                                 )
                             }
-
-                            Spacer(Modifier.width(32.dp))
-
                         }
                     }
-
                 }
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Divider(
                     thickness = 1.dp, color = MaterialTheme.colorScheme.onBackground
                 )
@@ -225,9 +230,7 @@ fun GameDetailsScreen(
                 ) {
                     Text(
                         text = parse(gameDetails.description.toString()),
-                        fontFamily = montserratFonts,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 13.sp,
+                        style = Typography.bodyMedium,
                         textAlign = TextAlign.Start,
                         modifier = Modifier
                             .height(400.dp)
@@ -235,7 +238,6 @@ fun GameDetailsScreen(
                             .padding(4.dp)
                     )
                 }
-
             }
         }
     }

@@ -2,7 +2,9 @@ package com.benhagy.gamefinder3.presentation.bottom_nav_bar
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,11 +32,13 @@ fun BottomNavigationBar() {
         bottomBar = {
             BottomBar(navController)
         }
-    ) {
-        DestinationsNavHost(
-            navController = navController,
-            navGraph = NavGraphs.root
-        )
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            DestinationsNavHost(
+                navController = navController,
+                navGraph = NavGraphs.root
+            )
+        }
     }
 }
 
@@ -49,7 +53,50 @@ fun BottomBar(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = Modifier.fillMaxWidth()
     ) {
-        BottomNavItem.values().forEach { destination ->
+        BottomNavItem.HomeSearchScreen.let { destination ->
+            NavigationBarItem(
+                selected = currentDestination == destination.direction,
+                onClick = {
+                    navController.navigate(destination.direction.route) {
+                        launchSingleTop = true
+                        val navigationRoutes = BottomNavItem.values()
+
+                        val firstBottomBarDestination = navController.backQueue
+                            .firstOrNull { navBackStackEntry ->
+                                checkForDestinations(
+                                    navigationRoutes,
+                                    navBackStackEntry
+                                )
+                            }
+                            ?.destination
+                        // remove all navigation items from the stack
+                        // so only the currently selected screen remains in the stack
+                        if (firstBottomBarDestination != null) {
+                            popUpTo(firstBottomBarDestination.id) {
+                                inclusive = true
+                                saveState = true
+                            }
+                        }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Icon(
+                        destination.icon,
+                        contentDescription = destination.label,
+                    )
+                },
+                label = {
+                    Text(
+                        text = destination.label,
+                ) }
+            )
+        }
+        BottomNavItem.FavoritesScreen.let { destination ->
             NavigationBarItem(
                 selected = currentDestination == destination.direction,
                 onClick = {
@@ -89,7 +136,7 @@ fun BottomBar(
                 label = {
                     Text(
                         text = destination.label,
-                ) }
+                    ) }
             )
         }
     }

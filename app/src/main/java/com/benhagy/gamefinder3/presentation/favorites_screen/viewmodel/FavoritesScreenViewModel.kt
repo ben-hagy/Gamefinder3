@@ -35,7 +35,6 @@ class FavoritesScreenViewModel @Inject constructor(
             } catch (e: Exception) {
                 state.value = FavoritesScreenState(error = e.message ?: "Error fetching favorite games.")
             }
-
         }
     }
 }

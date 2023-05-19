@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.domain.models.Platform
+import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 
 @Composable
@@ -46,8 +47,7 @@ fun PlatformsList(
                         .align(Alignment.Center),
                     text = platform,
                     fontFamily = montserratFonts,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    style = Typography.displaySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

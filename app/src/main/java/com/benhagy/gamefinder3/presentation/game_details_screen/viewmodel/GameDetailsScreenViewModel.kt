@@ -53,7 +53,7 @@ class GameDetailsScreenViewModel @Inject constructor(
             }
 
             is GameDetailsScreenEvent.RemoveGameFromFavorites -> {
-                isFavorite(event.id)
+                removeFromFavorites(event.id)
             }
         }
     }
