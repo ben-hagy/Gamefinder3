@@ -33,8 +33,26 @@ class FavoritesScreenViewModel @Inject constructor(
                     state.value = FavoritesScreenState(favoriteGames = it)
                 }
             } catch (e: Exception) {
-                state.value = FavoritesScreenState(error = e.message ?: "Error fetching favorite games.")
+                state.value =
+                    FavoritesScreenState(error = e.message ?: "Error fetching favorite games.")
             }
+        }
+    }
+
+    fun onEvent(event: FavoritesScreenEvent) {
+        when (event) {
+            is FavoritesScreenEvent.RemoveSelectedFavorite -> {
+                viewModelScope.launch {
+                    removeFromFavorites(event.id)
+                }
+
+            }
+        }
+    }
+
+    private fun removeFromFavorites(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCaseContainer.deleteFavorite(id)
         }
     }
 }

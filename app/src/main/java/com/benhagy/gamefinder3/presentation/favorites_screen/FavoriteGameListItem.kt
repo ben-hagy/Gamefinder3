@@ -1,6 +1,8 @@
 package com.benhagy.gamefinder3.presentation.favorites_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,18 +22,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
+import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
+import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenEvent
+import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseReleaseDate
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 fun FavoriteGameListItem(
     game: FavoriteGameEntity,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: FavoritesScreenViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,6 +58,9 @@ fun FavoriteGameListItem(
                 MaterialTheme.colorScheme.secondaryContainer
                     .copy(alpha = 0.1f)
             )
+            .clickable {
+                navigator.navigate(GameDetailsScreenDestination(game.id!!))
+            }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -50,26 +68,28 @@ fun FavoriteGameListItem(
         ) {
 
             AsyncImage(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .height(100.dp)
-                    .width(100.dp)
-                    .clip(shape = RoundedCornerShape(8.dp)),
                 model = game.backgroundImage ?: "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .padding(horizontal = 4.dp, vertical = 4.dp)
+                    .height(80.dp)
+                    .width(80.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .clipToBounds(),
                 contentDescription = game.backgroundImage ?: "",
             )
 
             Column(
                 modifier = Modifier
-                    .padding(vertical = 4.dp)
-                    .height(100.dp),
+                    .height(100.dp)
+                    .weight(3f),
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceEvenly
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     modifier = Modifier.padding(
-                        horizontal = 12.dp,
-                        vertical = 4.dp
+                        horizontal = 8.dp,
+                        vertical = 2.dp
                     ),
                     text = game.name.toString(),
                     style = Typography.titleMedium,
@@ -79,8 +99,8 @@ fun FavoriteGameListItem(
                 )
 
                 Row(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
                 ) {
                     Icon(
                         modifier = modifier.size(20.dp),
@@ -89,16 +109,41 @@ fun FavoriteGameListItem(
                         tint = MaterialTheme.colorScheme.secondary
                     )
                     Text(
-                        modifier = modifier.padding(horizontal = 4.dp),
                         text = parseReleaseDate(game.released.toString()),
                         style = Typography.labelSmall
                     )
                 }
 
             }
-
+            Column(
+                modifier = Modifier
+                    .height(100.dp)
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete_large),
+                    contentDescription = "Delete favorite item",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = modifier
+                        .size(32.dp)
+                        .padding(4.dp)
+                        .clickable {
+                            viewModel.onEvent(
+                                FavoritesScreenEvent.RemoveSelectedFavorite(game.id!!)
+                            )
+                            Toast
+                                .makeText(
+                                    context,
+                                    "${game.name} removed from Favorites.",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        }
+                )
+            }
         }
-
     }
 }
 

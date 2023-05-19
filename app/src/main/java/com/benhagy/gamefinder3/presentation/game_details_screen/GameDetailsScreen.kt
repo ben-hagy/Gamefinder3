@@ -112,7 +112,7 @@ fun GameDetailsScreen(
                                     Toast.makeText(
                                         context,
                                         "${gameDetails.name} removed from Favorites.",
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
 
 
@@ -123,7 +123,7 @@ fun GameDetailsScreen(
                                     Toast.makeText(
                                         context,
                                         "${gameDetails.name} added to Favorites.",
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
 
                                 }
@@ -175,26 +175,25 @@ fun GameDetailsScreen(
                             style = Typography.titleLarge
                         )
                         Row(
-//                            horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .fillMaxWidth()
                         ){
                             // release date
                             Row(
-                                verticalAlignment = Alignment.Bottom
-                                ) {
+                                modifier = Modifier.padding(horizontal = 6.dp),
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
                                 Icon(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                        .size(16.dp),
+                                    modifier = Modifier.size(20.dp),
                                     imageVector = Icons.Rounded.Schedule,
-                                    contentDescription = "Released",
+                                    contentDescription = "Release Date Icon",
+                                    tint = MaterialTheme.colorScheme.secondary
                                 )
-                                Spacer(modifier = Modifier.width(2.dp))
                                 Text(
+                                    modifier = Modifier.padding(horizontal = 4.dp),
                                     text = parseReleaseDate(gameDetails.released.toString()),
-                                    style = Typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = Typography.labelSmall
                                 )
                             }
                         }

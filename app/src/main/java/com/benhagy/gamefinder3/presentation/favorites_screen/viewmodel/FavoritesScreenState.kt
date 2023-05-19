@@ -6,4 +6,5 @@ data class FavoritesScreenState(
     val favoriteGames: List<FavoriteGameEntity> = emptyList(),
     val error: String = "",
     val isLoading: Boolean = false,
+    val isFavorite: Boolean = false
 )
