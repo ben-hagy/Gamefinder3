@@ -1,8 +1,10 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,17 +23,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,12 +48,12 @@ import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenEvent
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
+import com.benhagy.gamefinder3.util.parse
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.benhagy.gamefinder3.util.parse
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 @Destination
 fun GameDetailsScreen(
@@ -56,11 +61,19 @@ fun GameDetailsScreen(
     navigator: DestinationsNavigator,
     viewModel: GameDetailsScreenViewModel = hiltViewModel()
 ) {
+    // variables for states and local context
     val state = viewModel.state
     val pagerState = rememberPagerState()
     val scroll = rememberScrollState(0)
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     state.gameDetails?.let { gameDetails ->
+
+        LaunchedEffect(gameDetails.id) {
+            gameDetails.id?.let { viewModel.isFavorite(gameId = it) }
+        }
+
         if (state.error == null) {
             Column(
                 modifier = Modifier
@@ -71,7 +84,8 @@ fun GameDetailsScreen(
                     modifier = Modifier
                         .background(color = MaterialTheme.colorScheme.background)
                         .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(
                         onClick = {
@@ -88,20 +102,31 @@ fun GameDetailsScreen(
                     IconButton(
                         onClick = {
                             coroutineScope.launch {
-                                if(state.isFavorite) {
+                                if (state.isFavorite) {
                                     viewModel.onEvent(
                                         GameDetailsScreenEvent.RemoveGameFromFavorites(id = state.gameDetails.id!!)
-                                    // snackbar with undo button?
                                     )
+                                    Toast.makeText(
+                                        context,
+                                        "${gameDetails.name} removed from Favorites.",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+
+
                                 } else {
                                     viewModel.onEvent(
                                         GameDetailsScreenEvent.SaveGameAsFavorite(game = state.gameDetails)
                                     )
+                                    Toast.makeText(
+                                        context,
+                                        "${gameDetails.name} added to Favorites.",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
                                 }
                             }
-                        },
-                        modifier = Modifier
-                            .padding(4.dp)
+                        }, modifier = Modifier.padding(4.dp)
                     ) {
                         Icon(
                             painter = if (state.isFavorite) {
@@ -136,8 +161,7 @@ fun GameDetailsScreen(
                     Column {
                         Text(
                             modifier = Modifier.padding(
-                                vertical = 4.dp,
-                                horizontal = 4.dp
+                                vertical = 4.dp, horizontal = 8.dp
                             ),
                             text = gameDetails.name.toString(),
                             fontFamily = montserratFonts,
@@ -145,8 +169,7 @@ fun GameDetailsScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                         Row(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
                             Row {
                                 Icon(
@@ -174,17 +197,14 @@ fun GameDetailsScreen(
                 }
                 Spacer(modifier = Modifier.height(2.dp))
                 Divider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    thickness = 1.dp, color = MaterialTheme.colorScheme.onBackground
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    HorizontalPager(
-                        pageCount = gameDetails.screenshots.size,
+                    HorizontalPager(pageCount = gameDetails.screenshots.size,
                         state = pagerState,
-                        key = { gameDetails.screenshots[it] }
-                    ) { index ->
+                        key = { gameDetails.screenshots[it] }) { index ->
                         AsyncImage(
                             model = gameDetails.screenshots[index].image,
                             contentScale = ContentScale.Fit,
@@ -220,4 +240,5 @@ fun GameDetailsScreen(
         }
     }
 }
+
 

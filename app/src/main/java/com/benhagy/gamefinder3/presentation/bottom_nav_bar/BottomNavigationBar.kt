@@ -77,20 +77,18 @@ fun BottomBar(
                         // reselecting the same item
                         launchSingleTop = true
                         // Restore state when reselecting a previously selected item
-                        restoreState = true
+                        restoreState = false
                     }
                 },
                 icon = {
                     Icon(
                         destination.icon,
                         contentDescription = destination.label,
-//                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 label = {
                     Text(
                         text = destination.label,
-//                        color = MaterialTheme.colorScheme.onBackground
                 ) }
             )
         }

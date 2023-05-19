@@ -1,5 +1,7 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,7 +31,7 @@ class GameDetailsScreenViewModel @Inject constructor(
                     is Resource.Success -> {
                         result.data.let { details ->
                             state = state.copy(
-                                gameDetails = details
+                                gameDetails = details,
                             )
                         }
                     }
@@ -43,19 +45,19 @@ class GameDetailsScreenViewModel @Inject constructor(
         }
     }
 
-    suspend fun onEvent(event: GameDetailsScreenEvent) {
+    fun onEvent(event: GameDetailsScreenEvent) {
         when (event) {
             is GameDetailsScreenEvent.SaveGameAsFavorite -> {
-                state = state.copy(isFavorite = true)
-                    addToFavorites(event.game)
+                addToFavorites(event.game)
+
             }
 
             is GameDetailsScreenEvent.RemoveGameFromFavorites -> {
-                state = state.copy(isFavorite = false)
-                    removeFromFavorites(event.id)
+                isFavorite(event.id)
             }
         }
     }
+
 
     fun isFavorite(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -68,7 +70,7 @@ class GameDetailsScreenViewModel @Inject constructor(
     private fun addToFavorites(gameDetail: GameDetails) {
         viewModelScope.launch(Dispatchers.IO) {
             useCaseContainer.addFavorite(gameDetail)
-           state = state.copy(isFavorite = true)
+            state = state.copy(isFavorite = true)
         }
     }
 
