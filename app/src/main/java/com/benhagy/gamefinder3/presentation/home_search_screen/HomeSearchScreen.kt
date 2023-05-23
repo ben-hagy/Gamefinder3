@@ -117,6 +117,7 @@ fun HomeSearchScreen(
                 val game = state.games[i]
                 ListedGameItem(
                     game = game,
+                    isRefreshing = state.isRefreshing,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {

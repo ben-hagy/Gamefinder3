@@ -25,6 +25,7 @@ import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 fun ListedGameItem(
     game: ListedGame,
     modifier: Modifier = Modifier,
+    isRefreshing: Boolean
 ) {
     val cardWidth = LocalConfiguration.current.screenWidthDp.dp / 1.7f
     Card(
@@ -55,7 +56,10 @@ fun ListedGameItem(
                 .fillMaxWidth()
                 .height(90.dp),
         ) {
-            PlatformsList(platforms = game.platforms ?: emptyList())
+            PlatformsList(
+                platforms = game.platforms ?: emptyList(),
+                isRefreshing
+            )
             Text(
                 text = game.name,
                 style = Typography.titleMedium,
