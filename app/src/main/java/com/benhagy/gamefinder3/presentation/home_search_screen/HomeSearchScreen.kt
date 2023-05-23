@@ -1,5 +1,6 @@
 package com.benhagy.gamefinder3.presentation.home_search_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,17 +13,26 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColor
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenEvent
@@ -44,6 +54,7 @@ fun HomeSearchScreen(
     val state = viewModel.state
     val listState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
+    var selectedItem by remember { mutableStateOf(-1) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -76,6 +87,7 @@ fun HomeSearchScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow(
+            state = rememberLazyListState()
 //            modifier = Modifier
 //                .background(Brush.verticalGradient(listOf(Color.Transparent, PurpleGrey40)))
         ) {
@@ -85,12 +97,26 @@ fun HomeSearchScreen(
                     genre = genre,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            viewModel.onEvent(HomeSearchScreenEvent.OnSearchQueryChanged(""))
-                            viewModel.onEvent(
-                                event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString())
-                            )
-                        }
+                        // code below handles holding highlight color for selected items...
+                            // however, the selected item doesn't retain when you change screens
+                            // may need new state variable (isSelected isn't holding true)
+                        .selectable(
+                            selected = selectedItem == i,
+                            onClick = {
+                                viewModel.onEvent(HomeSearchScreenEvent.OnSearchQueryChanged(""))
+                                viewModel.onEvent(
+                                    event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString())
+                                )
+                                selectedItem = i
+                            }
+                        )
+                        .background(
+                            if (selectedItem == i && state.isSelected) {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f)
+                            }
+                        )
                         .padding(4.dp)
                 )
                 if (i < state.genres.size) {

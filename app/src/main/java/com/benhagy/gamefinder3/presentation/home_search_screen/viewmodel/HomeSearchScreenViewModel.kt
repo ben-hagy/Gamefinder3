@@ -31,7 +31,7 @@ class HomeSearchScreenViewModel @Inject constructor(
     fun onEvent(event: HomeSearchScreenEvent) {
         when (event) {
             is HomeSearchScreenEvent.OnSearchQueryChanged -> {
-                state = state.copy(searchQuery = event.query, isClicked = false)
+                state = state.copy(searchQuery = event.query, isSelected = false)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(SEARCH_DELAY_TIME)
@@ -40,7 +40,7 @@ class HomeSearchScreenViewModel @Inject constructor(
             }
 
             is HomeSearchScreenEvent.OnGenreButtonClicked -> {
-                state = state.copy(genreId = event.genreId, isRefreshing = true, isClicked = true)
+                state = state.copy(genreId = event.genreId, isRefreshing = true, isSelected = true)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     filterGamesListByClickedGenre(genreId = event.genreId)
@@ -49,7 +49,7 @@ class HomeSearchScreenViewModel @Inject constructor(
             }
 
             is HomeSearchScreenEvent.OnSearchClearClicked -> {
-                state = state.copy(searchQuery = "", isClicked = false)
+                state = state.copy(searchQuery = "", isSelected = false)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     getGamesList()

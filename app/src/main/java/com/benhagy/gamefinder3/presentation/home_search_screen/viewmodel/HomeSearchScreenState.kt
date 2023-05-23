@@ -10,5 +10,5 @@ data class HomeSearchScreenState(
     val isRefreshing: Boolean = false,
     val searchQuery: String = "",
     val genreId: String = "1",
-    val isClicked: Boolean = false,
+    val isSelected: Boolean = false
 )
