@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -230,7 +231,7 @@ fun GameDetailsScreen(
                     Text(
                         text = parse(gameDetails.description.toString()),
                         style = Typography.bodyMedium,
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .height(400.dp)
                             .verticalScroll(scroll)

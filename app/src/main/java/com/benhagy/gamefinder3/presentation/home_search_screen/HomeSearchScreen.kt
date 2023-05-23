@@ -7,20 +7,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.ClearAll
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.rounded.RemoveCircle
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,11 +21,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenEvent
 import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenViewModel
@@ -53,6 +44,7 @@ fun HomeSearchScreen(
     val state = viewModel.state
     val listState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -83,7 +75,10 @@ fun HomeSearchScreen(
             placeholder = { Text(text = "Search...", fontFamily = montserratFonts) }
         )
         Spacer(modifier = Modifier.height(8.dp))
-        LazyRow {
+        LazyRow(
+//            modifier = Modifier
+//                .background(Brush.verticalGradient(listOf(Color.Transparent, PurpleGrey40)))
+        ) {
             items(state.genres.size) { i ->
                 val genre = state.genres[i]
                 ListedGenreItem(
@@ -107,9 +102,11 @@ fun HomeSearchScreen(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(4.dp))
+//        Spacer(modifier = Modifier.height(4.dp))
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxHeight(),
+            modifier = Modifier
+                .fillMaxHeight(),
+//                .background(Brush.verticalGradient(listOf(PurpleGrey40, Color.Transparent))),
             columns = GridCells.Fixed(2),
             state = listState
         ) {
@@ -125,7 +122,7 @@ fun HomeSearchScreen(
                         .clickable {
                             navigator.navigate(GameDetailsScreenDestination(game.id))
                         }
-                        .padding(4.dp)
+                        .padding(4.dp),
                 )
                 if (i < state.games.size) {
                     Divider(

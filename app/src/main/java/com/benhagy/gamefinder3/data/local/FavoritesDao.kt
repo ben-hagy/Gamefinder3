@@ -6,6 +6,11 @@ import androidx.room.Upsert
 import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
 import kotlinx.coroutines.flow.Flow
 
+/*
+dao contains functions to interact with our db; namely, saving, deleting, fetching all saved items,
+and checking if an item is currently in the db
+ */
+
 @Dao
 interface FavoritesDao {
 

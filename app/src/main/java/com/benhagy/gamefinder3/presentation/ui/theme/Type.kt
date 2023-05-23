@@ -41,10 +41,10 @@ val Typography = Typography(
     ),
     bodyMedium = TextStyle(
         fontFamily = montserratFonts,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = 18.sp,
-        letterSpacing = 0.5.sp
+        lineHeight = 20.sp,
+        letterSpacing = 0.7.sp
     ),
     titleLarge = TextStyle(
         fontFamily = montserratFonts,

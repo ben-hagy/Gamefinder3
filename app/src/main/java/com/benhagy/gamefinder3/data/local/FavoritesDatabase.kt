@@ -4,6 +4,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
 
+/*
+database implementation object, used in the di layer to instantiate concrete implementation of the
+room database
+ */
+
 @Database(
     entities = [FavoriteGameEntity::class],
     version = 1,

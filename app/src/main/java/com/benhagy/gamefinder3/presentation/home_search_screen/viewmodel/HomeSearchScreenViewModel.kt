@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
 import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import com.benhagy.gamefinder3.util.Constants.SEARCH_DELAY_TIME
 import com.benhagy.gamefinder3.util.Resource
@@ -32,23 +31,25 @@ class HomeSearchScreenViewModel @Inject constructor(
     fun onEvent(event: HomeSearchScreenEvent) {
         when (event) {
             is HomeSearchScreenEvent.OnSearchQueryChanged -> {
-                state = state.copy(searchQuery = event.query)
+                state = state.copy(searchQuery = event.query, isClicked = false)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(SEARCH_DELAY_TIME)
                     getGamesList()
                 }
             }
+
             is HomeSearchScreenEvent.OnGenreButtonClicked -> {
-                state = state.copy(genreId = event.genreId, isRefreshing = true)
+                state = state.copy(genreId = event.genreId, isRefreshing = true, isClicked = true)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     filterGamesListByClickedGenre(genreId = event.genreId)
                 }
                 state = state.copy(isRefreshing = false)
             }
+
             is HomeSearchScreenEvent.OnSearchClearClicked -> {
-                state = state.copy(searchQuery = "")
+                state = state.copy(searchQuery = "", isClicked = false)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     getGamesList()
@@ -62,21 +63,21 @@ class HomeSearchScreenViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             useCaseContainer.getAndSearchGamesList(fetchFromRemote, query).collect { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                            result.data?.let { listings ->
-                                state = state.copy(
-                                    games = listings, isRefreshing = true
-                                )
-                            }
-                        }
-
-                        is Resource.Error -> Unit
-                        is Resource.Loading -> {
-                            state = state.copy(isLoading = result.isLoading)
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { listings ->
+                            state = state.copy(
+                                games = listings, isRefreshing = true
+                            )
                         }
                     }
+
+                    is Resource.Error -> Unit
+                    is Resource.Loading -> {
+                        state = state.copy(isLoading = result.isLoading)
+                    }
                 }
+            }
         }
         state = state.copy(isRefreshing = false)
     }
@@ -86,21 +87,21 @@ class HomeSearchScreenViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             useCaseContainer.filterGamesByClickedGenre(fetchFromRemote, genreId).collect { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                            result.data?.let { listings ->
-                                state = state.copy(
-                                    games = listings, isRefreshing = true
-                                )
-                            }
-                        }
-
-                        is Resource.Error -> Unit
-                        is Resource.Loading -> {
-                            state = state.copy(isLoading = result.isLoading)
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { listings ->
+                            state = state.copy(
+                                games = listings, isRefreshing = true
+                            )
                         }
                     }
+
+                    is Resource.Error -> Unit
+                    is Resource.Loading -> {
+                        state = state.copy(isLoading = result.isLoading)
+                    }
                 }
+            }
         }
         state = state.copy(isRefreshing = false)
     }
@@ -116,6 +117,7 @@ class HomeSearchScreenViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is Resource.Error -> Unit
                     is Resource.Loading -> {
                         state = state.copy(isLoading = result.isLoading)
