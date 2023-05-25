@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +45,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -53,7 +56,9 @@ import com.benhagy.gamefinder3.presentation.home_search_screen.ListedGenreItem
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parse
 import com.benhagy.gamefinder3.util.parseEsrbAsLogo
+import com.benhagy.gamefinder3.util.parseEsrbFluffText
 import com.benhagy.gamefinder3.util.parseReleaseDate
+import com.benhagy.gamefinder3.util.parseTagsList
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -204,15 +209,17 @@ fun GameDetailsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                             ) {
-                                // release date
+                                // release date & playtime
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 6.dp),
+                                    modifier = Modifier.padding(
+                                        horizontal = 6.dp, vertical = 2.dp
+                                    ),
                                     verticalAlignment = Alignment.Bottom,
                                     horizontalArrangement = Arrangement.Start
                                 ) {
                                     Icon(
                                         modifier = Modifier.size(20.dp),
-                                        imageVector = Icons.Rounded.Schedule,
+                                        imageVector = Icons.Rounded.CalendarMonth,
                                         contentDescription = "Release Date Icon",
                                         tint = MaterialTheme.colorScheme.secondary
                                     )
@@ -222,6 +229,24 @@ fun GameDetailsScreen(
                                         style = Typography.labelSmall
                                     )
                                 }
+                            }
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Row(
+                                modifier = Modifier.padding(horizontal = 6.dp),
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = Icons.Rounded.Schedule,
+                                    contentDescription = "Played Time Icon",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Text(
+                                    modifier = Modifier.padding(horizontal = 4.dp),
+                                    text = "${gameDetails.playtime ?: 0} hours (average)",
+                                    style = Typography.labelSmall
+                                )
                             }
                         }
                     }
@@ -249,76 +274,140 @@ fun GameDetailsScreen(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp)
+                            .padding(4.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
-                            painter = painterResource(
-                                id = parseEsrbAsLogo(gameDetails.esrb?.name ?: "Unknown")
-                            ),
-                            contentDescription = "Esrb Logo",
-                            contentScale = ContentScale.Fit,
+                        Column(
                             modifier = Modifier
-                                .height(150.dp)
-                                .width(100.dp)
-                                .padding(2.dp)
-                        )
+                                .weight(1f)
+                        ) {
+                            Column(
+                                modifier = Modifier.wrapContentSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Image(
+                                    painter = painterResource(
+                                        id = parseEsrbAsLogo(gameDetails.esrb?.name ?: "Unknown")
+                                    ),
+                                    contentDescription = "ESRB Logo",
+                                    contentScale = ContentScale.Inside,
+                                    alignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .height(120.dp)
+                                        .width(80.dp)
+                                )
+                                Text(
+                                    text = parseEsrbFluffText(gameDetails.esrb?.name ?: "Unknown"),
+                                    style = Typography.labelSmall,
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 3
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(2f)
+                        ) {
+                            Text(
+                                text = "Tags:",
+                                style = Typography.titleMedium
+                            )
+                            if (gameDetails.tags.isEmpty()) {
+                                Text(
+                                    text = "No tags found for this game.",
+                                    style = Typography.labelSmall,
+                                )
+                            } else {
+                                Text(
+                                    text = parseTagsList(gameDetails.tags),
+                                    style = Typography.labelSmall,
+                                    maxLines = 10,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
-                        // more info on the ratings bar goes here?
                     }
-                    Text(
-                        text = "Genres:",
-                        style = Typography.titleLarge,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                    LazyRow() {
-                        items(gameDetails.genres.size) { i ->
-                            val genre = gameDetails.genres[i]
-                            ListedGenreItem(
-                                genre = genre,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp)
-                            )
+                    if (gameDetails.genres.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 2.dp, bottom = 4.dp),
+                            text = "Genres:",
+                            style = Typography.titleLarge,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        LazyRow(
+                            modifier = Modifier
+                        ) {
+                            items(gameDetails.genres.size) { i ->
+                                val genre = gameDetails.genres[i]
+                                ListedGenreItem(
+                                    genre = genre,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp)
+                                )
+                            }
+                        }
+                    }
+                    if (gameDetails.developers.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 2.dp, bottom = 4.dp),
+                            text = "Developers:",
+                            style = Typography.titleLarge,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        LazyRow(
+                            modifier = Modifier
+                        ) {
+                            items(gameDetails.developers.size) { i ->
+                                val developer = gameDetails.developers[i]
+                                ListedGenreItem(
+                                    developer = developer,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp)
+                                )
+                            }
+                        }
+                    }
+                    if (gameDetails.publishers.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 2.dp, bottom = 4.dp),
+                            text = "Publishers:",
+                            style = Typography.titleLarge,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        LazyRow(
+                            modifier = Modifier
+                        ) {
+                            items(gameDetails.publishers.size) { i ->
+                                val publisher = gameDetails.publishers[i]
+                                ListedGenreItem(
+                                    publisher = publisher,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp)
+                                )
+                            }
                         }
                     }
                     Text(
-                        text = "Developers:",
+                        modifier = Modifier
+                            .padding(top = 2.dp, bottom = 4.dp),
+                        text = "Description:",
                         style = Typography.titleLarge,
                         color = MaterialTheme.colorScheme.secondary
                     )
-                    LazyRow() {
-                        items(gameDetails.developers.size) { i ->
-                            val developer = gameDetails.developers[i]
-                            ListedGenreItem(
-                                developer = developer,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp)
-                            )
-                        }
-                    }
-                    Text(
-                        text = "Publishers:",
-                        style = Typography.titleLarge,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                    LazyRow() {
-                        items(gameDetails.publishers.size) { i ->
-                            val publisher = gameDetails.publishers[i]
-                            ListedGenreItem(
-                                publisher = publisher,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp)
-                            )
-                        }
-                    }
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             text = parse(gameDetails.description.toString()),

@@ -11,11 +11,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import android.graphics.Typeface
-import androidx.annotation.DrawableRes
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.text.HtmlCompat
 import com.benhagy.gamefinder3.R
-import com.benhagy.gamefinder3.domain.models.Esrb
+import com.benhagy.gamefinder3.domain.models.Tag
 
 /* these two functions take a Spanned HTML object and parse them into an Annotated String for use
 in Text Composables. The description of each game detail object is an HTML-formatted string.
@@ -107,4 +106,19 @@ fun parseEsrbAsLogo(rating: String): Int {
         "Adults Only" -> R.drawable.adults_only
         else -> R.drawable.rating_pending
     }
+}
+
+fun parseEsrbFluffText(rating: String): String {
+    return when(rating) {
+        "Everyone" -> "Rated E for Everyone"
+        "Everyone 10+" -> "Rated E for Everyone"
+        "Teen" -> "Rated T for Teen"
+        "Mature" -> "Rated M for Mature"
+        "Adults Only" -> "Rated AO for Adults Only"
+        else -> "Rating unknown or pending"
+    }
+}
+
+fun parseTagsList(tags: List<Tag>): String {
+    return (tags.map { it.name }).toString().removeSurrounding("[", "]")
 }
