@@ -101,15 +101,15 @@ fun HomeSearchScreen(
                             // however, the selected item doesn't retain when you change screens
                             // may need new state variable (isSelected isn't holding true)
                         .selectable(
-                            selected = selectedItem == i,
                             onClick = {
                                 viewModel.onEvent(HomeSearchScreenEvent.OnSearchQueryChanged(""))
                                 viewModel.onEvent(
                                     event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString())
                                 )
                                 selectedItem = i
-                            }
-                        )
+                            },
+                            selected = selectedItem == i,
+                            )
                         .background(
                             if (selectedItem == i && state.isSelected) {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)

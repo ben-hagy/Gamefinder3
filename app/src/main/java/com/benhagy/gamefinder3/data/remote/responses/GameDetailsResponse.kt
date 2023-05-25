@@ -18,6 +18,7 @@ data class GameDetailsResponse(
     val publishers: List<PublisherResponse>,
     val genres: List<GenreResponse>,
     val tags: List<TagResponse>,
+    @SerializedName("esrb_rating")
     val esrb: EsrbResponse?,
 ) {
     fun toGameDetails(): GameDetails {
