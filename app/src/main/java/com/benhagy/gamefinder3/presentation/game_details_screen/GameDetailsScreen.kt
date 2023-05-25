@@ -5,8 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,10 +25,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,7 +42,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,7 +58,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 @Destination
 fun GameDetailsScreen(
@@ -81,205 +81,255 @@ fun GameDetailsScreen(
         }
 
         if (state.error == null) {
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp)
-                    .verticalScroll(overviewScroll)
             ) {
-                // first row with back button and favorites icon buttons
-                Row(
+                Column(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.background)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(4.dp)
                 ) {
-                    //back button
-                    IconButton(
-                        onClick = {
-                            navigator.popBackStack()
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_back_arrow),
-                            contentDescription = "Go back",
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                    // favorite buttons
-                    // onClick handles changing the icon via isFavorite state update in viewmodel,
-                    // performing the addition/removal, and showing toast
-                    IconButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                if (state.isFavorite) {
-                                    viewModel.onEvent(
-                                        GameDetailsScreenEvent.RemoveGameFromFavorites(id = state.gameDetails.id!!)
+                    // first row with back button and favorites icon buttons
+                    TopAppBar(
+                        title = {},
+                        modifier = Modifier
+                            .background(color = MaterialTheme.colorScheme.background)
+                            .fillMaxWidth(),
+                        actions = {
+                            Row(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        navigator.popBackStack()
+                                    }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                                        contentDescription = "Go back",
+                                        tint = MaterialTheme.colorScheme.onBackground,
+                                        modifier = Modifier.size(28.dp)
                                     )
-                                    Toast.makeText(
-                                        context,
-                                        "${gameDetails.name} removed from Favorites.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                }
+                                IconButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            if (state.isFavorite) {
+                                                viewModel.onEvent(
+                                                    GameDetailsScreenEvent.RemoveGameFromFavorites(
+                                                        id = state.gameDetails.id!!
+                                                    )
+                                                )
+                                                Toast.makeText(
+                                                    context,
+                                                    "${gameDetails.name} removed from Favorites.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
 
 
-                                } else {
-                                    viewModel.onEvent(
-                                        GameDetailsScreenEvent.SaveGameAsFavorite(game = state.gameDetails)
+                                            } else {
+                                                viewModel.onEvent(
+                                                    GameDetailsScreenEvent.SaveGameAsFavorite(game = state.gameDetails)
+                                                )
+                                                Toast.makeText(
+                                                    context,
+                                                    "${gameDetails.name} added to Favorites.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                            }
+                                        }
+                                    }, modifier = Modifier.padding(4.dp)
+                                ) {
+                                    Icon(
+                                        painter = if (state.isFavorite) {
+                                            painterResource(id = R.drawable.ic_favorite_filled)
+                                        } else {
+                                            painterResource(id = R.drawable.ic_favorite_unfilled)
+                                        },
+                                        contentDescription = "Add to favorites",
+                                        tint = MaterialTheme.colorScheme.onBackground,
+                                        modifier = Modifier.size(28.dp)
                                     )
-                                    Toast.makeText(
-                                        context,
-                                        "${gameDetails.name} added to Favorites.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
                                 }
                             }
-                        }, modifier = Modifier.padding(4.dp)
-                    ) {
-                        Icon(
-                            painter = if (state.isFavorite) {
-                                painterResource(id = R.drawable.ic_favorite_filled)
-                            } else {
-                                painterResource(id = R.drawable.ic_favorite_unfilled)
-                            },
-                            contentDescription = "Add to favorites",
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(28.dp)
-                        )
 
-                    }
-                }
-                // second row with game icon, name, release date
-                Row {
-                    // game icon
-                    AsyncImage(
-                        model = gameDetails.backgroundImage ?: "",
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        alignment = Alignment.TopCenter,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .size(80.dp)
-                            .clipToBounds()
-                            .border(
-                                width = 2.dp,
-                                color = MaterialTheme.colorScheme.secondary,
-                                shape = CircleShape
-                            )
-                            .clip(CircleShape)
+                        },
+                        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
                     )
-                    Column(
-                        modifier = Modifier
-                            .padding(8.dp)
-                    ) {
-                        // game name
-                        Text(
-                            modifier = Modifier.padding(
-                                vertical = 4.dp, horizontal = 8.dp
-                            ),
-                            text = gameDetails.name.toString(),
-                            style = Typography.titleLarge
-                        )
-                        Row(
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)
+                        .verticalScroll(overviewScroll)
+                ) {
+                    // second row with game icon, name, release date
+                    Row {
+                        // game icon
+                        AsyncImage(
+                            model = gameDetails.backgroundImage ?: "",
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            alignment = Alignment.TopCenter,
                             modifier = Modifier
-                                .fillMaxWidth()
-                        ){
-                            // release date
+                                .padding(horizontal = 8.dp)
+                                .size(80.dp)
+                                .clipToBounds()
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape = CircleShape
+                                )
+                                .clip(CircleShape)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .padding(8.dp)
+                        ) {
+                            // game name
+                            Text(
+                                modifier = Modifier.padding(
+                                    vertical = 4.dp, horizontal = 8.dp
+                                ),
+                                text = gameDetails.name.toString(),
+                                style = Typography.titleLarge
+                            )
                             Row(
-                                modifier = Modifier.padding(horizontal = 6.dp),
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.Start
+                                modifier = Modifier
+                                    .fillMaxWidth()
                             ) {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = Icons.Rounded.Schedule,
-                                    contentDescription = "Release Date Icon",
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                    text = parseReleaseDate(gameDetails.released.toString()),
-                                    style = Typography.labelSmall
-                                )
+                                // release date
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 6.dp),
+                                    verticalAlignment = Alignment.Bottom,
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(20.dp),
+                                        imageVector = Icons.Rounded.Schedule,
+                                        contentDescription = "Release Date Icon",
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(horizontal = 4.dp),
+                                        text = parseReleaseDate(gameDetails.released.toString()),
+                                        style = Typography.labelSmall
+                                    )
+                                }
                             }
                         }
                     }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Divider(
-                    thickness = 1.dp, color = MaterialTheme.colorScheme.onBackground
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    HorizontalPager(pageCount = gameDetails.screenshots.size,
-                        state = pagerState,
-                        key = { gameDetails.screenshots[it] }) { index ->
-                        AsyncImage(
-                            model = gameDetails.screenshots[index].image,
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(
+                        thickness = 1.dp, color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        HorizontalPager(pageCount = gameDetails.screenshots.size,
+                            state = pagerState,
+                            key = { gameDetails.screenshots[it] }) { index ->
+                            AsyncImage(
+                                model = gameDetails.screenshots[index].image,
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                                    .clip(
+                                        RoundedCornerShape(8.dp)
+                                    )
+                                    .height(240.dp),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(
+                                id = parseEsrbAsLogo(gameDetails.esrb?.name ?: "Unknown")
+                            ),
+                            contentDescription = "Esrb Logo",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .clip(
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .height(240.dp),
-                            contentDescription = null
+                                .height(150.dp)
+                                .width(100.dp)
+                                .padding(2.dp)
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        // more info on the ratings bar goes here?
                     }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(160.dp)
-                ) {
-                    Image(
-                        painter = painterResource(
-                            id = parseEsrbAsLogo(gameDetails.esrb?.name ?: "Unknown")
-                        ),
-                        contentDescription = "Esrb Logo",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .width(100.dp)
-                            .padding(2.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    // more info on the ratings bar goes here?
-                }
-                Text(
-                    text = "Genres:",
-                    style = Typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                LazyRow() {
-                    items(gameDetails.genres.size) { i ->
-                        val genre = gameDetails.genres[i]
-                        ListedGenreItem(
-                            genre = genre,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
                     Text(
-                        text = parse(gameDetails.description.toString()),
-                        style = Typography.bodyMedium,
-                        textAlign = TextAlign.Justify,
-                        modifier = Modifier
-                            .height(400.dp)
-                            .verticalScroll(scroll)
-                            .padding(4.dp)
+                        text = "Genres:",
+                        style = Typography.titleLarge,
+                        color = MaterialTheme.colorScheme.secondary
                     )
+                    LazyRow() {
+                        items(gameDetails.genres.size) { i ->
+                            val genre = gameDetails.genres[i]
+                            ListedGenreItem(
+                                genre = genre,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Developers:",
+                        style = Typography.titleLarge,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    LazyRow() {
+                        items(gameDetails.developers.size) { i ->
+                            val developer = gameDetails.developers[i]
+                            ListedGenreItem(
+                                developer = developer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                            )
+                        }
+                    }
+                    Text(
+                        text = "Publishers:",
+                        style = Typography.titleLarge,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    LazyRow() {
+                        items(gameDetails.publishers.size) { i ->
+                            val publisher = gameDetails.publishers[i]
+                            ListedGenreItem(
+                                publisher = publisher,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = parse(gameDetails.description.toString()),
+                            style = Typography.bodyMedium,
+                            textAlign = TextAlign.Justify,
+                            modifier = Modifier
+                                .height(400.dp)
+                                .verticalScroll(scroll)
+                                .padding(4.dp)
+                        )
+                    }
                 }
             }
         }
