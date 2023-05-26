@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -43,7 +44,8 @@ fun ListedGenreItem(
         Column(
             modifier = modifier
                 .padding(4.dp)
-                .clipToBounds(),
+                .wrapContentHeight()
+                .width(104.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -58,13 +60,13 @@ fun ListedGenreItem(
                     .clip(CircleShape),
                 contentDescription = publisher.name,
             )
-            Divider(thickness = 4.dp, color = MaterialTheme.colorScheme.onBackground)
+            Divider(thickness = 4.dp, color = MaterialTheme.colorScheme.background)
             Text(
                 text = publisher.name!!,
                 style = Typography.labelSmall,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
-                maxLines = 2,
+                maxLines = 4,
                 overflow = TextOverflow.Clip
             )
         }

@@ -1,5 +1,7 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -22,10 +24,16 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.StarRate
+import androidx.compose.material.icons.rounded.Web
+import androidx.compose.material.icons.rounded.WebAsset
+import androidx.compose.material.icons.rounded.Webhook
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -59,6 +68,7 @@ import com.benhagy.gamefinder3.util.parseEsrbAsLogo
 import com.benhagy.gamefinder3.util.parseEsrbFluffText
 import com.benhagy.gamefinder3.util.parseReleaseDate
 import com.benhagy.gamefinder3.util.parseTagsList
+import com.benhagy.gamefinder3.util.parseWebsiteAsHyperlink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -77,7 +87,7 @@ fun GameDetailsScreen(
     val scroll = rememberScrollState(0) // for text scroller
     val overviewScroll = rememberScrollState()
     val coroutineScope = rememberCoroutineScope() // for async tasks
-    val context = LocalContext.current // for the toasts
+    val context = LocalContext.current // for the toasts, and the website intent
 
     state.gameDetails?.let { gameDetails ->
 
@@ -96,7 +106,7 @@ fun GameDetailsScreen(
                     modifier = Modifier
                         .padding(4.dp)
                 ) {
-                    // first row with back button and favorites icon buttons
+                    // top app bar with back button and favorites icon buttons
                     TopAppBar(
                         title = {},
                         modifier = Modifier
@@ -174,9 +184,8 @@ fun GameDetailsScreen(
                         .padding(4.dp)
                         .verticalScroll(overviewScroll)
                 ) {
-                    // second row with game icon, name, release date
+                    // second row with game icon, game name, release date, average playtime, & metascore
                     Row {
-                        // game icon
                         AsyncImage(
                             model = gameDetails.backgroundImage ?: "",
                             contentDescription = null,
@@ -209,7 +218,7 @@ fun GameDetailsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                             ) {
-                                // release date & playtime
+                                // release date
                                 Row(
                                     modifier = Modifier.padding(
                                         horizontal = 6.dp, vertical = 2.dp
@@ -230,7 +239,8 @@ fun GameDetailsScreen(
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(2.dp))
+                            Spacer(Modifier.height(2.dp))
+                            // playtime
                             Row(
                                 modifier = Modifier.padding(horizontal = 6.dp),
                                 verticalAlignment = Alignment.Bottom,
@@ -248,12 +258,32 @@ fun GameDetailsScreen(
                                     style = Typography.labelSmall
                                 )
                             }
+                            // metascore
+                            Spacer(Modifier.height(2.dp))
+                            Row(
+                                modifier = Modifier.padding(horizontal = 6.dp),
+                                verticalAlignment = Alignment.Bottom,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = Icons.Rounded.StarRate,
+                                    contentDescription = "Metacritic Score Icon",
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Text(
+                                    modifier = Modifier.padding(horizontal = 4.dp),
+                                    text = "Metacritic Score: ${gameDetails.metacritic ?: "N/A"}",
+                                    style = Typography.labelSmall
+                                )
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Divider(
                         thickness = 1.dp, color = MaterialTheme.colorScheme.onBackground
                     )
+                    // screenshots pager
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -274,6 +304,7 @@ fun GameDetailsScreen(
                             )
                         }
                     }
+                    // ratings and tags window
                     Row(
                         modifier = Modifier
                             .padding(4.dp)
@@ -285,6 +316,7 @@ fun GameDetailsScreen(
                             modifier = Modifier
                                 .weight(1f)
                         ) {
+                            // rating image and description
                             Column(
                                 modifier = Modifier.wrapContentSize(),
                                 verticalArrangement = Arrangement.Center,
@@ -309,6 +341,7 @@ fun GameDetailsScreen(
                                 )
                             }
                         }
+                        // tags
                         Column(
                             modifier = Modifier
                                 .weight(2f)
@@ -414,10 +447,48 @@ fun GameDetailsScreen(
                             style = Typography.bodyMedium,
                             textAlign = TextAlign.Justify,
                             modifier = Modifier
-                                .height(400.dp)
+                                .height(350.dp)
                                 .verticalScroll(scroll)
                                 .padding(4.dp)
                         )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentSize()
+                            .padding(4.dp)
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Public,
+                            contentDescription = "Website",
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        if (!gameDetails.website.isNullOrEmpty()) {
+                            ClickableText(
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp),
+                                text = parseWebsiteAsHyperlink(gameDetails.website),
+                                style = Typography.titleMedium,
+                                softWrap = true,
+                                onClick = {
+                                    context.startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(gameDetails.website)
+                                        )
+                                    )
+                                }
+                            )
+                        } else {
+                            Text(
+                                text = "No website provided",
+                                style = Typography.titleMedium,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                     }
                 }
             }
