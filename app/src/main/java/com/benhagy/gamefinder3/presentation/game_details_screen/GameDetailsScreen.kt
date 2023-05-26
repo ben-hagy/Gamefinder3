@@ -8,17 +8,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -27,13 +30,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.StarRate
-import androidx.compose.material.icons.rounded.Web
-import androidx.compose.material.icons.rounded.WebAsset
-import androidx.compose.material.icons.rounded.Webhook
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -59,9 +61,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.DeveloperDetailsItem
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.GenreDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenEvent
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
-import com.benhagy.gamefinder3.presentation.home_search_screen.ListedGenreItem
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parse
 import com.benhagy.gamefinder3.util.parseEsrbAsLogo
@@ -111,7 +114,8 @@ fun GameDetailsScreen(
                         title = {},
                         modifier = Modifier
                             .background(color = MaterialTheme.colorScheme.background)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         actions = {
                             Row(
                                 modifier = Modifier
@@ -261,7 +265,7 @@ fun GameDetailsScreen(
                             // metascore
                             Spacer(Modifier.height(2.dp))
                             Row(
-                                modifier = Modifier.padding(horizontal = 6.dp),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                 verticalAlignment = Alignment.Bottom,
                                 horizontalArrangement = Arrangement.Start
                             ) {
@@ -295,12 +299,56 @@ fun GameDetailsScreen(
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(4.dp)
+                                    .padding(bottom = 8.dp)
                                     .clip(
                                         RoundedCornerShape(8.dp)
                                     )
-                                    .height(240.dp),
+                                    .height(232.dp),
                                 contentDescription = null
+                            )
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .offset(y = -(24).dp)
+                            .fillMaxWidth(0.5f)
+                            .clip(RoundedCornerShape(100))
+                            .background(Color.Transparent)
+                            .padding(8.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        pagerState.currentPage - 1
+                                    )
+                                }
+                            },
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowLeft,
+                                contentDescription = "Go back",
+                                modifier = Modifier.size(60.dp),
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        pagerState.currentPage + 1
+                                    )
+                                }
+                            },
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowRight,
+                                contentDescription = "Go forward",
+                                modifier = Modifier.size(60.dp),
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -365,6 +413,7 @@ fun GameDetailsScreen(
                             }
                         }
                         Spacer(modifier = Modifier.width(8.dp))
+
                     }
                     if (gameDetails.genres.isNotEmpty()) {
                         Text(
@@ -372,14 +421,16 @@ fun GameDetailsScreen(
                                 .padding(top = 2.dp, bottom = 4.dp),
                             text = "Genres:",
                             style = Typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            textAlign = TextAlign.Center
                         )
-                        LazyRow(
+                        Column(
                             modifier = Modifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
                         ) {
-                            items(gameDetails.genres.size) { i ->
-                                val genre = gameDetails.genres[i]
-                                ListedGenreItem(
+                            gameDetails.genres.forEach { genre ->
+                                GenreDetailsItem(
                                     genre = genre,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -394,14 +445,16 @@ fun GameDetailsScreen(
                                 .padding(top = 2.dp, bottom = 4.dp),
                             text = "Developers:",
                             style = Typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            textAlign = TextAlign.Center
                         )
-                        LazyRow(
+                        Column(
                             modifier = Modifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
                         ) {
-                            items(gameDetails.developers.size) { i ->
-                                val developer = gameDetails.developers[i]
-                                ListedGenreItem(
+                            gameDetails.developers.forEach { developer ->
+                                DeveloperDetailsItem(
                                     developer = developer,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -416,14 +469,16 @@ fun GameDetailsScreen(
                                 .padding(top = 2.dp, bottom = 4.dp),
                             text = "Publishers:",
                             style = Typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
+                            textAlign = TextAlign.Center
                         )
-                        LazyRow(
+                        Column(
                             modifier = Modifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
                         ) {
-                            items(gameDetails.publishers.size) { i ->
-                                val publisher = gameDetails.publishers[i]
-                                ListedGenreItem(
+                            gameDetails.publishers.forEach { publisher ->
+                                PublisherDetailsItem(
                                     publisher = publisher,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -434,10 +489,11 @@ fun GameDetailsScreen(
                     }
                     Text(
                         modifier = Modifier
-                            .padding(top = 2.dp, bottom = 4.dp),
+                            .padding(top = 4.dp, bottom = 4.dp),
                         text = "Description:",
                         style = Typography.titleLarge,
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.secondary,
+                        textAlign = TextAlign.Center
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),

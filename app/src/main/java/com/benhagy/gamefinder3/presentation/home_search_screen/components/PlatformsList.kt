@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,30 +34,29 @@ fun PlatformsList(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 4.dp),
+            .padding(horizontal = 4.dp, vertical = 6.dp),
         state = listState
     ) {
         if (isRefreshing) {
-            coroutineScope.launch { listState.animateScrollToItem(0)}
+            coroutineScope.launch { listState.animateScrollToItem(0) }
         }
         items(platforms.size) { i ->
             val platform = platforms[i].name.toString()
-            Box(
+            Card(
+                shape = RoundedCornerShape(15),
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .padding(horizontal = 2.dp)
+                    .padding(horizontal = 4.dp)
                     .background(
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
                     )
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                        .align(Alignment.Center),
+                        .padding(horizontal = 2.dp, vertical = 2.dp),
                     text = platform,
                     fontFamily = montserratFonts,
                     style = Typography.displaySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

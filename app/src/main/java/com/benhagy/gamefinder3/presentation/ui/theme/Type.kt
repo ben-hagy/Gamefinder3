@@ -60,6 +60,13 @@ val Typography = Typography(
         lineHeight = 18.sp,
         letterSpacing = 0.2.sp
     ),
+    titleSmall = TextStyle(
+        fontFamily = montserratFonts,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.2.sp
+    ),
     labelSmall = TextStyle(
         fontFamily = montserratFonts,
         fontWeight = FontWeight.Medium,
@@ -68,9 +75,9 @@ val Typography = Typography(
     ),
     displaySmall = TextStyle(
         fontFamily = montserratFonts,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 12.sp,
-        letterSpacing = 0.2.sp
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        lineHeight = 14.sp,
+        letterSpacing = 0.3.sp
     )
 )
