@@ -30,6 +30,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.CalendarMonth
@@ -55,20 +58,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.DeveloperDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.GenreDetailsItem
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.PublisherDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenEvent
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
+import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
 import com.benhagy.gamefinder3.util.parse
 import com.benhagy.gamefinder3.util.parseEsrbAsLogo
 import com.benhagy.gamefinder3.util.parseEsrbFluffText
+import com.benhagy.gamefinder3.util.parsePlatformsList
 import com.benhagy.gamefinder3.util.parseReleaseDate
 import com.benhagy.gamefinder3.util.parseTagsList
 import com.benhagy.gamefinder3.util.parseWebsiteAsHyperlink
@@ -80,26 +88,38 @@ import kotlinx.coroutines.launch
 @Composable
 @Destination
 fun GameDetailsScreen(
-    id: Int,
+    id: Int, // used as savedstatehandle receiver for navigation
     navigator: DestinationsNavigator,
     viewModel: GameDetailsScreenViewModel = hiltViewModel()
 ) {
-    // variables for states and local context
     val state = viewModel.state
     val pagerState = rememberPagerState() // for image scroller
     val scroll = rememberScrollState(0) // for text scroller
-    val overviewScroll = rememberScrollState()
+    val overviewScroll = rememberScrollState() // for whole screen scrolling
     val coroutineScope = rememberCoroutineScope() // for async tasks
     val context = LocalContext.current // for the toasts, and the website intent
 
     state.gameDetails?.let { gameDetails ->
 
+        // ensures the favorite icon is filled/unfilled appropriately
         LaunchedEffect(gameDetails.id) {
             gameDetails.id?.let { viewModel.isFavorite(gameId = it) }
         }
 
-        if (state.error == null) {
-
+        if (state.error != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = state.error.toString(),
+                    style = Typography.titleLarge
+                )
+            }
+        } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,7 +149,7 @@ fun GameDetailsScreen(
                                         navigator.popBackStack()
                                     }) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                                        imageVector = Icons.Default.ArrowBack,
                                         contentDescription = "Go back",
                                         tint = MaterialTheme.colorScheme.onBackground,
                                         modifier = Modifier.size(28.dp)
@@ -166,10 +186,10 @@ fun GameDetailsScreen(
                                     }, modifier = Modifier.padding(4.dp)
                                 ) {
                                     Icon(
-                                        painter = if (state.isFavorite) {
-                                            painterResource(id = R.drawable.ic_favorite_filled)
+                                        imageVector = if (state.isFavorite) {
+                                            Icons.Default.Bookmark
                                         } else {
-                                            painterResource(id = R.drawable.ic_favorite_unfilled)
+                                            Icons.Default.BookmarkBorder
                                         },
                                         contentDescription = "Add to favorites",
                                         tint = MaterialTheme.colorScheme.onBackground,
@@ -352,17 +372,52 @@ fun GameDetailsScreen(
                             )
                         }
                     }
-                    // ratings and tags window
                     Row(
                         modifier = Modifier
                             .padding(4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        // platforms text list
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = "Platforms: ",
+                                style = Typography.titleMedium
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(2f)
+                        ) {
+                            if (gameDetails.platforms.isEmpty()) {
+                                Text(
+                                    text = "No platforms listed for this game.",
+                                    style = Typography.labelSmall,
+                                )
+                            } else {
+                                Text(
+                                    text = parsePlatformsList(gameDetails.platforms),
+                                    style = Typography.labelSmall,
+                                    maxLines = 10,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                    // esrb, platforms, and tags window
+                    Row(
+                        modifier = Modifier
+                            .padding(vertical = 6.dp, horizontal = 4.dp)
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(1f),
+                            verticalArrangement = Arrangement.Center
                         ) {
                             // rating image and description
                             Column(
@@ -527,7 +582,14 @@ fun GameDetailsScreen(
                                 modifier = Modifier
                                     .padding(horizontal = 4.dp),
                                 text = parseWebsiteAsHyperlink(gameDetails.website),
-                                style = Typography.titleMedium,
+                                style = TextStyle(
+                                    fontFamily = montserratFonts,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 16.sp,
+                                    lineHeight = 18.sp,
+                                    letterSpacing = 0.2.sp
+                                ),
                                 softWrap = true,
                                 onClick = {
                                     context.startActivity(

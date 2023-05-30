@@ -6,24 +6,17 @@ import com.google.gson.annotations.SerializedName
 data class ListedGameResponse(
     val id: Int,
     val name: String,
-    val released: String?,
     @SerializedName("background_image")
     val backgroundImage: String?,
-//    val metacritic: Int?,
     val platforms: List<PlatformResponse>?,
-//    val genres: List<GenreResponse>,
-//    val tags: List<TagResponse>,
-    val esrbRating: EsrbResponse?,
 
 ) {
     fun toListedGame(): ListedGame {
         return ListedGame(
             id = id,
             name = name,
-            released = released,
             backgroundImage = backgroundImage,
             platforms = platforms?.map { it.platform.toPlatform() },
-            esrbRating = esrbRating?.toEsrb()
         )
     }
 }

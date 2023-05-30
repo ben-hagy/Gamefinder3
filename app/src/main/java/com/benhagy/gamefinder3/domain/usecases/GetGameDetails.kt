@@ -12,6 +12,6 @@ class GetGameDetails @Inject constructor(
 ) {
 
     suspend operator fun invoke(id: Int): Flow<Resource<GameDetails>> {
-        return repository.getGameDetails(id)
+        return repository.getGameDetailsWithScreenshots(id)
     }
 }

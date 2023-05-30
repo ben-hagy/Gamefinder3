@@ -10,7 +10,6 @@ data class GameDetails(
     val released: String?,
     val backgroundImage: String?,
     val website: String?,
-    val rating: Double?,
     val playtime: Int?,
     val platforms: List<Platform>,
     val developers: List<Developer>,

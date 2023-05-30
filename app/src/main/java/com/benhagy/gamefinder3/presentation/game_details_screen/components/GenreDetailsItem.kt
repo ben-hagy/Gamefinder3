@@ -28,7 +28,7 @@ import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 @Composable
 fun GenreDetailsItem(
     genre: Genre,
-    modifier: Modifier
+    modifier: Modifier // is used when object is called on GameDetailsScreen
 ) {
     Box(
         modifier = Modifier

@@ -19,6 +19,8 @@ class GamefinderRepositoryImpl @Inject constructor(
     private val dao: FavoritesDao
 ) : GamefinderRepository {
 
+    // api calls
+
     override suspend fun getGamesList(
         fetchFromRemote: Boolean,
         query: String
@@ -93,7 +95,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getGameDetails(id: Int): Flow<Resource<GameDetails>> = flow {
+    override suspend fun getGameDetailsWithScreenshots(id: Int): Flow<Resource<GameDetails>> = flow {
         emit(Resource.Loading())
         val remoteGameDetails = try {
             api.getGameDetails(id)
@@ -128,6 +130,8 @@ class GamefinderRepositoryImpl @Inject constructor(
             )
         )
     }
+
+    // database calls
 
     override suspend fun addGameToFavorites(game: GameDetails) {
         dao.upsertFavorite(game.toFavoriteGameEntity())

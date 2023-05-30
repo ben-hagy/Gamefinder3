@@ -1,4 +1,4 @@
-package com.benhagy.gamefinder3.presentation.game_details_screen
+package com.benhagy.gamefinder3.presentation.game_details_screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 @Composable
 fun PublisherDetailsItem(
     publisher: Publisher,
-    modifier: Modifier
+    modifier: Modifier // is used when object is called on GameDetailsScreen
 ) {
     Box(
         modifier = Modifier

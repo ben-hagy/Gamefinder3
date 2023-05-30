@@ -1,7 +1,5 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,7 +34,8 @@ class GameDetailsScreenViewModel @Inject constructor(
                         }
                     }
 
-                    is Resource.Error -> Unit
+                    is Resource.Error ->
+                        state = state.copy(error = "An error occurred!")
                     is Resource.Loading -> {
                         state = state.copy(isLoading = result.isLoading)
                     }

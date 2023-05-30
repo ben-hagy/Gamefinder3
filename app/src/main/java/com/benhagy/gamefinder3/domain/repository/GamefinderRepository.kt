@@ -24,7 +24,7 @@ interface GamefinderRepository {
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Genre>>>
 
-    suspend fun getGameDetails(id: Int): Flow<Resource<GameDetails>>
+    suspend fun getGameDetailsWithScreenshots(id: Int): Flow<Resource<GameDetails>>
 
     suspend fun addGameToFavorites(game: GameDetails)
 

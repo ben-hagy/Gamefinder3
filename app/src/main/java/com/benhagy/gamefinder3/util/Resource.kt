@@ -1,7 +1,5 @@
 package com.benhagy.gamefinder3.util
 
-typealias SimpleResource = Resource<Unit>
-
 sealed class Resource<T>(val data: T? = null, val message: String? = null) {
     class Loading<T>(val isLoading: Boolean = true, data: T? = null) : Resource<T>(data)
     class Success<T>(data: T?) : Resource<T>(data)

@@ -1,4 +1,4 @@
-package com.benhagy.gamefinder3.presentation.favorites_screen
+package com.benhagy.gamefinder3.presentation.favorites_screen.components
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,12 +26,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenEvent
@@ -50,7 +49,7 @@ fun FavoriteGameListItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 4.dp)
+            .padding(4.dp)
             .clip(
                 shape = RoundedCornerShape(8.dp)
             )
@@ -123,7 +122,7 @@ fun FavoriteGameListItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_large),
+                    imageVector = Icons.Default.Delete,
                     contentDescription = "Delete favorite item",
                     tint = MaterialTheme.colorScheme.onBackground,
                     modifier = modifier

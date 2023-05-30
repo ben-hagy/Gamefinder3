@@ -1,5 +1,6 @@
 package com.benhagy.gamefinder3.util
 
+import android.graphics.Typeface
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -10,12 +11,11 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import android.graphics.Typeface
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.core.text.HtmlCompat
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.domain.models.Platform
 import com.benhagy.gamefinder3.domain.models.Tag
 
 /* these two functions take a Spanned HTML object and parse them into an Annotated String for use
@@ -123,6 +123,10 @@ fun parseEsrbFluffText(rating: String): String {
 
 fun parseTagsList(tags: List<Tag>): String {
     return (tags.map { it.name }).toString().removeSurrounding("[", "]")
+}
+
+fun parsePlatformsList(platforms: List<Platform>): String {
+    return (platforms.map { it.name }).toString().removeSurrounding("[", "]")
 }
 
 fun parseWebsiteAsHyperlink(website: String): AnnotatedString {
