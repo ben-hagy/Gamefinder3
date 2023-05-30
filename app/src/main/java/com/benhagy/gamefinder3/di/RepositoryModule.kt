@@ -1,6 +1,6 @@
 package com.benhagy.gamefinder3.di
 
-import com.benhagy.gamefinder3.data.local.FavoritesDao
+import com.benhagy.gamefinder3.data.local.BookmarksDao
 import com.benhagy.gamefinder3.data.remote.GamefinderApi
 import com.benhagy.gamefinder3.data.repository.GamefinderRepositoryImpl
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
@@ -16,7 +16,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideGamefinderRepository(api: GamefinderApi, dao: FavoritesDao): GamefinderRepository {
+    fun provideGamefinderRepository(api: GamefinderApi, dao: BookmarksDao): GamefinderRepository {
         return GamefinderRepositoryImpl(api, dao)
     }
 }

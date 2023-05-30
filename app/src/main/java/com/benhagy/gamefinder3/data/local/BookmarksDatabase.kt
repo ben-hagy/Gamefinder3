@@ -2,7 +2,7 @@ package com.benhagy.gamefinder3.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
+import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 
 /*
 database implementation object, used in the di layer to instantiate concrete implementation of the
@@ -10,11 +10,11 @@ room database
  */
 
 @Database(
-    entities = [FavoriteGameEntity::class],
-    version = 1,
+    entities = [BookmarkedGameEntity::class],
+    version = 2,
     exportSchema = false
 )
-abstract class FavoritesDatabase: RoomDatabase() {
+abstract class BookmarksDatabase: RoomDatabase() {
 
-    abstract fun favoritesDao(): FavoritesDao
+    abstract fun bookmarksDao(): BookmarksDao
 }

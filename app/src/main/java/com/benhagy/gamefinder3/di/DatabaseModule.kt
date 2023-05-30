@@ -2,7 +2,7 @@ package com.benhagy.gamefinder3.di
 
 import android.app.Application
 import androidx.room.Room
-import com.benhagy.gamefinder3.data.local.FavoritesDatabase
+import com.benhagy.gamefinder3.data.local.BookmarksDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,11 +15,11 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(application: Application): FavoritesDatabase {
+    fun provideDatabase(application: Application): BookmarksDatabase {
         return Room.databaseBuilder(
             application,
-            FavoritesDatabase::class.java,
-            name = "favorites_database"
+            BookmarksDatabase::class.java,
+            name = "bookmarks_database"
         )
             .build()
     }
@@ -27,7 +27,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideFavoritesDao(favoritesDatabase: FavoritesDatabase) = favoritesDatabase.favoritesDao()
+    fun provideBookmarksDao(bookmarksDatabase: BookmarksDatabase) = bookmarksDatabase.bookmarksDao()
 
 
 }

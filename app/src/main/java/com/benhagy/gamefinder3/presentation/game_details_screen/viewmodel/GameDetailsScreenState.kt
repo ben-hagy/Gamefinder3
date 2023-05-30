@@ -6,5 +6,5 @@ data class GameDetailsScreenState(
     val gameDetails: GameDetails? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isFavorite: Boolean = false
+    val isBookmarked: Boolean = false
 )

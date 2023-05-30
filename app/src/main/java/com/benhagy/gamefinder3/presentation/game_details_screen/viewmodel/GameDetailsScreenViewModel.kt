@@ -46,37 +46,37 @@ class GameDetailsScreenViewModel @Inject constructor(
 
     fun onEvent(event: GameDetailsScreenEvent) {
         when (event) {
-            is GameDetailsScreenEvent.SaveGameAsFavorite -> {
+            is GameDetailsScreenEvent.BookmarkGame -> {
                 addToFavorites(event.game)
 
             }
 
-            is GameDetailsScreenEvent.RemoveGameFromFavorites -> {
+            is GameDetailsScreenEvent.RemoveGameFromBookmarks -> {
                 removeFromFavorites(event.id)
             }
         }
     }
 
 
-    fun isFavorite(gameId: Int) {
+    fun isBookmarked(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = useCaseContainer.checkIfGameIsFavorite(id = gameId)
-            state = state.copy(isFavorite = result)
+            val result = useCaseContainer.checkIfGameIsBookmarked(id = gameId)
+            state = state.copy(isBookmarked = result)
         }
     }
 
 
     private fun addToFavorites(gameDetail: GameDetails) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCaseContainer.addFavorite(gameDetail)
-            state = state.copy(isFavorite = true)
+            useCaseContainer.addBookmark(gameDetail)
+            state = state.copy(isBookmarked = true)
         }
     }
 
     private fun removeFromFavorites(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCaseContainer.deleteFavorite(id)
-            state = state.copy(isFavorite = false)
+            useCaseContainer.deleteBookmark(id)
+            state = state.copy(isBookmarked = false)
         }
     }
 

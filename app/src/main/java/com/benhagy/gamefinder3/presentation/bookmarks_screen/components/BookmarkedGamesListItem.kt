@@ -1,4 +1,4 @@
-package com.benhagy.gamefinder3.presentation.favorites_screen.components
+package com.benhagy.gamefinder3.presentation.bookmarks_screen.components
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.CalendarViewMonth
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,19 +32,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
+import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
+import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenEvent
+import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
-import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenEvent
-import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseReleaseDate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteGameListItem(
-    game: FavoriteGameEntity,
+fun BookmarkedGamesListItem(
+    game: BookmarkedGameEntity,
     modifier: Modifier = Modifier,
-    viewModel: FavoritesScreenViewModel = hiltViewModel(),
+    viewModel: BookmarksScreenViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
@@ -96,6 +99,33 @@ fun FavoriteGameListItem(
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                Text(
+                    modifier = Modifier.padding(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    ),
+                    text = game.developer.toString(),
+                    style = Typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    modifier = Modifier.padding(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    ),
+                    text = game.publisher.toString(),
+                    style = Typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    modifier = Modifier.padding(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    ),
+                    text = "Date added: ${game.dateAdded.toString()}",
+                    style = Typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -103,7 +133,7 @@ fun FavoriteGameListItem(
                 ) {
                     Icon(
                         modifier = modifier.size(20.dp),
-                        imageVector = Icons.Rounded.Schedule,
+                        imageVector = Icons.Rounded.CalendarViewMonth,
                         contentDescription = "Release Date Icon",
                         tint = MaterialTheme.colorScheme.secondary
                     )
@@ -112,6 +142,16 @@ fun FavoriteGameListItem(
                         style = Typography.labelSmall
                     )
                 }
+
+                TextField(
+                    value = game.userNote,
+                    onValueChange = {
+                        viewModel.onEvent(
+                            BookmarksScreenEvent.EditUserNote(it),
+                        )
+                    },
+                    textStyle = Typography.titleMedium
+                )
 
             }
             Column(
@@ -130,7 +170,7 @@ fun FavoriteGameListItem(
                         .padding(4.dp)
                         .clickable {
                             viewModel.onEvent(
-                                FavoritesScreenEvent.RemoveSelectedFavorite(game.id!!)
+                                BookmarksScreenEvent.RemoveSelectedBookmark(game.id!!)
                             )
                             Toast
                                 .makeText(

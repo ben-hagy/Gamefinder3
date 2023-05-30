@@ -5,8 +5,9 @@ data class UseCaseContainer(
     val getGameDetails: GetGameDetails,
     val getGenres: GetGenres,
     val filterGamesByClickedGenre: FilterGamesByClickedGenre,
-    val addFavorite: AddFavorite,
-    val deleteFavorite: DeleteFavorite,
-    val getAllFavorites: GetAllFavorites,
-    val checkIfGameIsFavorite: CheckIfGameIsFavorite
+    val addBookmark: AddBookmark,
+    val deleteBookmark: DeleteBookmark,
+    val getAllBookmarks: GetAllBookmarks,
+    val checkIfGameIsBookmarked: CheckIfGameIsBookmarked,
+    val upsertUserNote: UpsertUserNote
 )

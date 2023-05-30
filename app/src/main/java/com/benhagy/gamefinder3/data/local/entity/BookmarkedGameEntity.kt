@@ -11,10 +11,18 @@ a primary key, because the details screen is a shared destination for favorites 
  */
 
 
-@Entity(tableName = "favorites")
-data class FavoriteGameEntity(
+@Entity(tableName = "bookmarks")
+data class BookmarkedGameEntity(
+    // initial implementation
     @PrimaryKey val id: Int?,
     val name: String?,
-    val released: String?,
     val backgroundImage: String?,
+    val released: String?,
+
+    // additions <-- comment these out to run the app
+    val developer: String?,
+    val publisher: String?,
+    val dateAdded: String?,
+    val userNote: String,
+    val userRating: Int?
 )

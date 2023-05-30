@@ -90,7 +90,7 @@ fun BottomBar(
                         launchSingleTop = true
                         // Restore state when reselecting a previously selected item
                         restoreState =
-                            destination.direction != BottomNavItem.FavoritesScreen.direction
+                            destination.direction != BottomNavItem.BookmarksScreen.direction
                     }
                 },
                 icon = {

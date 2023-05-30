@@ -1,4 +1,4 @@
-package com.benhagy.gamefinder3.presentation.favorites_screen
+package com.benhagy.gamefinder3.presentation.bookmarks_screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,22 +18,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.benhagy.gamefinder3.presentation.favorites_screen.components.FavoriteGameListItem
-import com.benhagy.gamefinder3.presentation.favorites_screen.viewmodel.FavoritesScreenViewModel
+import com.benhagy.gamefinder3.presentation.bookmarks_screen.components.BookmarkedGamesListItem
+import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun FavoritesScreen(
+fun BookmarksScreen(
     navigator: DestinationsNavigator,
-    viewModel: FavoritesScreenViewModel = hiltViewModel()
+    viewModel: BookmarksScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
     val listState = rememberLazyListState()
 
-    if (state.value.favoriteGames.isEmpty()) {
+    if (state.value.bookmarkedGames.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -42,13 +42,13 @@ fun FavoritesScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Favorite Games",
+                text = "Bookmarked Games",
                 style = Typography.titleLarge,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "No favorites added yet!"
+                text = "No bookmarked games added yet!"
             )
         }
     } else {
@@ -60,7 +60,7 @@ fun FavoritesScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Favorite Games",
+                text = "Bookmarked Games",
                 style = Typography.titleLarge,
                 textAlign = TextAlign.Center
             )
@@ -74,15 +74,15 @@ fun FavoritesScreen(
                 state = listState,
                 modifier = Modifier.fillMaxHeight()
             ) {
-                items(state.value.favoriteGames.size) { i ->
-                    val game = state.value.favoriteGames[i]
-                    FavoriteGameListItem(
+                items(state.value.bookmarkedGames.size) { i ->
+                    val game = state.value.bookmarkedGames[i]
+                    BookmarkedGamesListItem(
                         navigator = navigator,
                         game = game,
                         modifier = Modifier
                             .padding(4.dp)
                     )
-                    if (i < state.value.favoriteGames.size) {
+                    if (i < state.value.bookmarkedGames.size) {
                         Divider(
                             modifier = Modifier.padding(
                                 horizontal = 16.dp

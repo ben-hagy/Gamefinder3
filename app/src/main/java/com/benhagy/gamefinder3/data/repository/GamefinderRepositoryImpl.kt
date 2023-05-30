@@ -1,7 +1,7 @@
 package com.benhagy.gamefinder3.data.repository
 
-import com.benhagy.gamefinder3.data.local.FavoritesDao
-import com.benhagy.gamefinder3.data.local.entity.FavoriteGameEntity
+import com.benhagy.gamefinder3.data.local.BookmarksDao
+import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.data.remote.GamefinderApi
 import com.benhagy.gamefinder3.domain.models.GameDetails
 import com.benhagy.gamefinder3.domain.models.Genre
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class GamefinderRepositoryImpl @Inject constructor(
     private val api: GamefinderApi,
-    private val dao: FavoritesDao
+    private val dao: BookmarksDao
 ) : GamefinderRepository {
 
     // api calls
@@ -133,19 +133,23 @@ class GamefinderRepositoryImpl @Inject constructor(
 
     // database calls
 
-    override suspend fun addGameToFavorites(game: GameDetails) {
-        dao.upsertFavorite(game.toFavoriteGameEntity())
+    override suspend fun bookmarkGame(game: GameDetails) {
+        dao.upsertBookmark(game.toBookmarkedGameEntity())
     }
 
-    override suspend fun getAllFavorites(): Flow<List<FavoriteGameEntity>> {
-        return dao.getAllFavorites()
+    override suspend fun getAllBookmarks(): Flow<List<BookmarkedGameEntity>> {
+        return dao.getAllBookmarks()
     }
 
-    override suspend fun removeGameFromFavorites(id: Int) {
-        dao.deleteFavorite(id)
+    override suspend fun removeBookmarkedGame(id: Int) {
+        dao.deleteBookmark(id)
     }
 
-    override suspend fun isFavorite(id: Int): Boolean {
-        return dao.isFavorite(id)
+    override suspend fun isBookmarked(id: Int): Boolean {
+        return dao.isBookmark(id)
+    }
+
+    override suspend fun upsertUserNote(note: String) {
+        dao.upsertUserNote(note)
     }
 }

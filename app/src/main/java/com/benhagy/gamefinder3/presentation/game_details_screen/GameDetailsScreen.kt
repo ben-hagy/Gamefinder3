@@ -101,9 +101,9 @@ fun GameDetailsScreen(
 
     state.gameDetails?.let { gameDetails ->
 
-        // ensures the favorite icon is filled/unfilled appropriately
+        // ensures the bookmark icon is filled/unfilled appropriately
         LaunchedEffect(gameDetails.id) {
-            gameDetails.id?.let { viewModel.isFavorite(gameId = it) }
+            gameDetails.id?.let { viewModel.isBookmarked(gameId = it) }
         }
 
         if (state.error != null) {
@@ -129,7 +129,7 @@ fun GameDetailsScreen(
                     modifier = Modifier
                         .padding(4.dp)
                 ) {
-                    // top app bar with back button and favorites icon buttons
+                    // top app bar with back button and bookmarks icon buttons
                     TopAppBar(
                         title = {},
                         modifier = Modifier
@@ -158,26 +158,26 @@ fun GameDetailsScreen(
                                 IconButton(
                                     onClick = {
                                         coroutineScope.launch {
-                                            if (state.isFavorite) {
+                                            if (state.isBookmarked) {
                                                 viewModel.onEvent(
-                                                    GameDetailsScreenEvent.RemoveGameFromFavorites(
+                                                    GameDetailsScreenEvent.RemoveGameFromBookmarks(
                                                         id = state.gameDetails.id!!
                                                     )
                                                 )
                                                 Toast.makeText(
                                                     context,
-                                                    "${gameDetails.name} removed from Favorites.",
+                                                    "${gameDetails.name} removed from Bookmarks.",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
 
 
                                             } else {
                                                 viewModel.onEvent(
-                                                    GameDetailsScreenEvent.SaveGameAsFavorite(game = state.gameDetails)
+                                                    GameDetailsScreenEvent.BookmarkGame(game = state.gameDetails)
                                                 )
                                                 Toast.makeText(
                                                     context,
-                                                    "${gameDetails.name} added to Favorites.",
+                                                    "${gameDetails.name} added to Bookmarks.",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
 
@@ -186,12 +186,12 @@ fun GameDetailsScreen(
                                     }, modifier = Modifier.padding(4.dp)
                                 ) {
                                     Icon(
-                                        imageVector = if (state.isFavorite) {
+                                        imageVector = if (state.isBookmarked) {
                                             Icons.Default.Bookmark
                                         } else {
                                             Icons.Default.BookmarkBorder
                                         },
-                                        contentDescription = "Add to favorites",
+                                        contentDescription = "Add to Bookmarks",
                                         tint = MaterialTheme.colorScheme.onBackground,
                                         modifier = Modifier.size(28.dp)
                                     )
