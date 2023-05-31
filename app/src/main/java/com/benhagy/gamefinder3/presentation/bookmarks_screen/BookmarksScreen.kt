@@ -28,10 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,8 +41,11 @@ import com.benhagy.gamefinder3.presentation.bookmarks_screen.components.Bookmark
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenEvent
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
+import com.benhagy.gamefinder3.util.Constants.DELETE_DELAY_TIME
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
@@ -54,6 +57,7 @@ fun BookmarksScreen(
     val state = viewModel.state
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     if (state.value.bookmarkedGames.isEmpty()) {
         Column(
@@ -98,16 +102,19 @@ fun BookmarksScreen(
             ) {
                 itemsIndexed(
                     items = state.value.bookmarkedGames.toMutableList(),
-                    key = { index: Int, listItem: BookmarkedGameEntity -> listItem.id!!}
+                    key = { _: Int, listItem: BookmarkedGameEntity -> listItem.id!!}
                 ) { index: Int, item: BookmarkedGameEntity ->
                     val game = state.value.bookmarkedGames[index]
                     val dismissState = rememberDismissState(
                         initialValue = DismissValue.Default,
                         confirmValueChange = {
                             if(it != DismissValue.DismissedToEnd) {
-                                viewModel.onEvent(
-                                    BookmarksScreenEvent.RemoveSelectedBookmark(item.id!!)
-                                )
+                                coroutineScope.launch {
+                                    delay(DELETE_DELAY_TIME)
+                                    viewModel.onEvent(
+                                        BookmarksScreenEvent.RemoveSelectedBookmark(item.id!!)
+                                    )
+                                }
                                 Toast.makeText(
                                     context,
                                     "${game.name} removed from Bookmarks.",
@@ -127,7 +134,7 @@ fun BookmarksScreen(
                         val color by animateColorAsState(
                             when (dismissState.targetValue) {
                                 DismissValue.Default -> MaterialTheme.colorScheme.background
-                                else -> Color.Red
+                                else -> MaterialTheme.colorScheme.error
 
                             }
                         )
