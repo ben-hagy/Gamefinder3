@@ -7,9 +7,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -93,13 +98,20 @@ fun GameDetailsScreen(
     viewModel: GameDetailsScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
-    val pagerState = rememberPagerState() // for image scroller
+
     val scroll = rememberScrollState(0) // for text scroller
     val overviewScroll = rememberScrollState() // for whole screen scrolling
     val coroutineScope = rememberCoroutineScope() // for async tasks
     val context = LocalContext.current // for the toasts, and the website intent
 
     state.gameDetails?.let { gameDetails ->
+
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f
+        ) {
+            gameDetails.screenshots.size
+        }
 
         // ensures the bookmark icon is filled/unfilled appropriately
         LaunchedEffect(gameDetails.id) {
@@ -311,22 +323,35 @@ fun GameDetailsScreen(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        HorizontalPager(pageCount = gameDetails.screenshots.size,
+                        HorizontalPager(
+                            modifier = Modifier,
                             state = pagerState,
-                            key = { gameDetails.screenshots[it] }) { index ->
-                            AsyncImage(
-                                model = gameDetails.screenshots[index].image,
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 8.dp)
-                                    .clip(
-                                        RoundedCornerShape(8.dp)
-                                    )
-                                    .height(232.dp),
-                                contentDescription = null
-                            )
-                        }
+                            pageSpacing = 0.dp,
+                            userScrollEnabled = true,
+                            reverseLayout = false,
+                            contentPadding = PaddingValues(0.dp),
+                            beyondBoundsPageCount = 0,
+                            pageSize = PageSize.Fill,
+                            flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+                            key = { gameDetails.screenshots[it] },
+                            pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
+                                Orientation.Horizontal
+                            ),
+                            pageContent = {index ->
+                                AsyncImage(
+                                    model = gameDetails.screenshots[index].image,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 8.dp)
+                                        .clip(
+                                            RoundedCornerShape(8.dp)
+                                        )
+                                        .height(232.dp),
+                                    contentDescription = null
+                                )
+                            }
+                        )
                     }
                     Box(
                         modifier = Modifier

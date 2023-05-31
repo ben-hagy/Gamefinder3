@@ -6,7 +6,7 @@ import javax.inject.Inject
 class UpsertUserNote @Inject constructor(
     private val repository: GamefinderRepository
 ) {
-    suspend operator fun invoke(note: String) {
-        return repository.upsertUserNote(note)
+    suspend operator fun invoke(note: String, id: Int) {
+        return repository.upsertUserNote(note, id)
     }
 }

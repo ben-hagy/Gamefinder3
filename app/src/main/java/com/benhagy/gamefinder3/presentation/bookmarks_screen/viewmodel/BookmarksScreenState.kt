@@ -7,6 +7,7 @@ data class BookmarksScreenState(
     val userNote: String = "",
     val error: String = "",
     val isLoading: Boolean = false,
-    val isBookmarked: Boolean = false
+    val isBookmarked: Boolean = false,
+    val bookmarkedId: Int? = null
 )
 

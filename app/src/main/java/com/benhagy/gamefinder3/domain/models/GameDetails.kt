@@ -4,7 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 data class GameDetails(
     val id: Int?,
@@ -23,16 +25,15 @@ data class GameDetails(
     val esrb: Esrb?,
     val screenshots: List<Screenshot> = emptyList()
 ) {
-    @RequiresApi(Build.VERSION_CODES.O)
     fun toBookmarkedGameEntity(): BookmarkedGameEntity {
         return BookmarkedGameEntity(
             id = id,
             name = name,
             backgroundImage = backgroundImage,
             released = released,
-            developer = developers[0].toString(),
-            publisher = publishers[0].toString(),
-            dateAdded = Date().time.toString(),
+            developer = developers[0].name.toString(),
+            publisher = publishers[0].name.toString(),
+            dateAdded = DateTimeFormatter.ofPattern("MM dd yyyy", Locale.getDefault()).toString(),
             userNote = "",
             userRating = null
         )

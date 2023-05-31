@@ -29,8 +29,9 @@ interface BookmarksDao {
     @Query("""
         UPDATE bookmarks
         SET userNote = :note
+        WHERE id = :id
         """)
-    fun upsertUserNote(note: String)
+    fun upsertUserNote(note: String, id: Int)
 
 //    fun filterBookmarks()
 

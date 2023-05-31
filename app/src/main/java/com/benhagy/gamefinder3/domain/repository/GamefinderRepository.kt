@@ -34,7 +34,7 @@ interface GamefinderRepository {
 
     suspend fun isBookmarked(id: Int): Boolean
 
-    suspend fun upsertUserNote(note: String)
+    suspend fun upsertUserNote(note: String, id: Int)
 
 
 }

@@ -47,17 +47,17 @@ class BookmarksScreenViewModel @Inject constructor(
                 }
             }
             is BookmarksScreenEvent.EditUserNote -> {
-                state.value = BookmarksScreenState(userNote = event.note)
+                state.value = BookmarksScreenState(userNote = event.note, bookmarkedId = event.id)
                 viewModelScope.launch {
-                    upsertUserNote(event.note)
+                    upsertUserNote(event.note, event.id)
                 }
             }
         }
     }
 
-    private fun upsertUserNote(note: String) {
+    private fun upsertUserNote(note: String, id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCaseContainer.upsertUserNote(note)
+            useCaseContainer.upsertUserNote(note, id)
         }
     }
 
