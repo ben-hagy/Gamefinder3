@@ -35,7 +35,7 @@ data class GameDetails(
             publisher = publishers[0].name.toString(),
             dateAdded = DateTimeFormatter.ofPattern("MM dd yyyy", Locale.getDefault()).toString(),
             userNote = "",
-            userRating = null
+            userRating = 3
         )
     }
 }
