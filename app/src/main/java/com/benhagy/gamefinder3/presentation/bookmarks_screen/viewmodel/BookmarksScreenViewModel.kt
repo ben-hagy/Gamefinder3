@@ -1,11 +1,14 @@
 package com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -14,7 +17,10 @@ import javax.inject.Inject
 class BookmarksScreenViewModel @Inject constructor(
     private val useCaseContainer: UseCaseContainer
 ): ViewModel() {
-    var state = mutableStateOf(BookmarksScreenState())
+
+    var state by mutableStateOf(BookmarksScreenState())
+
+    private var userNoteJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -25,16 +31,15 @@ class BookmarksScreenViewModel @Inject constructor(
     private fun getAllBookmarks() {
         viewModelScope.launch {
             try {
-                state.value = BookmarksScreenState(isLoading = true)
+                state = state.copy(isLoading = true)
                 val result = withContext(Dispatchers.IO) {
                     useCaseContainer.getAllBookmarks()
                 }
                 result.collect {
-                    state.value = BookmarksScreenState(bookmarkedGames = it)
+                    state = state.copy(bookmarkedGames = it)
                 }
             } catch (e: Exception) {
-                state.value =
-                    BookmarksScreenState(error = e.message ?: "Error fetching favorite games.")
+                state = state.copy(error = e.message ?: "Error fetching favorite games.")
             }
         }
     }
@@ -43,12 +48,13 @@ class BookmarksScreenViewModel @Inject constructor(
         when (event) {
             is BookmarksScreenEvent.RemoveSelectedBookmark -> {
                 viewModelScope.launch {
-                    removedBookmarkedGame(event.id)
+                    removeBookmarkedGame(event.id)
                 }
             }
             is BookmarksScreenEvent.EditUserNote -> {
-                state.value = BookmarksScreenState(userNote = event.note, bookmarkedId = event.id)
-                viewModelScope.launch {
+                state = state.copy(userNote = event.note, bookmarkedId = event.id)
+                userNoteJob?.cancel()
+                userNoteJob = viewModelScope.launch {
                     upsertUserNote(event.note, event.id)
                 }
             }
@@ -61,7 +67,7 @@ class BookmarksScreenViewModel @Inject constructor(
         }
     }
 
-    private fun removedBookmarkedGame(id: Int) {
+    private fun removeBookmarkedGame(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             useCaseContainer.deleteBookmark(id)
         }

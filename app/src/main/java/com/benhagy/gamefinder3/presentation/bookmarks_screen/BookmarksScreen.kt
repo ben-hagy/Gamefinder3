@@ -61,7 +61,7 @@ fun BookmarksScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    if (state.value.bookmarkedGames.isEmpty()) {
+    if (state.bookmarkedGames.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -103,10 +103,10 @@ fun BookmarksScreen(
                 modifier = Modifier.fillMaxHeight()
             ) {
                 itemsIndexed(
-                    items = state.value.bookmarkedGames.toMutableList(),
+                    items = state.bookmarkedGames.toMutableList(),
                     key = { _: Int, listItem: BookmarkedGameEntity -> listItem.id!!}
                 ) { index: Int, item: BookmarkedGameEntity ->
-                    val game = state.value.bookmarkedGames[index]
+                    val game = state.bookmarkedGames[index]
                     val dismissState = rememberDismissState(
                         initialValue = DismissValue.Default,
                         confirmStateChange = {
@@ -175,7 +175,7 @@ fun BookmarksScreen(
 
                         )
                     })
-                if (index < state.value.bookmarkedGames.size) {
+                if (index < state.bookmarkedGames.size) {
                     Divider(
                         modifier = Modifier.padding(
                             horizontal = 16.dp
