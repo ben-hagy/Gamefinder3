@@ -18,11 +18,8 @@ data class BookmarkedGameEntity(
     @PrimaryKey val id: Int?,
     val name: String?,
     val backgroundImage: String?,
-    val released: String?,
 
     // additions <-- comment these out to run the app
-    val developer: String?,
-    val publisher: String?,
     val dateAdded: LocalDateTime = LocalDateTime.now(),
     val userNote: String,
     val userRating: Int?

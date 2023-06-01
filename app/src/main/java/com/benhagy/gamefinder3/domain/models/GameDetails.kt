@@ -24,9 +24,6 @@ data class GameDetails(
             id = id,
             name = name,
             backgroundImage = backgroundImage,
-            released = released,
-            developer = developers[0].name.toString(),
-            publisher = publishers[0].name.toString(),
             userNote = "",
             userRating = 3
         )
