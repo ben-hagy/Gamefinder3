@@ -17,6 +17,8 @@ import androidx.core.text.HtmlCompat
 import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.domain.models.Platform
 import com.benhagy.gamefinder3.domain.models.Tag
+import java.time.LocalDateTime
+import java.util.Locale
 
 /* these two functions take a Spanned HTML object and parse them into an Annotated String for use
 in Text Composables. The description of each game detail object is an HTML-formatted string.
@@ -140,4 +142,14 @@ fun parseWebsiteAsHyperlink(website: String): AnnotatedString {
         pop()
     }
     return output
+}
+
+fun parseDate(date: LocalDateTime): String {
+    val year = date.year.toString()
+    val month = date.month.toString().lowercase()
+    val day = date.dayOfMonth.toString()
+    return "${month.replaceFirstChar{ 
+        if (it.isLowerCase()) {
+            it.titlecase(Locale.ROOT) }
+        else it.toString() }} $day, $year"
 }

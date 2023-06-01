@@ -31,6 +31,7 @@ import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.Bookmarks
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
+import com.benhagy.gamefinder3.util.parseDate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -113,7 +114,7 @@ fun BookmarkedGamesListItem(
                                     horizontal = 8.dp,
                                     vertical = 2.dp
                                 ),
-                                text = "May 31, 2023",
+                                text = parseDate(game.dateAdded),
                                 style = Typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onBackground
                             )

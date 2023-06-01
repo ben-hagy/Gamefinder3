@@ -2,6 +2,7 @@ package com.benhagy.gamefinder3.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 
 /*
 entity representing primary database table for saving/deleting favorites.
@@ -22,7 +23,7 @@ data class BookmarkedGameEntity(
     // additions <-- comment these out to run the app
     val developer: String?,
     val publisher: String?,
-    val dateAdded: String?,
+    val dateAdded: LocalDateTime = LocalDateTime.now(),
     val userNote: String,
     val userRating: Int?
 )
