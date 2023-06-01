@@ -3,6 +3,7 @@ package com.benhagy.gamefinder3.presentation.bookmarks_screen
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,17 +16,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,7 +49,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun BookmarksScreen(
@@ -107,8 +109,8 @@ fun BookmarksScreen(
                     val game = state.value.bookmarkedGames[index]
                     val dismissState = rememberDismissState(
                         initialValue = DismissValue.Default,
-                        confirmValueChange = {
-                            if(it != DismissValue.DismissedToEnd) {
+                        confirmStateChange = {
+                            if(it == DismissValue.DismissedToStart) {
                                 coroutineScope.launch {
                                     delay(DELETE_DELAY_TIME)
                                     viewModel.onEvent(
@@ -127,9 +129,16 @@ fun BookmarksScreen(
 
                 SwipeToDismiss(
                     state = dismissState,
+                    modifier = Modifier
+                        .padding(vertical = 1.dp)
+                        .animateItemPlacement(),
                     directions = setOf(
                         DismissDirection.EndToStart
                     ),
+                    dismissThresholds = {
+                            direction ->
+                        FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.2f else .5f)
+                    },
                     background = {
                         val color by animateColorAsState(
                             when (dismissState.targetValue) {
@@ -138,21 +147,19 @@ fun BookmarksScreen(
 
                             }
                         )
-                        val alignment = Alignment.CenterEnd
-                        val icon = Icons.Default.Delete
 
                         val scale by animateFloatAsState(
-                            if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
+                            if (dismissState.targetValue == DismissValue.Default) 1f else 1.33f
                         )
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(color)
                                 .padding(horizontal = 20.dp),
-                            contentAlignment = alignment
+                            contentAlignment = Alignment.CenterEnd
                         ) {
                             Icon(
-                                icon,
+                                Icons.Default.Delete,
                                 contentDescription = "Delete icon",
                                 modifier = Modifier
                                     .scale(scale)
@@ -165,6 +172,7 @@ fun BookmarksScreen(
                             game = game,
                             modifier = Modifier
                                 .padding(4.dp)
+
                         )
                     })
                 if (index < state.value.bookmarkedGames.size) {
