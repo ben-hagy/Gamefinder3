@@ -35,9 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.components.BookmarkedGamesListItem
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenEvent
@@ -70,13 +72,13 @@ fun BookmarksScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Bookmarked Games",
+                text = stringResource(R.string.bookmarked_games_title),
                 style = Typography.titleLarge,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "No bookmarked games added yet!"
+                text = stringResource(R.string.no_bookmarks_fluff_text)
             )
         }
     } else {
@@ -88,7 +90,7 @@ fun BookmarksScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Bookmarked Games",
+                text = stringResource(R.string.bookmarked_games_title),
                 style = Typography.titleLarge,
                 textAlign = TextAlign.Center
             )
@@ -160,7 +162,7 @@ fun BookmarksScreen(
                         ) {
                             Icon(
                                 Icons.Default.Delete,
-                                contentDescription = "Delete icon",
+                                contentDescription = null,
                                 modifier = Modifier
                                     .scale(scale)
                             )

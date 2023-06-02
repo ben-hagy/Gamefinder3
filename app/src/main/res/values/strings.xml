@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">Gamefinder3</string>
+    <string name="date_added_display_text">"Date added: "</string>
+    <string name="enter_your_note_hint">Enter your note…</string>
+    <string name="error_message_bookmarks_fetch">Error fetching bookmarked games.</string>
+    <string name="bookmarked_games_title">Bookmarked Games</string>
+    <string name="no_bookmarks_fluff_text">No bookmarked games added yet!</string>
+    <string name="game_search_bottom_nav_title">Search Games</string>
+    <string name="bookmarked_games_bottom_nav_title">Bookmarked Games</string>
+    <string name="add_to_bookmarks_cd">Add to Bookmarks</string>
+    <string name="go_back_cd">Go back</string>
+    <string name="metascore_header">"Metascore: "</string>
+    <string name="average_playtime_header">"Average Playtime: "</string>
+    <string name="released_header">"Released: "</string>
+    <string name="go_forward_cd">Go forward</string>
+    <string name="platforms_title">"Platforms: "</string>
+    <string name="null_platforms_response">No platforms listed for this game.</string>
+    <string name="unknown_text">Unknown</string>
+    <string name="esrb_logo_cd">ESRB Logo</string>
+    <string name="tags_title">"Tags: "</string>
+    <string name="null_tags_response">No tags found for this game.</string>
+    <string name="genres_title">"Genres: "</string>
+    <string name="developers_title">"Developers: "</string>
+    <string name="publishers_title">"Publishers: "</string>
+    <string name="description_title">"Description: "</string>
+    <string name="null_website_text">No website provided</string>
+    <string name="search_hint">Search…</string>
 </resources>

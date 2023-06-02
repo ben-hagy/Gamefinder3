@@ -14,12 +14,9 @@ a primary key, because the details screen is a shared destination for favorites 
 
 @Entity(tableName = "bookmarks")
 data class BookmarkedGameEntity(
-    // initial implementation
     @PrimaryKey val id: Int?,
     val name: String?,
     val backgroundImage: String?,
-
-    // additions <-- comment these out to run the app
     val dateAdded: LocalDateTime = LocalDateTime.now(),
     val userNote: String,
     val userRating: Int?

@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -21,7 +22,6 @@ import androidx.navigation.compose.rememberNavController
 import com.benhagy.gamefinder3.presentation.NavGraphs
 import com.ramcosta.composedestinations.DestinationsNavHost
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BottomNavigationBar() {
@@ -99,13 +99,13 @@ fun BottomBar(
                     ) {
                         Icon(
                             destination.icon,
-                            contentDescription = destination.label,
+                            contentDescription = stringResource(destination.label),
                         )
                     }
                 },
                 label = {
                     Text(
-                        text = destination.label,
+                        text = stringResource(destination.label),
                     )
                 }
             )

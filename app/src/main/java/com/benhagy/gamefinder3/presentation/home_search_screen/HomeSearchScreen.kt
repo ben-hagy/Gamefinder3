@@ -25,8 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.home_search_screen.components.ListedGameItem
 import com.benhagy.gamefinder3.presentation.home_search_screen.components.ListedGenreItem
@@ -92,7 +94,7 @@ fun HomeSearchScreen(
                 },
                 maxLines = 1,
                 singleLine = true,
-                placeholder = { Text(text = "Search...", fontFamily = montserratFonts) }
+                placeholder = { Text(text = stringResource(R.string.search_hint), fontFamily = montserratFonts) }
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(

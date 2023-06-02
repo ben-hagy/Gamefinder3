@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -63,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.DeveloperDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.GenreDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.PublisherDetailsItem
@@ -162,7 +163,7 @@ fun GameDetailsScreen(
                                     }) {
                                     Icon(
                                         imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = "Go back",
+                                        contentDescription = stringResource(R.string.go_back_cd),
                                         tint = MaterialTheme.colorScheme.onBackground,
                                         modifier = Modifier.size(28.dp)
                                     )
@@ -203,7 +204,7 @@ fun GameDetailsScreen(
                                         } else {
                                             Icons.Default.BookmarkBorder
                                         },
-                                        contentDescription = "Add to Bookmarks",
+                                        contentDescription = stringResource(R.string.add_to_bookmarks_cd),
                                         tint = MaterialTheme.colorScheme.onBackground,
                                         modifier = Modifier.size(28.dp)
                                     )
@@ -265,12 +266,13 @@ fun GameDetailsScreen(
                                     Icon(
                                         modifier = Modifier.size(20.dp),
                                         imageVector = Icons.Rounded.CalendarMonth,
-                                        contentDescription = "Release Date Icon",
+                                        contentDescription = null,
                                         tint = MaterialTheme.colorScheme.secondary
                                     )
                                     Text(
                                         modifier = Modifier.padding(horizontal = 4.dp),
-                                        text = parseReleaseDate(gameDetails.released.toString()),
+                                        text = stringResource(R.string.released_header) +
+                                                parseReleaseDate(gameDetails.released.toString()),
                                         style = Typography.labelSmall
                                     )
                                 }
@@ -285,12 +287,13 @@ fun GameDetailsScreen(
                                 Icon(
                                     modifier = Modifier.size(20.dp),
                                     imageVector = Icons.Rounded.Schedule,
-                                    contentDescription = "Played Time Icon",
+                                    contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Text(
                                     modifier = Modifier.padding(horizontal = 4.dp),
-                                    text = "${gameDetails.playtime ?: 0} hours (average)",
+                                    text = stringResource(R.string.average_playtime_header) +
+                                            "${gameDetails.playtime ?: 0}h",
                                     style = Typography.labelSmall
                                 )
                             }
@@ -304,12 +307,13 @@ fun GameDetailsScreen(
                                 Icon(
                                     modifier = Modifier.size(20.dp),
                                     imageVector = Icons.Rounded.StarRate,
-                                    contentDescription = "Metacritic Score Icon",
+                                    contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                                 Text(
                                     modifier = Modifier.padding(horizontal = 4.dp),
-                                    text = "Metacritic Score: ${gameDetails.metacritic ?: "N/A"}",
+                                    text = stringResource(R.string.metascore_header) +
+                                            "${gameDetails.metacritic ?: "N/A"}",
                                     style = Typography.labelSmall
                                 )
                             }
@@ -337,7 +341,7 @@ fun GameDetailsScreen(
                             pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
                                 Orientation.Horizontal
                             ),
-                            pageContent = {index ->
+                            pageContent = { index ->
                                 AsyncImage(
                                     model = gameDetails.screenshots[index].image,
                                     contentScale = ContentScale.Fit,
@@ -374,7 +378,7 @@ fun GameDetailsScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowLeft,
-                                contentDescription = "Go back",
+                                contentDescription = stringResource(R.string.go_back_cd),
                                 modifier = Modifier.size(60.dp),
                                 tint = MaterialTheme.colorScheme.onBackground
                             )
@@ -391,7 +395,7 @@ fun GameDetailsScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowRight,
-                                contentDescription = "Go forward",
+                                contentDescription = stringResource(R.string.go_forward_cd),
                                 modifier = Modifier.size(60.dp),
                                 tint = MaterialTheme.colorScheme.onBackground
                             )
@@ -408,7 +412,7 @@ fun GameDetailsScreen(
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "Platforms: ",
+                                text = stringResource(R.string.platforms_title),
                                 style = Typography.titleMedium
                             )
                         }
@@ -418,7 +422,7 @@ fun GameDetailsScreen(
                         ) {
                             if (gameDetails.platforms.isEmpty()) {
                                 Text(
-                                    text = "No platforms listed for this game.",
+                                    text = stringResource(R.string.null_platforms_response),
                                     style = Typography.labelSmall,
                                 )
                             } else {
@@ -452,9 +456,13 @@ fun GameDetailsScreen(
                             ) {
                                 Image(
                                     painter = painterResource(
-                                        id = parseEsrbAsLogo(gameDetails.esrb?.name ?: "Unknown")
+                                        id = parseEsrbAsLogo(
+                                            gameDetails.esrb?.name ?: stringResource(
+                                                R.string.unknown_text
+                                            )
+                                        )
                                     ),
-                                    contentDescription = "ESRB Logo",
+                                    contentDescription = stringResource(R.string.esrb_logo_cd),
                                     contentScale = ContentScale.Inside,
                                     alignment = Alignment.Center,
                                     modifier = Modifier
@@ -462,7 +470,11 @@ fun GameDetailsScreen(
                                         .width(80.dp)
                                 )
                                 Text(
-                                    text = parseEsrbFluffText(gameDetails.esrb?.name ?: "Unknown"),
+                                    text = parseEsrbFluffText(
+                                        gameDetails.esrb?.name ?: stringResource(
+                                            R.string.unknown_text
+                                        )
+                                    ),
                                     style = Typography.labelSmall,
                                     textAlign = TextAlign.Start,
                                     maxLines = 3
@@ -475,12 +487,12 @@ fun GameDetailsScreen(
                                 .weight(2f)
                         ) {
                             Text(
-                                text = "Tags:",
+                                text = stringResource(R.string.tags_title),
                                 style = Typography.titleMedium
                             )
                             if (gameDetails.tags.isEmpty()) {
                                 Text(
-                                    text = "No tags found for this game.",
+                                    text = stringResource(R.string.null_tags_response),
                                     style = Typography.labelSmall,
                                 )
                             } else {
@@ -499,7 +511,7 @@ fun GameDetailsScreen(
                         Text(
                             modifier = Modifier
                                 .padding(top = 2.dp, bottom = 4.dp),
-                            text = "Genres:",
+                            text = stringResource(R.string.genres_title),
                             style = Typography.titleLarge,
                             color = MaterialTheme.colorScheme.secondary,
                             textAlign = TextAlign.Center
@@ -523,7 +535,7 @@ fun GameDetailsScreen(
                         Text(
                             modifier = Modifier
                                 .padding(top = 2.dp, bottom = 4.dp),
-                            text = "Developers:",
+                            text = stringResource(R.string.developers_title),
                             style = Typography.titleLarge,
                             color = MaterialTheme.colorScheme.secondary,
                             textAlign = TextAlign.Center
@@ -547,7 +559,7 @@ fun GameDetailsScreen(
                         Text(
                             modifier = Modifier
                                 .padding(top = 2.dp, bottom = 4.dp),
-                            text = "Publishers:",
+                            text = stringResource(R.string.publishers_title),
                             style = Typography.titleLarge,
                             color = MaterialTheme.colorScheme.secondary,
                             textAlign = TextAlign.Center
@@ -570,7 +582,7 @@ fun GameDetailsScreen(
                     Text(
                         modifier = Modifier
                             .padding(top = 4.dp, bottom = 4.dp),
-                        text = "Description:",
+                        text = stringResource(R.string.description_title),
                         style = Typography.titleLarge,
                         color = MaterialTheme.colorScheme.secondary,
                         textAlign = TextAlign.Center
@@ -598,7 +610,7 @@ fun GameDetailsScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Public,
-                            contentDescription = "Website",
+                            contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(20.dp)
                         )
@@ -627,7 +639,7 @@ fun GameDetailsScreen(
                             )
                         } else {
                             Text(
-                                text = "No website provided",
+                                text = stringResource(R.string.null_website_text),
                                 style = Typography.titleMedium,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )

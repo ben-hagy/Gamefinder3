@@ -13,20 +13,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenEvent
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
@@ -35,6 +44,7 @@ import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseDate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BookmarkedGamesListItem(
     game: BookmarkedGameEntity,
@@ -42,6 +52,13 @@ fun BookmarkedGamesListItem(
     viewModel: BookmarksScreenViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
+
+    var userNoteInput by remember {
+        mutableStateOf(game.userNote) }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
         modifier = Modifier
@@ -106,7 +123,7 @@ fun BookmarkedGamesListItem(
                         // date you added
                         Row {
                             Text(
-                                text = "Date added: ",
+                                text = stringResource(R.string.date_added_display_text),
                                 style = Typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
@@ -126,14 +143,25 @@ fun BookmarkedGamesListItem(
                         ) {
                             // user note
                             OutlinedTextField(
-                                value = game.userNote,
+                                value = userNoteInput,
                                 onValueChange = {
-                                    viewModel.onEvent(
-                                        BookmarksScreenEvent.EditUserNote(
-                                            it, game.id!!
-                                        )
-                                    )
+                                                userNoteInput = it
+//                                    viewModel.onEvent(
+//                                        BookmarksScreenEvent.EditUserNote(
+//                                            it, game.id!!
+//                                        )
+//                                    )
                                 },
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        viewModel.onEvent(
+                                            BookmarksScreenEvent.EditUserNote(
+                                                userNoteInput, game.id!!
+                                            )
+                                        )
+                                        keyboardController?.hide()
+                                    }
+                                ),
                                 singleLine = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -141,7 +169,7 @@ fun BookmarkedGamesListItem(
                                 textStyle = Typography.labelSmall,
                                 placeholder = {
                                     Text(
-                                        "Enter your note...",
+                                        stringResource(R.string.enter_your_note_hint),
                                         style = Typography.labelSmall
                                     )
                                 }

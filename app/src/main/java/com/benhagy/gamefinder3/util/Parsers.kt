@@ -25,6 +25,7 @@ in Text Composables. The description of each game detail object is an HTML-forma
  */
 
 
+
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     val spanned = this@toAnnotatedString
     append(spanned.toString())

@@ -20,8 +20,6 @@ class BookmarksScreenViewModel @Inject constructor(
 
     var state by mutableStateOf(BookmarksScreenState())
 
-    private var userNoteJob: Job? = null
-
     init {
         viewModelScope.launch {
             getAllBookmarks()
@@ -39,7 +37,7 @@ class BookmarksScreenViewModel @Inject constructor(
                     state = state.copy(bookmarkedGames = it)
                 }
             } catch (e: Exception) {
-                state = state.copy(error = e.message ?: "Error fetching favorite games.")
+                state = state.copy(error = e.message)
             }
         }
     }
@@ -53,8 +51,7 @@ class BookmarksScreenViewModel @Inject constructor(
             }
             is BookmarksScreenEvent.EditUserNote -> {
                 state = state.copy(userNote = event.note, bookmarkedId = event.id)
-                userNoteJob?.cancel()
-                userNoteJob = viewModelScope.launch {
+                viewModelScope.launch {
                     upsertUserNote(event.note, event.id)
                 }
             }
