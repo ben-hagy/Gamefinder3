@@ -16,8 +16,7 @@ fun CustomRatingBar(
     modifier: Modifier = Modifier,
     rating: Double = 0.0,
     stars: Int = 5,
-    starsColor:
-    Color = MaterialTheme.colorScheme.onBackground
+    starsColor: Color = MaterialTheme.colorScheme.onBackground
 ) {
     val filledStars = kotlin.math.floor(rating).toInt()
     val unfilledStars = (stars - kotlin.math.ceil(rating)).toInt()

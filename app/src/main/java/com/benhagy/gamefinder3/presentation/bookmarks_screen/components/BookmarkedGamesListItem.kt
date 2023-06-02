@@ -43,6 +43,7 @@ import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestin
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseDate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.smarttoolfactory.ratingbar.RatingBar
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -177,13 +178,19 @@ fun BookmarkedGamesListItem(
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Row {
-                            CustomRatingBar(
-                                modifier = Modifier
-                                    .padding(vertical = 2.dp, horizontal = 4.dp),
-                                rating = game.userRating?.toDouble() ?: 0.0,
-                                stars = 5,
-                                starsColor = MaterialTheme.colorScheme.onBackground
-                            )
+
+
+//                            RatingBar(rating = game.userRating?.toFloat() ?: 0.0f,
+//                                painterEmpty = ,
+//                                painterFilled = )
+
+//                            CustomRatingBar(
+//                                modifier = Modifier
+//                                    .padding(vertical = 2.dp, horizontal = 4.dp),
+//                                rating = game.userRating?.toDouble() ?: 0.0,
+//                                stars = 5,
+//                                starsColor = MaterialTheme.colorScheme.onBackground
+//                            )
                         }
 
                     }
