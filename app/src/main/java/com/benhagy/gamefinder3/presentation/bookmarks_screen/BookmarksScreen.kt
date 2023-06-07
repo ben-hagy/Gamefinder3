@@ -24,6 +24,7 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -164,11 +165,18 @@ fun BookmarksScreen(
                                 navigator = navigator,
                                 game = game,
                                 modifier = Modifier
-                                    .padding(4.dp)
+                                    .padding(vertical = 2.dp, horizontal = 4.dp)
 
                             )
                         }
                     )
+                    if (index < state.bookmarkedGames.size) {
+                        Divider(
+                            color = MaterialTheme.colorScheme.background,
+                            modifier = Modifier.padding(
+                                horizontal = 16.dp)
+                        )
+                    }
                 }
             }
         }

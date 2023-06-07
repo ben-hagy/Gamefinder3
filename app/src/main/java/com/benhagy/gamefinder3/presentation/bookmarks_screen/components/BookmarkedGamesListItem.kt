@@ -71,7 +71,7 @@ fun BookmarkedGamesListItem(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(unbounded = true)
-            .padding(4.dp)
+            .padding(2.dp)
             .background(
                 MaterialTheme.colorScheme.background
                     .copy(alpha = 0.1f)
@@ -84,7 +84,7 @@ fun BookmarkedGamesListItem(
             Column(
                 modifier = Modifier
                     .wrapContentHeight(unbounded = true)
-                    .padding(4.dp)
+                    .padding(2.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -94,7 +94,7 @@ fun BookmarkedGamesListItem(
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(4.dp),
+                            .padding(2.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -126,6 +126,7 @@ fun BookmarkedGamesListItem(
                             overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onBackground
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
 
                         // date you added
                         Row {
@@ -144,6 +145,7 @@ fun BookmarkedGamesListItem(
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                         }
+                        Spacer(modifier = Modifier.height(2.dp))
                         Row {
                             UserRatingBar(
                                 rating = userRating?.toFloat(),

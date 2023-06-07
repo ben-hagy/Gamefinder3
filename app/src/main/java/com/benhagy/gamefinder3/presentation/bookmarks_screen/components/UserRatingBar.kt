@@ -34,7 +34,7 @@ fun UserRatingBar(
             )
         ),
         tintEmpty = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
-        itemSize = 40.dp,
+        itemSize = 36.dp,
         onRatingChange = onRatingChange
     )
 }
