@@ -24,10 +24,8 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,12 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.components.BookmarkedGamesListItem
+import com.benhagy.gamefinder3.presentation.bookmarks_screen.components.HeaderText
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenEvent
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
@@ -63,56 +61,47 @@ fun BookmarksScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    if (state.bookmarkedGames.isEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(R.string.bookmarked_games_title),
-                style = Typography.titleLarge,
-                textAlign = TextAlign.Center
+    // parent column for the screen
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // header changes if the list is empty
+        if (state.bookmarkedGames.isEmpty()) {
+            HeaderText(
+                modifier = Modifier,
+                displayText = stringResource(id = R.string.bookmarked_games_title),
+                textStyle = Typography.titleLarge,
+                hasFluffText = true,
+                fluffText = stringResource(id = R.string.no_bookmarks_fluff_text)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.no_bookmarks_fluff_text)
-            )
-        }
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(R.string.bookmarked_games_title),
-                style = Typography.titleLarge,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Divider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onBackground
+        } else {
+            HeaderText(
+                modifier = Modifier,
+                displayText = stringResource(id = R.string.bookmarked_games_title),
+                textStyle = Typography.titleLarge,
+                hasFluffText = false,
+                fluffText = null
             )
             Spacer(modifier = Modifier.height(5.dp))
+
+            //bookmarked games list
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxHeight()
             ) {
                 itemsIndexed(
                     items = state.bookmarkedGames.toMutableList(),
-                    key = { _: Int, listItem: BookmarkedGameEntity -> listItem.id!!}
+                    key = { _: Int, listItem: BookmarkedGameEntity -> listItem.id!! }
                 ) { index: Int, item: BookmarkedGameEntity ->
                     val game = state.bookmarkedGames[index]
                     val dismissState = rememberDismissState(
                         initialValue = DismissValue.Default,
                         confirmStateChange = {
-                            if(it == DismissValue.DismissedToStart) {
+                            if (it == DismissValue.DismissedToStart) {
                                 coroutineScope.launch {
                                     delay(DELETE_DELAY_TIME)
                                     viewModel.onEvent(
@@ -129,63 +118,59 @@ fun BookmarksScreen(
                         }
                     )
 
-                SwipeToDismiss(
-                    state = dismissState,
-                    modifier = Modifier
-                        .padding(vertical = 1.dp)
-                        .animateItemPlacement(),
-                    directions = setOf(
-                        DismissDirection.EndToStart
-                    ),
-                    dismissThresholds = {
-                            direction ->
-                        FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.2f else .5f)
-                    },
-                    background = {
-                        val color by animateColorAsState(
-                            when (dismissState.targetValue) {
-                                DismissValue.Default -> MaterialTheme.colorScheme.background
-                                else -> MaterialTheme.colorScheme.error
+                    // swipe to dismiss object
+                    SwipeToDismiss(
+                        state = dismissState,
+                        modifier = Modifier
+                            .padding(vertical = 1.dp)
+                            .animateItemPlacement(),
+                        directions = setOf(
+                            DismissDirection.EndToStart
+                        ),
+                        dismissThresholds = { direction ->
+                            FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.2f else .5f)
+                        },
+                        background = {
+                            val color by animateColorAsState(
+                                when (dismissState.targetValue) {
+                                    DismissValue.Default -> MaterialTheme.colorScheme.background
+                                    else -> MaterialTheme.colorScheme.error
 
-                            }
-                        )
+                                }
+                            )
 
-                        val scale by animateFloatAsState(
-                            if (dismissState.targetValue == DismissValue.Default) 1f else 1.33f
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color)
-                                .padding(horizontal = 20.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = null,
+                            val scale by animateFloatAsState(
+                                if (dismissState.targetValue == DismissValue.Default) 1f else 1.33f
+                            )
+                            Box(
                                 modifier = Modifier
-                                    .scale(scale)
+                                    .fillMaxSize()
+                                    .background(color)
+                                    .padding(horizontal = 20.dp),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .scale(scale)
+                                )
+                            }
+                        },
+
+                        // bookmarked list content
+                        dismissContent = {
+                            BookmarkedGamesListItem(
+                                navigator = navigator,
+                                game = game,
+                                modifier = Modifier
+                                    .padding(4.dp)
+
                             )
                         }
-                    },
-                    dismissContent = {
-                        BookmarkedGamesListItem(
-                            navigator = navigator,
-                            game = game,
-                            modifier = Modifier
-                                .padding(4.dp)
-
-                        )
-                    })
-                if (index < state.bookmarkedGames.size) {
-                    Divider(
-                        modifier = Modifier.padding(
-                            horizontal = 16.dp
-                        )
                     )
                 }
             }
         }
     }
-}
 }

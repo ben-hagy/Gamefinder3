@@ -24,8 +24,6 @@ import java.util.Locale
 in Text Composables. The description of each game detail object is an HTML-formatted string.
  */
 
-
-
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     val spanned = this@toAnnotatedString
     append(spanned.toString())

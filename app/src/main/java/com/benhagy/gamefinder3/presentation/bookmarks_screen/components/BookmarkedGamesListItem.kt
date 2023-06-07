@@ -184,13 +184,13 @@ fun BookmarkedGamesListItem(
 //                                painterEmpty = ,
 //                                painterFilled = )
 
-//                            CustomRatingBar(
-//                                modifier = Modifier
-//                                    .padding(vertical = 2.dp, horizontal = 4.dp),
-//                                rating = game.userRating?.toDouble() ?: 0.0,
-//                                stars = 5,
-//                                starsColor = MaterialTheme.colorScheme.onBackground
-//                            )
+                            CustomRatingBar(
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp, horizontal = 4.dp),
+                                rating = game.userRating?.toDouble() ?: 0.0,
+                                stars = 5,
+                                starsColor = MaterialTheme.colorScheme.onBackground
+                            )
                         }
 
                     }

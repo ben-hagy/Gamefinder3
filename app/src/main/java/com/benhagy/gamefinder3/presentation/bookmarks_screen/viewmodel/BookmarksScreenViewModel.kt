@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -16,14 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class BookmarksScreenViewModel @Inject constructor(
     private val useCaseContainer: UseCaseContainer
-): ViewModel() {
+) : ViewModel() {
 
     var state by mutableStateOf(BookmarksScreenState())
 
     init {
-        viewModelScope.launch {
-            getAllBookmarks()
-        }
+        getAllBookmarks()
     }
 
     private fun getAllBookmarks() {
@@ -34,7 +31,12 @@ class BookmarksScreenViewModel @Inject constructor(
                     useCaseContainer.getAllBookmarks()
                 }
                 result.collect {
-                    state = state.copy(bookmarkedGames = it)
+                    state = state.copy(
+                        // sort ensures the games are listed in the order they were added
+                        bookmarkedGames = it.sortedBy {
+                                bookmarkedGameEntity -> bookmarkedGameEntity.dateAdded
+                        }
+                    )
                 }
             } catch (e: Exception) {
                 state = state.copy(error = e.message)
@@ -49,6 +51,7 @@ class BookmarksScreenViewModel @Inject constructor(
                     removeBookmarkedGame(event.id)
                 }
             }
+
             is BookmarksScreenEvent.EditUserNote -> {
                 state = state.copy(userNote = event.note, bookmarkedId = event.id)
                 viewModelScope.launch {
