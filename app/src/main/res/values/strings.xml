@@ -26,4 +26,6 @@
     <string name="null_website_text">No website provided</string>
     <string name="search_hint">Search…</string>
     <string name="delete_search_text_cd">Delete search text</string>
+    <string name="edit_note_cd">Edit note</string>
+    <string name="save_note_cd">Save note</string>
 </resources>

@@ -13,9 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,7 +32,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -137,7 +141,7 @@ fun BookmarkedGamesListItem(
                             )
                             Text(
                                 modifier = Modifier.padding(
-                                    horizontal = 8.dp,
+                                    horizontal = 4.dp,
                                     vertical = 2.dp
                                 ),
                                 text = parseDate(game.dateAdded),
@@ -148,9 +152,9 @@ fun BookmarkedGamesListItem(
                         Spacer(modifier = Modifier.height(2.dp))
                         Row {
                             UserRatingBar(
-                                rating = userRating?.toFloat(),
+                                rating = userRating,
                                 onRatingChange = {
-                                    userRating = it.toDouble()
+                                    userRating = it
                                     viewModel.onEvent(
                                         BookmarksScreenEvent.EditUserRating(
                                             userRating!!, game.id!!
@@ -166,26 +170,72 @@ fun BookmarkedGamesListItem(
                         .fillMaxWidth()
                         .padding(4.dp)
                 ) {
-                    UserNoteTextField(
+                    OutlinedTextField(
                         modifier = Modifier
-                            .shadow(elevation = 0.dp, shape = RoundedCornerShape(15)),
-                        text = userNoteInput,
-                        onValueChange = { userNoteInput = it },
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                viewModel.onEvent(
-                                    BookmarksScreenEvent.EditUserNote(
-                                        userNoteInput, game.id!!
-                                    )
-                                )
-                                keyboardController?.hide()
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        value = userNoteInput,
+                        onValueChange = {
+                            if (viewModel.state.isEditing) {
+                                userNoteInput = it
                             }
-                        ),
-                        placeholderText = stringResource(id = R.string.enter_your_note_hint),
-                        trailingIcon = null
+                        },
+                        placeholder = {
+                            Text(
+                                stringResource(id = R.string.enter_your_note_hint)
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    if (viewModel.state.isEditing) {
+                                        viewModel.onEvent(
+                                            BookmarksScreenEvent.SaveUserNote(
+                                                userNoteInput, game.id!!
+                                            )
+                                        )
+                                    } else {
+                                        viewModel.onEvent(BookmarksScreenEvent.EditUserNote)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    if (viewModel.state.isEditing) {
+                                        Icons.Default.Check
+                                    } else {
+                                        Icons.Default.Edit
+                                    },
+                                    contentDescription = if (viewModel.state.isEditing) {
+                                        stringResource(R.string.save_note_cd)
+                                    } else {
+                                        stringResource(R.string.edit_note_cd)
+                                    },
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
                     )
                 }
             }
         }
     }
 }
+
+// UserNoteTextField(
+//                        modifier = Modifier
+//                            .shadow(elevation = 0.dp, shape = RoundedCornerShape(15)),
+//                        text = userNoteInput,
+//                        onValueChange = { userNoteInput = it },
+//                        keyboardActions = KeyboardActions(
+//                            onDone = {
+//                                viewModel.onEvent(
+//                                    BookmarksScreenEvent.EditUserNote(
+//                                        userNoteInput, game.id!!
+//                                    )
+//                                )
+//                                keyboardController?.hide()
+//                            }
+//                        ),
+//                        placeholderText = stringResource(id = R.string.enter_your_note_hint),
+//                        trailingIcon = null
+//                    )

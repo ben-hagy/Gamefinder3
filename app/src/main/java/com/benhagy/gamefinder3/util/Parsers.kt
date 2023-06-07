@@ -20,10 +20,12 @@ import com.benhagy.gamefinder3.domain.models.Tag
 import java.time.LocalDateTime
 import java.util.Locale
 
-/* these two functions take a Spanned HTML object and parse them into an Annotated String for use
-in Text Composables. The description of each game detail object is an HTML-formatted string.
+/*
+this file contains helper functions to parse input data from various sources into readable text
  */
 
+
+// extension function to preserve formatting when converting an HTML string into an Annotated String
 fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     val spanned = this@toAnnotatedString
     append(spanned.toString())
@@ -57,24 +59,12 @@ fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     }
 }
 
+// above function is called here, the actual parsing function
 fun parse(input: String): AnnotatedString {
     return HtmlCompat.fromHtml(input, HtmlCompat.FROM_HTML_MODE_LEGACY).toAnnotatedString()
 }
 
-// below is a potential parser for the platforms list to shorten titles eg "Playstation 5" = "PS5"
-
-//fun parsePlatformsListToShortNames(list: List<String>): List<String> {
-//    val returnList = emptyList<String>()
-//    for(item in list) {
-//        when(item) {
-//            //todo
-//        }
-//    }
-//    return returnList
-//}
-
-// below is a parser to take a date and convert it to a prettier, formatted date
-
+// release date formatter
 fun parseReleaseDate(input: String?): String {
     if ( input?.length != 10) {
         return "Unknown release date"
@@ -100,6 +90,7 @@ fun parseReleaseDate(input: String?): String {
     }
 }
 
+// assigns correct esrb logos
 fun parseEsrbAsLogo(rating: String): Int {
     return when(rating) {
         "Everyone" -> R.drawable.everyone
@@ -110,7 +101,7 @@ fun parseEsrbAsLogo(rating: String): Int {
         else -> R.drawable.rating_pending
     }
 }
-
+// assigns correct esrb fluff text
 fun parseEsrbFluffText(rating: String): String {
     return when(rating) {
         "Everyone" -> "Rated E for Everyone"
@@ -122,14 +113,17 @@ fun parseEsrbFluffText(rating: String): String {
     }
 }
 
+// maps list into a readable string for tags on the details screen
 fun parseTagsList(tags: List<Tag>): String {
     return (tags.map { it.name }).toString().removeSurrounding("[", "]")
 }
 
+// maps list into a readable string for platforms on the details screen
 fun parsePlatformsList(platforms: List<Platform>): String {
     return (platforms.map { it.name }).toString().removeSurrounding("[", "]")
 }
 
+// parses web urls as hyperlinks reading "Official Website" (obscures actual web url)
 fun parseWebsiteAsHyperlink(website: String): AnnotatedString {
     val output = buildAnnotatedString {
         append("Official Website")
@@ -143,6 +137,7 @@ fun parseWebsiteAsHyperlink(website: String): AnnotatedString {
     return output
 }
 
+// parses date added for the bookmarks screen
 fun parseDate(date: LocalDateTime): String {
     val year = date.year.toString()
     val month = date.month.toString().lowercase()

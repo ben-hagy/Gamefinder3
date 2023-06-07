@@ -19,5 +19,5 @@ data class BookmarkedGameEntity(
     val backgroundImage: String?,
     val dateAdded: LocalDateTime = LocalDateTime.now(),
     val userNote: String,
-    val userRating: Double?
+    val userRating: Float?
 )

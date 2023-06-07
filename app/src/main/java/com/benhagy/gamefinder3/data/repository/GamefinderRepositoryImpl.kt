@@ -153,7 +153,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         dao.upsertUserNote(note, id)
     }
 
-    override suspend fun upsertUserRating(rating: Double, id: Int) {
+    override suspend fun upsertUserRating(rating: Float, id: Int) {
         dao.upsertUserRating(rating, id)
     }
 }

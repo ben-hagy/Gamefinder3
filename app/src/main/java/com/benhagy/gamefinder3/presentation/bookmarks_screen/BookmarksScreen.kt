@@ -81,13 +81,14 @@ fun BookmarksScreen(
             )
         } else {
             HeaderText(
-                modifier = Modifier,
+                modifier = Modifier
+                    .padding(vertical = 4.dp),
                 displayText = stringResource(id = R.string.bookmarked_games_title),
                 textStyle = Typography.titleLarge,
                 hasFluffText = false,
                 fluffText = null
             )
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             //bookmarked games list
             LazyColumn(

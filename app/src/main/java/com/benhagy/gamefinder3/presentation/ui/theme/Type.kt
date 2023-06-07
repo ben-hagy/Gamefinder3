@@ -50,8 +50,8 @@ val Typography = Typography(
         fontFamily = montserratFonts,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.2.sp
+        lineHeight = 30.sp,
+        letterSpacing = 0.75.sp
     ),
     titleMedium = TextStyle(
         fontFamily = montserratFonts,

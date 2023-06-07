@@ -1,39 +1,43 @@
 package com.benhagy.gamefinder3.presentation.bookmarks_screen.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.benhagy.gamefinder3.presentation.ui.theme.Typography
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun UserNoteTextField(
-    modifier: Modifier,
-    text: String?,
+    text: String,
+    hint: String,
+    modifier: Modifier = Modifier,
+    isHintVisible: Boolean = true,
     onValueChange: (String) -> Unit,
-    keyboardActions: KeyboardActions,
-    placeholderText: String?,
-    trailingIcon: @Composable (() -> Unit)?
+    textStyle: TextStyle = TextStyle(),
+    singleLine: Boolean = false,
+    onFocusChange: (FocusState) -> Unit
 ) {
-    OutlinedTextField(
-        value = text ?: "",
-        onValueChange = onValueChange,
-        keyboardActions = keyboardActions,
-        singleLine = true,
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-//        maxLines = 4,
-        textStyle = Typography.labelSmall,
-        placeholder = {
-            Text(
-                text = placeholderText ?: "",
-                style = Typography.labelSmall
-            )
-        },
-        trailingIcon = trailingIcon
-    )
+    ) {
+        BasicTextField(
+            value = text,
+            onValueChange = onValueChange,
+            singleLine = singleLine,
+            textStyle = textStyle,
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    onFocusChange(it)
+                }
+        )
+        if(isHintVisible) {
+            Text(text = hint, style = textStyle, color = Color.DarkGray)
+        }
+    }
 }

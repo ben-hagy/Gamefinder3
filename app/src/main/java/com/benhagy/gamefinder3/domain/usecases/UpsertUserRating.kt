@@ -6,7 +6,7 @@ import javax.inject.Inject
 class UpsertUserRating @Inject constructor(
     private val repository: GamefinderRepository
 ) {
-    suspend operator fun invoke(rating: Double, id: Int) {
+    suspend operator fun invoke(rating: Float, id: Int) {
         return repository.upsertUserRating(rating, id)
     }
 }

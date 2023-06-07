@@ -13,7 +13,7 @@ room database
 
 @Database(
     entities = [BookmarkedGameEntity::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(TypeConverter::class)

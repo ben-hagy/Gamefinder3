@@ -53,7 +53,11 @@ class BookmarksScreenViewModel @Inject constructor(
             }
 
             is BookmarksScreenEvent.EditUserNote -> {
-                state = state.copy(userNote = event.note, bookmarkedId = event.id)
+                state = state.copy(isEditing = true)
+            }
+
+            is BookmarksScreenEvent.SaveUserNote -> {
+                state = state.copy(userNote = event.note, bookmarkedId = event.id, isEditing = false)
                 viewModelScope.launch {
                     upsertUserNote(event.note, event.id)
                 }
@@ -80,7 +84,7 @@ class BookmarksScreenViewModel @Inject constructor(
         }
     }
 
-    private fun upsertUserRating(rating: Double, id: Int) {
+    private fun upsertUserRating(rating: Float, id: Int) {
         viewModelScope.launch {
             useCaseContainer.upsertUserRating(rating, id)
         }
