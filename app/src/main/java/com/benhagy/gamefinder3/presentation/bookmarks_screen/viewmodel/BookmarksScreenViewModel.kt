@@ -58,6 +58,19 @@ class BookmarksScreenViewModel @Inject constructor(
                     upsertUserNote(event.note, event.id)
                 }
             }
+
+            is BookmarksScreenEvent.EditUserRating -> {
+                state = state.copy(userRating = event.rating, bookmarkedId = event.id)
+                viewModelScope.launch {
+                    upsertUserRating(event.rating, event.id)
+                }
+            }
+        }
+    }
+
+    private fun removeBookmarkedGame(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCaseContainer.deleteBookmark(id)
         }
     }
 
@@ -67,9 +80,9 @@ class BookmarksScreenViewModel @Inject constructor(
         }
     }
 
-    private fun removeBookmarkedGame(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            useCaseContainer.deleteBookmark(id)
+    private fun upsertUserRating(rating: Double, id: Int) {
+        viewModelScope.launch {
+            useCaseContainer.upsertUserRating(rating, id)
         }
     }
 }

@@ -10,6 +10,7 @@ import com.benhagy.gamefinder3.domain.usecases.GetAndSearchGamesList
 import com.benhagy.gamefinder3.domain.usecases.GetGameDetails
 import com.benhagy.gamefinder3.domain.usecases.GetGenres
 import com.benhagy.gamefinder3.domain.usecases.UpsertUserNote
+import com.benhagy.gamefinder3.domain.usecases.UpsertUserRating
 import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import dagger.Module
 import dagger.Provides
@@ -33,7 +34,8 @@ object UseCaseModule {
             deleteBookmark = DeleteBookmark(repository),
             getAllBookmarks = GetAllBookmarks(repository),
             checkIfGameIsBookmarked = CheckIfGameIsBookmarked(repository),
-            upsertUserNote = UpsertUserNote(repository)
+            upsertUserNote = UpsertUserNote(repository),
+            upsertUserRating = UpsertUserRating(repository)
         )
     }
 }

@@ -1,5 +1,9 @@
 package com.benhagy.gamefinder3.presentation.bookmarks_screen.components
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -44,6 +51,7 @@ import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseDate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.smarttoolfactory.ratingbar.RatingBar
+import com.smarttoolfactory.ratingbar.model.Shimmer
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -54,15 +62,21 @@ fun BookmarkedGamesListItem(
     navigator: DestinationsNavigator
 ) {
 
+    // state value that stores the user note until it's submitted to be saved in the db
     var userNoteInput by remember {
-        mutableStateOf(game.userNote) }
+        mutableStateOf(game.userNote)
+    }
 
+    var userRating by remember {
+        mutableStateOf(game.userRating)
+    }
+
+    // keyboard controller instance for handling onDone keyboard actions (submitting user note)
     val keyboardController = LocalSoftwareKeyboardController.current
 
-
     Card(
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
-        modifier = Modifier
+        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onBackground),
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(unbounded = true)
             .padding(4.dp)
@@ -146,7 +160,7 @@ fun BookmarkedGamesListItem(
                             OutlinedTextField(
                                 value = userNoteInput,
                                 onValueChange = {
-                                                userNoteInput = it
+                                    userNoteInput = it
 //                                    viewModel.onEvent(
 //                                        BookmarksScreenEvent.EditUserNote(
 //                                            it, game.id!!
@@ -178,21 +192,32 @@ fun BookmarkedGamesListItem(
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Row {
-
-
-//                            RatingBar(rating = game.userRating?.toFloat() ?: 0.0f,
-//                                painterEmpty = ,
-//                                painterFilled = )
-
-                            CustomRatingBar(
-                                modifier = Modifier
-                                    .padding(vertical = 2.dp, horizontal = 4.dp),
-                                rating = game.userRating?.toDouble() ?: 0.0,
-                                stars = 5,
-                                starsColor = MaterialTheme.colorScheme.onBackground
+                            RatingBar(
+                                rating = userRating?.toFloat() ?: 0.0f,
+                                space = 2.5.dp,
+                                imageVectorEmpty = Icons.Default.StarOutline,
+                                imageVectorFFilled = Icons.Default.Star,
+                                shimmer = Shimmer(
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    animationSpec = infiniteRepeatable(
+                                        animation = tween(
+                                            durationMillis = 2500,
+                                            easing = LinearEasing
+                                        ),
+                                        repeatMode = RepeatMode.Reverse
+                                    )
+                                ),
+                                tintEmpty = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
+                                itemSize = 40.dp,
+                                onRatingChange = {userRating = it.toDouble()
+                                    viewModel.onEvent(
+                                        BookmarksScreenEvent.EditUserRating(
+                                            userRating!!.toDouble(), game.id!!
+                                        )
+                                    )
+                                }
                             )
                         }
-
                     }
                 }
             }

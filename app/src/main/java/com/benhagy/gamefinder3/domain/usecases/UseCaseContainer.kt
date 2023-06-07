@@ -9,5 +9,6 @@ data class UseCaseContainer(
     val deleteBookmark: DeleteBookmark,
     val getAllBookmarks: GetAllBookmarks,
     val checkIfGameIsBookmarked: CheckIfGameIsBookmarked,
-    val upsertUserNote: UpsertUserNote
+    val upsertUserNote: UpsertUserNote,
+    val upsertUserRating: UpsertUserRating
 )

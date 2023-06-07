@@ -33,6 +33,13 @@ interface BookmarksDao {
         """)
     fun upsertUserNote(note: String, id: Int)
 
+    @Query("""
+        UPDATE bookmarks
+        SET userRating = :rating
+        WHERE id = :id
+    """)
+    suspend fun upsertUserRating(rating: Double, id: Int)
+
 //    fun filterBookmarks()
 
 }

@@ -25,7 +25,7 @@ data class GameDetails(
             name = name,
             backgroundImage = backgroundImage,
             userNote = "",
-            userRating = 3
+            userRating = null
         )
     }
 }

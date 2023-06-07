@@ -36,5 +36,7 @@ interface GamefinderRepository {
 
     suspend fun upsertUserNote(note: String, id: Int)
 
+    suspend fun upsertUserRating(rating: Double, id: Int)
+
 
 }
