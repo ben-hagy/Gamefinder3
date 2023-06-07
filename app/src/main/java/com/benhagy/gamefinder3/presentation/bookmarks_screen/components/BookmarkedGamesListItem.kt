@@ -1,9 +1,5 @@
 package com.benhagy.gamefinder3.presentation.bookmarks_screen.components
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,12 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +27,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -50,8 +43,6 @@ import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestin
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseDate
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.smarttoolfactory.ratingbar.RatingBar
-import com.smarttoolfactory.ratingbar.model.Shimmer
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -67,6 +58,7 @@ fun BookmarkedGamesListItem(
         mutableStateOf(game.userNote)
     }
 
+    // state value to store the user rating until it's submitted to be saved in the db
     var userRating by remember {
         mutableStateOf(game.userRating)
     }
@@ -152,73 +144,44 @@ fun BookmarkedGamesListItem(
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                         }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            // user note
-                            OutlinedTextField(
-                                value = userNoteInput,
-                                onValueChange = {
-                                    userNoteInput = it
-//                                    viewModel.onEvent(
-//                                        BookmarksScreenEvent.EditUserNote(
-//                                            it, game.id!!
-//                                        )
-//                                    )
-                                },
-                                keyboardActions = KeyboardActions(
-                                    onDone = {
-                                        viewModel.onEvent(
-                                            BookmarksScreenEvent.EditUserNote(
-                                                userNoteInput, game.id!!
-                                            )
-                                        )
-                                        keyboardController?.hide()
-                                    }
-                                ),
-                                singleLine = true,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight(),
-                                textStyle = Typography.labelSmall,
-                                placeholder = {
-                                    Text(
-                                        stringResource(R.string.enter_your_note_hint),
-                                        style = Typography.labelSmall
-                                    )
-                                }
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
                         Row {
-                            RatingBar(
-                                rating = userRating?.toFloat() ?: 0.0f,
-                                space = 2.5.dp,
-                                imageVectorEmpty = Icons.Default.StarOutline,
-                                imageVectorFFilled = Icons.Default.Star,
-                                shimmer = Shimmer(
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    animationSpec = infiniteRepeatable(
-                                        animation = tween(
-                                            durationMillis = 2500,
-                                            easing = LinearEasing
-                                        ),
-                                        repeatMode = RepeatMode.Reverse
-                                    )
-                                ),
-                                tintEmpty = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
-                                itemSize = 40.dp,
-                                onRatingChange = {userRating = it.toDouble()
+                            UserRatingBar(
+                                rating = userRating?.toFloat(),
+                                onRatingChange = {
+                                    userRating = it.toDouble()
                                     viewModel.onEvent(
                                         BookmarksScreenEvent.EditUserRating(
-                                            userRating!!.toDouble(), game.id!!
+                                            userRating!!, game.id!!
                                         )
                                     )
                                 }
                             )
                         }
                     }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                ) {
+                    UserNoteTextField(
+                        modifier = Modifier
+                            .shadow(elevation = 0.dp, shape = RoundedCornerShape(15)),
+                        text = userNoteInput,
+                        onValueChange = { userNoteInput = it },
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                viewModel.onEvent(
+                                    BookmarksScreenEvent.EditUserNote(
+                                        userNoteInput, game.id!!
+                                    )
+                                )
+                                keyboardController?.hide()
+                            }
+                        ),
+                        placeholderText = stringResource(id = R.string.enter_your_note_hint),
+                        trailingIcon = null
+                    )
                 }
             }
         }

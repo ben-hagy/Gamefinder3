@@ -83,7 +83,7 @@ fun HomeSearchScreen(
                 trailingIcon = {
                     Icon(
                         Icons.Filled.Clear,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.delete_search_text_cd),
                         modifier = Modifier
                             .clickable {
                                 viewModel.onEvent(
