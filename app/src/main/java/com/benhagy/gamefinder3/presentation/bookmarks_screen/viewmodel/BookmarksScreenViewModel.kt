@@ -51,24 +51,26 @@ class BookmarksScreenViewModel @Inject constructor(
                     removeBookmarkedGame(event.id)
                 }
             }
-
-            is BookmarksScreenEvent.EditUserNote -> {
-                state = state.copy(isEditing = true)
-            }
-
-            is BookmarksScreenEvent.SaveUserNote -> {
-                state = state.copy(userNote = event.note, bookmarkedId = event.id, isEditing = false)
-                viewModelScope.launch {
-                    upsertUserNote(event.note, event.id)
-                }
-            }
-
             is BookmarksScreenEvent.EditUserRating -> {
                 state = state.copy(userRating = event.rating, bookmarkedId = event.id)
                 viewModelScope.launch {
                     upsertUserRating(event.rating, event.id)
                 }
             }
+
+            is BookmarksScreenEvent.SaveUserNote -> {
+                state = state.copy(userNote = event.note, bookmarkedId = event.id)
+                viewModelScope.launch {
+                    upsertUserNote(event.note, event.id)
+                }
+            }
+            is BookmarksScreenEvent.ClearUserNote -> {
+                state = state.copy(userNote = "", bookmarkedId = event.id)
+                viewModelScope.launch {
+                    upsertUserNote(event.note, event.id)
+                }
+            }
+
         }
     }
 

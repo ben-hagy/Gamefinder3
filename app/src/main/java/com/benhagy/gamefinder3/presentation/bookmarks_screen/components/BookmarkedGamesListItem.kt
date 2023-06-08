@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,9 +33,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,11 +72,13 @@ fun BookmarkedGamesListItem(
         mutableStateOf(game.userRating)
     }
 
-    // keyboard controller instance for handling onDone keyboard actions (submitting user note)
+    // instances to handle custom keyboard and focus interactions for the user note
     val keyboardController = LocalSoftwareKeyboardController.current
+    val localFocusManager = LocalFocusManager.current
 
     Card(
         border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onBackground),
+        shape = RoundedCornerShape(10),
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(unbounded = true)
@@ -80,6 +87,7 @@ fun BookmarkedGamesListItem(
                 MaterialTheme.colorScheme.background
                     .copy(alpha = 0.1f)
             )
+                // full card can be clicked to go to details screen for the clicked game
             .clickable {
                 navigator.navigate(GameDetailsScreenDestination(game.id!!))
             }
@@ -102,7 +110,7 @@ fun BookmarkedGamesListItem(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        //image
+                        //game thumbnail image
                         AsyncImage(
                             model = game.backgroundImage ?: "",
                             contentScale = ContentScale.Crop,
@@ -122,7 +130,7 @@ fun BookmarkedGamesListItem(
                             .padding(vertical = 2.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        // title
+                        // bookmarked game title
                         Text(
                             text = game.name.toString(),
                             style = Typography.labelLarge,
@@ -132,7 +140,8 @@ fun BookmarkedGamesListItem(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
 
-                        // date you added
+                        // date the game was added
+                        // this is also how the list is sorted for display (newer dates go on list bottom)
                         Row {
                             Text(
                                 text = stringResource(R.string.date_added_display_text),
@@ -165,77 +174,70 @@ fun BookmarkedGamesListItem(
                         }
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp)
-                ) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        value = userNoteInput,
-                        onValueChange = {
-                            if (viewModel.state.isEditing) {
-                                userNoteInput = it
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                stringResource(id = R.string.enter_your_note_hint)
-                            )
-                        },
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    if (viewModel.state.isEditing) {
-                                        viewModel.onEvent(
-                                            BookmarksScreenEvent.SaveUserNote(
-                                                userNoteInput, game.id!!
-                                            )
-                                        )
-                                    } else {
-                                        viewModel.onEvent(BookmarksScreenEvent.EditUserNote)
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    if (viewModel.state.isEditing) {
-                                        Icons.Default.Check
-                                    } else {
-                                        Icons.Default.Edit
-                                    },
-                                    contentDescription = if (viewModel.state.isEditing) {
-                                        stringResource(R.string.save_note_cd)
-                                    } else {
-                                        stringResource(R.string.edit_note_cd)
-                                    },
-                                    tint = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
-                        }
-                    )
-                }
             }
+        }
+
+        // user note field w/delete button. saves note when focus changes or imeAction.onDone is triggered
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedTextField(
+                value = userNoteInput,
+                onValueChange = {
+                    userNoteInput = it
+                },
+                modifier = modifier
+                    .shadow(elevation = 0.dp, shape = RoundedCornerShape(30))
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp)
+                    .onFocusChanged {
+                        viewModel.onEvent(
+                            BookmarksScreenEvent.SaveUserNote(
+                                userNoteInput, game.id!!
+                            )
+                        )
+                    },
+                textStyle = Typography.labelSmall,
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.enter_your_note_hint)
+                    )
+                },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        userNoteInput = ""
+                        viewModel.onEvent(
+                            BookmarksScreenEvent.ClearUserNote(
+                                userNoteInput, game.id!!
+                            )
+                        )
+                    }) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = stringResource(R.string.clear_note_cd)
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        viewModel.onEvent(
+                            BookmarksScreenEvent.SaveUserNote(
+                                userNoteInput,
+                                game.id!!
+                            )
+                        )
+                        localFocusManager.clearFocus()
+                        keyboardController?.hide()
+                    }
+                ),
+                maxLines = 4
+            )
         }
     }
 }
 
-// UserNoteTextField(
-//                        modifier = Modifier
-//                            .shadow(elevation = 0.dp, shape = RoundedCornerShape(15)),
-//                        text = userNoteInput,
-//                        onValueChange = { userNoteInput = it },
-//                        keyboardActions = KeyboardActions(
-//                            onDone = {
-//                                viewModel.onEvent(
-//                                    BookmarksScreenEvent.EditUserNote(
-//                                        userNoteInput, game.id!!
-//                                    )
-//                                )
-//                                keyboardController?.hide()
-//                            }
-//                        ),
-//                        placeholderText = stringResource(id = R.string.enter_your_note_hint),
-//                        trailingIcon = null
-//                    )
