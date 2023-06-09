@@ -72,7 +72,6 @@ class GamefinderRepositoryImpl @Inject constructor(
         }
     }
 
-
     override suspend fun getGenresList(fetchFromRemote: Boolean): Flow<Resource<List<Genre>>> {
         return flow {
             emit(Resource.Loading())

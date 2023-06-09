@@ -74,6 +74,7 @@ class HomeSearchScreenViewModel @Inject constructor(
 
                     is Resource.Error ->
                         state = state.copy(error = "An error occurred!")
+
                     is Resource.Loading -> {
                         state = state.copy(isLoading = result.isLoading)
                     }
@@ -99,6 +100,7 @@ class HomeSearchScreenViewModel @Inject constructor(
 
                     is Resource.Error ->
                         state = state.copy(error = "An error occurred!")
+
                     is Resource.Loading -> {
                         state = state.copy(isLoading = result.isLoading)
                     }
@@ -122,6 +124,7 @@ class HomeSearchScreenViewModel @Inject constructor(
 
                     is Resource.Error ->
                         state = state.copy(error = "An error occurred!")
+
                     is Resource.Loading -> {
                         state = state.copy(isLoading = result.isLoading)
                     }

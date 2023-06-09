@@ -10,10 +10,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GameListPagingSource @Inject constructor(
-    private val api: GamefinderApi
-): PagingSource<Int, ListedGame>() {
+    private val api: GamefinderApi,
+    private val query: String
+) : PagingSource<Int, ListedGame>() {
     override fun getRefreshKey(state: PagingState<Int, ListedGame>): Int? {
-        return null
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListedGame> {
@@ -21,8 +25,9 @@ class GameListPagingSource @Inject constructor(
             val nextPageNumber = params.key ?: 1
             val response = withContext(Dispatchers.IO) {
                 api.getGames(
-                page = nextPageNumber,
-                pageSize = PAGE_SIZE
+                    page = nextPageNumber,
+                    pageSize = PAGE_SIZE,
+                    search = query
                 )
             }
             val games: List<ListedGame> = response.results.map { it.toListedGame() }
@@ -31,7 +36,7 @@ class GameListPagingSource @Inject constructor(
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
                 nextKey = if (games.isEmpty()) null else nextPageNumber + 1
             )
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }

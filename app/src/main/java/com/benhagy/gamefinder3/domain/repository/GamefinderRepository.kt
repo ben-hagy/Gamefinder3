@@ -38,5 +38,4 @@ interface GamefinderRepository {
 
     suspend fun upsertUserRating(rating: Float, id: Int)
 
-
 }
