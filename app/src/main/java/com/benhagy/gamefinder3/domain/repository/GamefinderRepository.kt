@@ -11,18 +11,14 @@ import kotlinx.coroutines.flow.Flow
 interface GamefinderRepository {
 
     suspend fun getGamesList(
-        fetchFromRemote: Boolean,
         query: String
     ): Flow<Resource<List<ListedGame>>>
 
     suspend fun filterGamesListByClickedGenre(
-        fetchFromRemote: Boolean,
         genreId: String
     ): Flow<Resource<List<ListedGame>>>
 
-    suspend fun getGenresList(
-        fetchFromRemote: Boolean
-    ): Flow<Resource<List<Genre>>>
+    suspend fun getGenresList(): Flow<Resource<List<Genre>>>
 
     suspend fun getGameDetailsWithScreenshots(id: Int): Flow<Resource<GameDetails>>
 

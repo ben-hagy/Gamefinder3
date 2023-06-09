@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetGenres @Inject constructor(
     private val repository: GamefinderRepository
 ) {
-    suspend operator fun invoke(fetchFromRemote: Boolean): Flow<Resource<List<Genre>>> {
-        return repository.getGenresList(fetchFromRemote)
+    suspend operator fun invoke(): Flow<Resource<List<Genre>>> {
+        return repository.getGenresList()
     }
 }

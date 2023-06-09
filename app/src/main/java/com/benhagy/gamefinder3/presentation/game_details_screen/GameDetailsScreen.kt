@@ -321,85 +321,104 @@ fun GameDetailsScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Divider(
-                        thickness = 1.dp, color = MaterialTheme.colorScheme.onBackground
+                        thickness = 0.5.dp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
                     )
                     // screenshots pager
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        HorizontalPager(
-                            modifier = Modifier,
-                            state = pagerState,
-                            pageSpacing = 0.dp,
-                            userScrollEnabled = true,
-                            reverseLayout = false,
-                            contentPadding = PaddingValues(0.dp),
-                            beyondBoundsPageCount = 0,
-                            pageSize = PageSize.Fill,
-                            flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
-                            key = { gameDetails.screenshots[it] },
-                            pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
-                                Orientation.Horizontal
-                            ),
-                            pageContent = { index ->
-                                AsyncImage(
-                                    model = gameDetails.screenshots[index].image,
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 8.dp)
-                                        .clip(
-                                            RoundedCornerShape(8.dp)
+                    if (gameDetails.screenshots.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            HorizontalPager(
+                                modifier = Modifier,
+                                state = pagerState,
+                                pageSpacing = 0.dp,
+                                userScrollEnabled = true,
+                                reverseLayout = false,
+                                contentPadding = PaddingValues(0.dp),
+                                beyondBoundsPageCount = 0,
+                                pageSize = PageSize.Fill,
+                                flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+                                key = { gameDetails.screenshots[it] },
+                                pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
+                                    Orientation.Horizontal
+                                ),
+                                pageContent = { index ->
+                                    AsyncImage(
+                                        model = gameDetails.screenshots[index].image,
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 8.dp)
+                                            .clip(
+                                                RoundedCornerShape(8.dp)
+                                            )
+                                            .height(232.dp),
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .offset(y = -(24).dp)
+                                .fillMaxWidth(0.5f)
+                                .clip(RoundedCornerShape(100))
+                                .background(Color.Transparent)
+                                .padding(8.dp)
+                                .align(Alignment.CenterHorizontally)
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(
+                                            pagerState.currentPage - 1
                                         )
-                                        .height(232.dp),
-                                    contentDescription = null
+                                    }
+                                },
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowLeft,
+                                    contentDescription = stringResource(R.string.go_back_cd),
+                                    modifier = Modifier.size(60.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground
                                 )
                             }
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .offset(y = -(24).dp)
-                            .fillMaxWidth(0.5f)
-                            .clip(RoundedCornerShape(100))
-                            .background(Color.Transparent)
-                            .padding(8.dp)
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        IconButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(
-                                        pagerState.currentPage - 1
-                                    )
-                                }
-                            },
-                            modifier = Modifier.align(Alignment.CenterStart)
+                            IconButton(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(
+                                            pagerState.currentPage + 1
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowRight,
+                                    contentDescription = stringResource(R.string.go_forward_cd),
+                                    modifier = Modifier.size(60.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(232.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.go_back_cd),
-                                modifier = Modifier.size(60.dp),
-                                tint = MaterialTheme.colorScheme.onBackground
+
+                            Text(
+                                text = stringResource(R.string.no_screenshots_found),
+                                style = Typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .3f)
                             )
                         }
-                        IconButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(
-                                        pagerState.currentPage + 1
-                                    )
-                                }
-                            },
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.KeyboardArrowRight,
-                                contentDescription = stringResource(R.string.go_forward_cd),
-                                modifier = Modifier.size(60.dp),
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
+                        Divider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.onBackground)
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                     Row(
                         modifier = Modifier

@@ -29,4 +29,5 @@
     <string name="edit_note_cd">Edit note</string>
     <string name="save_note_cd">Save note</string>
     <string name="clear_note_cd">Clear note</string>
+    <string name="no_screenshots_found">No screenshots found.</string>
 </resources>

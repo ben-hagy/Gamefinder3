@@ -30,8 +30,6 @@ fun ListedGameItem(
     modifier: Modifier = Modifier,
     isRefreshing: Boolean
 ) {
-    // custom card width...likely not necessary with lazy grid
-//    val cardWidth = LocalConfiguration.current.screenWidthDp.dp / 1.7f
     Card(
         modifier = modifier
             .padding(horizontal = 4.dp)

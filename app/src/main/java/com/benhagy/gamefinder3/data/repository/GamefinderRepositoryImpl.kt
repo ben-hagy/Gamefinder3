@@ -22,7 +22,6 @@ class GamefinderRepositoryImpl @Inject constructor(
     // api calls
 
     override suspend fun getGamesList(
-        fetchFromRemote: Boolean,
         query: String
     ): Flow<Resource<List<ListedGame>>> {
         return flow {
@@ -47,7 +46,6 @@ class GamefinderRepositoryImpl @Inject constructor(
     }
 
     override suspend fun filterGamesListByClickedGenre(
-        fetchFromRemote: Boolean,
         genreId: String
     ): Flow<Resource<List<ListedGame>>> {
         return flow {
@@ -72,7 +70,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getGenresList(fetchFromRemote: Boolean): Flow<Resource<List<Genre>>> {
+    override suspend fun getGenresList(): Flow<Resource<List<Genre>>> {
         return flow {
             emit(Resource.Loading())
             val remoteGenreListings = try {

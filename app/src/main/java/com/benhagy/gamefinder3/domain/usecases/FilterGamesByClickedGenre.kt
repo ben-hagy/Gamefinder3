@@ -10,7 +10,7 @@ class FilterGamesByClickedGenre @Inject constructor(
     private val repository: GamefinderRepository
 ) {
 
-    suspend operator fun invoke(fetchFromRemote: Boolean, genreId: String): Flow<Resource<List<ListedGame>>> {
-        return repository.filterGamesListByClickedGenre(fetchFromRemote, genreId)
+    suspend operator fun invoke(genreId: String): Flow<Resource<List<ListedGame>>> {
+        return repository.filterGamesListByClickedGenre(genreId)
     }
 }

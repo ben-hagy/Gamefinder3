@@ -11,7 +11,7 @@ class GetAndSearchGamesList @Inject constructor(
     private val repository: GamefinderRepository
 ) {
 
-    suspend operator fun invoke(fetchFromRemote: Boolean, query: String): Flow<Resource<List<ListedGame>>> {
-        return repository.getGamesList(fetchFromRemote, query)
+    suspend operator fun invoke(query: String): Flow<Resource<List<ListedGame>>> {
+        return repository.getGamesList(query)
     }
 }

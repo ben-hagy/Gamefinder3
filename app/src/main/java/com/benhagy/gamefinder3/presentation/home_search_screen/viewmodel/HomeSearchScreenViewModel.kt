@@ -59,10 +59,10 @@ class HomeSearchScreenViewModel @Inject constructor(
     }
 
     private fun getGamesList(
-        query: String = state.searchQuery.lowercase(), fetchFromRemote: Boolean = false
+        query: String = state.searchQuery.lowercase()
     ) {
         viewModelScope.launch {
-            useCaseContainer.getAndSearchGamesList(fetchFromRemote, query).collect { result ->
+            useCaseContainer.getAndSearchGamesList(query).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { listings ->
@@ -85,10 +85,10 @@ class HomeSearchScreenViewModel @Inject constructor(
     }
 
     private fun filterGamesListByClickedGenre(
-        genreId: String, fetchFromRemote: Boolean = false
+        genreId: String
     ) {
         viewModelScope.launch {
-            useCaseContainer.filterGamesByClickedGenre(fetchFromRemote, genreId).collect { result ->
+            useCaseContainer.filterGamesByClickedGenre(genreId).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { listings ->
@@ -110,9 +110,9 @@ class HomeSearchScreenViewModel @Inject constructor(
         state = state.copy(isRefreshing = false)
     }
 
-    private fun getGenresList(fetchFromRemote: Boolean = false) {
+    private fun getGenresList() {
         viewModelScope.launch {
-            useCaseContainer.getGenres(fetchFromRemote).collect { result ->
+            useCaseContainer.getGenres().collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { listings ->
