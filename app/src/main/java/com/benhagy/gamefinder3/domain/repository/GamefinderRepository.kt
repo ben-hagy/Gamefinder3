@@ -11,15 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface GamefinderRepository {
 
-    fun getGamesList(query: String): Flow<PagingData<ListedGame>>
-
-//    suspend fun getGamesList(
-//        query: String
-//    ): Flow<Resource<List<ListedGame>>>
-
-    suspend fun filterGamesListByClickedGenre(
-        genreId: String
-    ): Flow<Resource<List<ListedGame>>>
+    fun getGamesList(query: String?, genreId: String?): Flow<PagingData<ListedGame>>
 
     suspend fun getGenresList(): Flow<Resource<List<Genre>>>
 

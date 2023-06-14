@@ -7,13 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 data class HomeSearchScreenState(
-//    val games: List<ListedGame> = emptyList(),
     val games: Flow<PagingData<ListedGame>> = flow { },
     val genres: List<Genre> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val isRefreshing: Boolean = false,
     val searchQuery: String = "",
-    val genreId: String = "1",
-    val isSelected: Boolean = false,
+    val genreId: String? = null,
 )

@@ -24,69 +24,23 @@ class GamefinderRepositoryImpl @Inject constructor(
     private val dao: BookmarksDao
 ) : GamefinderRepository {
 
-    // api calls
+    // api calls:
 
-    override fun getGamesList(query: String): Flow<PagingData<ListedGame>> {
+
+    // this function returns paginated results for the home screen games list
+    override fun getGamesList(query: String?, genreId: String?): Flow<PagingData<ListedGame>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = true
             ),
             pagingSourceFactory = {
-                GameListPagingSource(api, query)
+                GameListPagingSource(api, query, genreId)
             }
         ).flow
     }
 
-//    override suspend fun getGamesList(
-//        query: String
-//    ): Flow<Resource<List<ListedGame>>> {
-//        return flow {
-//            emit(Resource.Loading())
-//            val remoteListings = try {
-//                api.getGames(search = query)
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//                emit(Resource.Error("Couldn't load data - IO exception!"))
-//                null
-//            } catch (e: HttpException) {
-//                e.printStackTrace()
-//                emit(Resource.Error("Couldn't load data - Http error!"))
-//                null
-//            }
-//
-//            emit(
-//                Resource.Success(
-//                    data = remoteListings?.results?.map { it.toListedGame() })
-//            )
-//        }
-//    }
-
-    override suspend fun filterGamesListByClickedGenre(
-        genreId: String
-    ): Flow<Resource<List<ListedGame>>> {
-        return flow {
-            emit(Resource.Loading())
-            val remoteListings = try {
-                api.getGames(genres = genreId)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                emit(Resource.Error("Couldn't load data - IO exception!"))
-                null
-            } catch (e: HttpException) {
-                e.printStackTrace()
-                emit(Resource.Error("Couldn't load data - Http error!"))
-                null
-            }
-
-            emit(
-                Resource.Success(
-                    data = remoteListings?.results?.map { it.toListedGame() }
-                )
-            )
-        }
-    }
-
+    // returns stable list of genres for the genre filter buttons
     override suspend fun getGenresList(): Flow<Resource<List<Genre>>> {
         return flow {
             emit(Resource.Loading())
@@ -109,6 +63,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         }
     }
 
+    // joins a screenshot response for a given game with a game details response to return for details screen
     override suspend fun getGameDetailsWithScreenshots(id: Int): Flow<Resource<GameDetails>> = flow {
         emit(Resource.Loading())
         val remoteGameDetails = try {
@@ -145,7 +100,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         )
     }
 
-    // database calls
+    // database calls:
 
     override suspend fun bookmarkGame(game: GameDetails) {
         dao.upsertBookmark(game.toBookmarkedGameEntity())

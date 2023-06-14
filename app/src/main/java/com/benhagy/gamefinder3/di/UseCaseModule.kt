@@ -4,7 +4,6 @@ import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
 import com.benhagy.gamefinder3.domain.usecases.AddBookmark
 import com.benhagy.gamefinder3.domain.usecases.CheckIfGameIsBookmarked
 import com.benhagy.gamefinder3.domain.usecases.DeleteBookmark
-import com.benhagy.gamefinder3.domain.usecases.FilterGamesByClickedGenre
 import com.benhagy.gamefinder3.domain.usecases.GetAllBookmarks
 import com.benhagy.gamefinder3.domain.usecases.GetAndSearchGamesList
 import com.benhagy.gamefinder3.domain.usecases.GetGameDetails
@@ -29,7 +28,6 @@ object UseCaseModule {
             getAndSearchGamesList = GetAndSearchGamesList(repository),
             getGameDetails = GetGameDetails(repository),
             getGenres = GetGenres(repository),
-            filterGamesByClickedGenre = FilterGamesByClickedGenre(repository),
             addBookmark = AddBookmark(repository),
             deleteBookmark = DeleteBookmark(repository),
             getAllBookmarks = GetAllBookmarks(repository),

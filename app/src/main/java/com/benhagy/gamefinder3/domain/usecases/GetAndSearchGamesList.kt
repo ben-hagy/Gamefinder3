@@ -11,7 +11,7 @@ class GetAndSearchGamesList @Inject constructor(
     private val repository: GamefinderRepository
 ) {
 
-    operator fun invoke(query: String): Flow<PagingData<ListedGame>> {
-        return repository.getGamesList(query)
+    operator fun invoke(query: String?, genreId: String?): Flow<PagingData<ListedGame>> {
+        return repository.getGamesList(query, genreId)
     }
 }

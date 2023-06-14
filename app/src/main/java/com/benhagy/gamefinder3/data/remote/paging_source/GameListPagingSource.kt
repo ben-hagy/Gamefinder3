@@ -11,14 +11,11 @@ import javax.inject.Inject
 
 class GameListPagingSource @Inject constructor(
     private val api: GamefinderApi,
-    private val query: String
+    private val query: String?,
+    private val genreId: String?
 ) : PagingSource<Int, ListedGame>() {
     override fun getRefreshKey(state: PagingState<Int, ListedGame>): Int? {
         return null
-//        return state.anchorPosition?.let { anchorPosition ->
-//            val anchorPage = state.closestPageToPosition(anchorPosition)
-//            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-//        }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListedGame> {
@@ -28,7 +25,8 @@ class GameListPagingSource @Inject constructor(
                 api.getGames(
                     page = nextPageNumber,
                     pageSize = PAGE_SIZE,
-                    search = query
+                    search = query,
+                    genres = genreId
                 )
             }
             val games: List<ListedGame> = response.results.map { it.toListedGame() }
