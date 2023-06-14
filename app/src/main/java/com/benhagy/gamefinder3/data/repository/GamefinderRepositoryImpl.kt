@@ -1,12 +1,17 @@
 package com.benhagy.gamefinder3.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.benhagy.gamefinder3.data.local.BookmarksDao
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.data.remote.GamefinderApi
+import com.benhagy.gamefinder3.data.remote.paging_source.GameListPagingSource
 import com.benhagy.gamefinder3.domain.models.GameDetails
 import com.benhagy.gamefinder3.domain.models.Genre
 import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
+import com.benhagy.gamefinder3.util.Constants.PAGE_SIZE
 import com.benhagy.gamefinder3.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,29 +26,41 @@ class GamefinderRepositoryImpl @Inject constructor(
 
     // api calls
 
-    override suspend fun getGamesList(
-        query: String
-    ): Flow<Resource<List<ListedGame>>> {
-        return flow {
-            emit(Resource.Loading())
-            val remoteListings = try {
-                api.getGames(search = query)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                emit(Resource.Error("Couldn't load data - IO exception!"))
-                null
-            } catch (e: HttpException) {
-                e.printStackTrace()
-                emit(Resource.Error("Couldn't load data - Http error!"))
-                null
+    override fun getGamesList(query: String): Flow<PagingData<ListedGame>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = {
+                GameListPagingSource(api, query)
             }
-
-            emit(
-                Resource.Success(
-                    data = remoteListings?.results?.map { it.toListedGame() })
-            )
-        }
+        ).flow
     }
+
+//    override suspend fun getGamesList(
+//        query: String
+//    ): Flow<Resource<List<ListedGame>>> {
+//        return flow {
+//            emit(Resource.Loading())
+//            val remoteListings = try {
+//                api.getGames(search = query)
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//                emit(Resource.Error("Couldn't load data - IO exception!"))
+//                null
+//            } catch (e: HttpException) {
+//                e.printStackTrace()
+//                emit(Resource.Error("Couldn't load data - Http error!"))
+//                null
+//            }
+//
+//            emit(
+//                Resource.Success(
+//                    data = remoteListings?.results?.map { it.toListedGame() })
+//            )
+//        }
+//    }
 
     override suspend fun filterGamesListByClickedGenre(
         genreId: String

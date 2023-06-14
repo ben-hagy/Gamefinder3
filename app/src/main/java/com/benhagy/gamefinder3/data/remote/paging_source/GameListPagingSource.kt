@@ -14,10 +14,11 @@ class GameListPagingSource @Inject constructor(
     private val query: String
 ) : PagingSource<Int, ListedGame>() {
     override fun getRefreshKey(state: PagingState<Int, ListedGame>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-        }
+        return null
+//        return state.anchorPosition?.let { anchorPosition ->
+//            val anchorPage = state.closestPageToPosition(anchorPosition)
+//            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+//        }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListedGame> {

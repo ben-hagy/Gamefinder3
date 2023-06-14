@@ -2,7 +2,9 @@ package com.benhagy.gamefinder3.presentation.home_search_screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -27,7 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.home_search_screen.components.ListedGameItem
 import com.benhagy.gamefinder3.presentation.home_search_screen.components.ListedGenreItem
@@ -50,6 +59,8 @@ fun HomeSearchScreen(
     val state = viewModel.state
     val listState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
+
+    val games: LazyPagingItems<ListedGame> = state.games.collectAsLazyPagingItems()
 
     if (state.error != null) {
         Column(
@@ -92,7 +103,12 @@ fun HomeSearchScreen(
                 },
                 maxLines = 1,
                 singleLine = true,
-                placeholder = { Text(text = stringResource(R.string.search_hint), fontFamily = montserratFonts) }
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.search_hint),
+                        fontFamily = montserratFonts
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(
@@ -131,24 +147,38 @@ fun HomeSearchScreen(
                 if (state.isRefreshing) {
                     coroutineScope.launch { listState.animateScrollToItem(0) }
                 }
-                items(state.games.size) { i ->
-                    val game = state.games[i]
-                    ListedGameItem(
-                        game = game,
-                        isRefreshing = state.isRefreshing,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                navigator.navigate(GameDetailsScreenDestination(game.id))
-                            }
-                            .padding(4.dp),
-                    )
-                    if (i < state.games.size) {
-                        Divider(
-                            modifier = Modifier.padding(
-                                horizontal = 16.dp
-                            )
+                items(
+                    count = games.itemCount,
+                    key =  games.itemKey { it.id },
+                    contentType = games.itemContentType { "ListedGame" }
+                ) { index ->
+                    val game = games[index]
+                    if (game != null) {
+                        ListedGameItem(
+                            game = game,
+                            isRefreshing = state.isRefreshing,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navigator.navigate(GameDetailsScreenDestination(game.id))
+                                }
+                                .padding(4.dp)
                         )
+                    }
+                }
+                item {
+                    when (val state = games.loadState.append) {
+                        is LoadState.Loading -> {
+                            Row {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                        is LoadState.Error -> {
+                            Text("Error! ${state.error.localizedMessage}")
+                        }
+
+                        else -> {}
                     }
                 }
             }
@@ -156,3 +186,35 @@ fun HomeSearchScreen(
         }
     }
 }
+
+
+//LazyVerticalGrid(
+//modifier = Modifier
+//.fillMaxHeight(),
+//columns = GridCells.Fixed(2),
+//state = listState
+//) {
+//    if (state.isRefreshing) {
+//        coroutineScope.launch { listState.animateScrollToItem(0) }
+//    }
+//    items(state.games.size) { i ->
+//        val game = state.games[i]
+//        ListedGameItem(
+//            game = game,
+//            isRefreshing = state.isRefreshing,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clickable {
+//                    navigator.navigate(GameDetailsScreenDestination(game.id))
+//                }
+//                .padding(4.dp),
+//        )
+//        if (i < state.games.size) {
+//            Divider(
+//                modifier = Modifier.padding(
+//                    horizontal = 16.dp
+//                )
+//            )
+//        }
+//    }
+//}

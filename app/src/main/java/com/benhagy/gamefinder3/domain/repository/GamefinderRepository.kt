@@ -1,5 +1,6 @@
 package com.benhagy.gamefinder3.domain.repository
 
+import androidx.paging.PagingData
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.domain.models.GameDetails
 import com.benhagy.gamefinder3.domain.models.Genre
@@ -10,9 +11,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface GamefinderRepository {
 
-    suspend fun getGamesList(
-        query: String
-    ): Flow<Resource<List<ListedGame>>>
+    fun getGamesList(query: String): Flow<PagingData<ListedGame>>
+
+//    suspend fun getGamesList(
+//        query: String
+//    ): Flow<Resource<List<ListedGame>>>
 
     suspend fun filterGamesListByClickedGenre(
         genreId: String

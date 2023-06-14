@@ -110,8 +110,8 @@ dependencies {
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.8.41-beta'
 
     // Paging 3
-    implementation "androidx.paging:paging-runtime-ktx:3.2.0-alpha06"
-    implementation "androidx.paging:paging-compose:1.0.0-alpha20"
+    implementation "androidx.paging:paging-runtime-ktx:3.2.0-beta01"
+    implementation "androidx.paging:paging-compose:3.2.0-beta01"
 
     // Material Icons
     implementation 'androidx.compose.material:material-icons-extended:1.5.0-alpha03'

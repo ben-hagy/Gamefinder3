@@ -1,8 +1,8 @@
 package com.benhagy.gamefinder3.domain.usecases
 
+import androidx.paging.PagingData
 import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.domain.repository.GamefinderRepository
-import com.benhagy.gamefinder3.util.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -11,7 +11,7 @@ class GetAndSearchGamesList @Inject constructor(
     private val repository: GamefinderRepository
 ) {
 
-    suspend operator fun invoke(query: String): Flow<Resource<List<ListedGame>>> {
+    operator fun invoke(query: String): Flow<PagingData<ListedGame>> {
         return repository.getGamesList(query)
     }
 }

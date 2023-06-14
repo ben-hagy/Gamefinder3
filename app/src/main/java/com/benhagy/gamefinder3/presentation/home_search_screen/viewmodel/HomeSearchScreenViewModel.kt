@@ -5,12 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.domain.usecases.UseCaseContainer
 import com.benhagy.gamefinder3.util.Constants.SEARCH_DELAY_TIME
 import com.benhagy.gamefinder3.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +29,10 @@ class HomeSearchScreenViewModel @Inject constructor(
 
     init {
         getGenresList()
-        getGamesList()
+
+        state = state.copy(
+            games = getGamesList(query = state.searchQuery)
+        )
     }
 
     fun onEvent(event: HomeSearchScreenEvent) {
@@ -35,80 +42,90 @@ class HomeSearchScreenViewModel @Inject constructor(
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(SEARCH_DELAY_TIME)
-                    getGamesList()
+                    state = state.copy(
+                        games = getGamesList(query = event.query)
+                    )
                 }
             }
 
-            is HomeSearchScreenEvent.OnGenreButtonClicked -> {
-                state = state.copy(genreId = event.genreId, isRefreshing = true, isSelected = true)
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    filterGamesListByClickedGenre(genreId = event.genreId)
-                }
-                state = state.copy(isRefreshing = false)
-            }
+//            is HomeSearchScreenEvent.OnGenreButtonClicked -> {
+//                state = state.copy(genreId = event.genreId, isRefreshing = true, isSelected = true)
+//                searchJob?.cancel()
+//                searchJob = viewModelScope.launch {
+//                    filterGamesListByClickedGenre(genreId = event.genreId)
+//                }
+//                state = state.copy(isRefreshing = false)
+//            }
 
             is HomeSearchScreenEvent.OnSearchClearClicked -> {
                 state = state.copy(searchQuery = "", isSelected = false)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
-                    getGamesList()
+                    state = state.copy(
+                        getGamesList(query = state.searchQuery)
+                    )
                 }
             }
+            else -> Unit
         }
     }
 
-    private fun getGamesList(
-        query: String = state.searchQuery.lowercase()
-    ) {
-        viewModelScope.launch {
-            useCaseContainer.getAndSearchGamesList(query).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        result.data?.let { listings ->
-                            state = state.copy(
-                                games = listings, isRefreshing = true
-                            )
-                        }
-                    }
+//    private fun getGamesList(
+//        query: String = state.searchQuery.lowercase()
+//    ) {
+//        viewModelScope.launch {
+//            useCaseContainer.getAndSearchGamesList(query).collect { result ->
+//                when (result) {
+//                    is Resource.Success -> {
+//                        result.data?.let { listings ->
+//                            state = state.copy(
+//                                games = listings, isRefreshing = true
+//                            )
+//                        }
+//                    }
+//
+//                    is Resource.Error ->
+//                        state = state.copy(error = "An error occurred!")
+//
+//                    is Resource.Loading -> {
+//                        state = state.copy(isLoading = result.isLoading)
+//                    }
+//                }
+//            }
+//        }
+//        state = state.copy(isRefreshing = false)
+//    }
 
-                    is Resource.Error ->
-                        state = state.copy(error = "An error occurred!")
-
-                    is Resource.Loading -> {
-                        state = state.copy(isLoading = result.isLoading)
-                    }
-                }
-            }
-        }
-        state = state.copy(isRefreshing = false)
+    private fun getGamesList(query: String): Flow<PagingData<ListedGame>> {
+        return useCaseContainer.getAndSearchGamesList(query)
+            .cachedIn(viewModelScope)
     }
 
-    private fun filterGamesListByClickedGenre(
-        genreId: String
-    ) {
-        viewModelScope.launch {
-            useCaseContainer.filterGamesByClickedGenre(genreId).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        result.data?.let { listings ->
-                            state = state.copy(
-                                games = listings, isRefreshing = true
-                            )
-                        }
-                    }
-
-                    is Resource.Error ->
-                        state = state.copy(error = "An error occurred!")
-
-                    is Resource.Loading -> {
-                        state = state.copy(isLoading = result.isLoading)
-                    }
-                }
-            }
-        }
-        state = state.copy(isRefreshing = false)
-    }
+//    private fun filterGamesListByClickedGenre(
+//        genreId: String
+//    ) {
+//        viewModelScope.launch {
+//            useCaseContainer.filterGamesByClickedGenre(genreId).collect { result ->
+//                when (result) {
+//                    is Resource.Success -> {
+//                        result.data?.let { listings ->
+//                            state = state.copy(
+//                                games = listings, isRefreshing = true
+//                            )
+//                        }
+//                    }
+//
+//                    is Resource.Error ->
+//                        state = state.copy(error = "An error occurred!")
+//
+//                    is Resource.Loading -> {
+//                        state = state.copy(isLoading = result.isLoading)
+//                    }
+//                }
+//            }
+//        }
+//        state = state.copy(isRefreshing = false)
+//    }
 
     private fun getGenresList() {
         viewModelScope.launch {
