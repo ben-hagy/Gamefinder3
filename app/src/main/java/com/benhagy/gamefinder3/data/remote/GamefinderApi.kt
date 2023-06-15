@@ -11,6 +11,9 @@ import retrofit2.http.Query
 /*
 api interface that contains all the queries we will send to the api source (RAWG) to get our data
 responses
+
+we use the same api call (getGames) to handle all of our querying for filtered results on the home
+screen, just with different parameters. this is also the only api call whose response is paginated.
  */
 
 interface GamefinderApi {

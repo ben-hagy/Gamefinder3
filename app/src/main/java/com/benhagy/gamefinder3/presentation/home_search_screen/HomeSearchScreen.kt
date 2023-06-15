@@ -2,6 +2,7 @@ package com.benhagy.gamefinder3.presentation.home_search_screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -41,23 +41,30 @@ import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSea
 import com.benhagy.gamefinder3.presentation.home_search_screen.viewmodel.HomeSearchScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
+import com.benhagy.gamefinder3.util.Constants.SEARCH_DELAY_TIME
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 @RootNavGraph(start = true)
 @Destination
 fun HomeSearchScreen(
-    navigator: DestinationsNavigator, viewModel: HomeSearchScreenViewModel = hiltViewModel()
+    navigator: DestinationsNavigator,
+    viewModel: HomeSearchScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+    // listState used to scroll list back to position 0 whenever search queries change
     val listState = rememberLazyGridState()
+    // coroutineScope used to handle delays and scroll position changes
     val coroutineScope = rememberCoroutineScope()
 
+    // reference used on this screen for our paged items
     val games: LazyPagingItems<ListedGame> = state.games.collectAsLazyPagingItems()
 
+    // network error will show a screen informing the user to check their network and restart app
     if (state.error != null) {
         Column(
             modifier = Modifier
@@ -69,32 +76,57 @@ fun HomeSearchScreen(
             Text(
                 text = state.error.toString(), style = Typography.titleLarge
             )
+            Text(
+                text = stringResource(R.string.network_error_home_screen),
+                style = Typography.labelMedium
+            )
         }
+        // no error will instead show the screen normally
     } else {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            OutlinedTextField(value = state.searchQuery, onValueChange = {
-                viewModel.onEvent(
-                    HomeSearchScreenEvent.OnSearchQueryChanged(it)
-                )
-            }, modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            // search field
+            OutlinedTextField(
+                value = state.searchQuery,
+                onValueChange = {
+                    viewModel.onEvent(
+                        HomeSearchScreenEvent.OnSearchQueryChanged(it)
+                    )
+                    coroutineScope.launch {
+                        delay(SEARCH_DELAY_TIME)
+                        listState.scrollToItem(0)
+                    }
+                }, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 trailingIcon = {
+                    // clear button on the search box
                     Icon(Icons.Filled.Clear,
                         contentDescription = stringResource(R.string.delete_search_text_cd),
                         modifier = Modifier.clickable {
                             viewModel.onEvent(
-                                HomeSearchScreenEvent.OnSearchClearClicked
+                                HomeSearchScreenEvent.OnSearchQueryChanged("")
                             )
-                        })
-                }, maxLines = 1, singleLine = true, placeholder = {
-                    Text(
-                        text = stringResource(R.string.search_hint), fontFamily = montserratFonts
+                            coroutineScope.launch {
+                                delay(SEARCH_DELAY_TIME)
+                                listState.scrollToItem(0)
+                            }
+                        }
                     )
-                })
+                },
+                maxLines = 1,
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.search_hint),
+                        fontFamily = montserratFonts
+                    )
+                }
+            )
             Spacer(modifier = Modifier.height(8.dp))
+
+            // genre buttons row
             LazyRow(
                 state = rememberLazyListState()
             ) {
@@ -106,6 +138,10 @@ fun HomeSearchScreen(
                             viewModel.onEvent(
                                 event = HomeSearchScreenEvent.OnGenreButtonClicked(genre.id.toString())
                             )
+                            coroutineScope.launch {
+                                delay(SEARCH_DELAY_TIME)
+                                listState.scrollToItem(0)
+                            }
                         }
                         .padding(4.dp))
                     if (i < state.genres.size) {
@@ -117,47 +153,43 @@ fun HomeSearchScreen(
                     }
                 }
             }
-
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxHeight(), columns = GridCells.Fixed(2), state = listState
-            ) {
-                if (state.isRefreshing) {
-                    coroutineScope.launch { listState.animateScrollToItem(0) }
-                }
-                items(count = games.itemCount, key = games.itemKey { it.id }) { index ->
-                    val game = games[index]
-                    if (game != null) {
-                        ListedGameItem(game = game,
-                            isRefreshing = state.isRefreshing,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigator.navigate(GameDetailsScreenDestination(game.id))
-                                }
-                                .padding(4.dp))
+            // show loading box when list is loading
+            when (games.itemCount) {
+                0 -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
-                item {
-                    when (games.loadState.refresh) {
-                        is LoadState.Loading -> {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                CircularProgressIndicator()
+                // otherwise show paginated list results
+                else -> {
+
+                    LazyVerticalGrid(
+                        modifier = Modifier.fillMaxHeight(),
+                        columns = GridCells.Fixed(2),
+                        state = listState
+                    ) {
+                        items(
+                            count = games.itemCount,
+                            key = games.itemKey { it.id }) { index ->
+                            val game = games[index]
+                            if (game != null) {
+                                ListedGameItem(game = game,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            navigator.navigate(GameDetailsScreenDestination(game.id))
+                                        }
+                                        .padding(4.dp))
                             }
                         }
-
-                        is LoadState.Error -> {
-                            Text(text = "Error: ${(games.loadState.refresh as LoadState.Error).error.localizedMessage}")
-                        }
-
-                        else -> {}
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

@@ -10,6 +10,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+// dependency injection module to provide repository interface via repo impl when requested
+// these modules also ensure only a single instance of these objects live in memory
+
+
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {

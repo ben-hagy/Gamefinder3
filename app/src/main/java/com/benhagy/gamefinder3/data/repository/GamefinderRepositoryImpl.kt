@@ -19,6 +19,8 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+// implementation of our repository, which handles our local and remote data sources (api and db)
+
 class GamefinderRepositoryImpl @Inject constructor(
     private val api: GamefinderApi,
     private val dao: BookmarksDao
@@ -32,7 +34,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                enablePlaceholders = true
+                enablePlaceholders = false,
             ),
             pagingSourceFactory = {
                 GameListPagingSource(api, query, genreId)
@@ -40,7 +42,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    // returns stable list of genres for the genre filter buttons
+    // returns list of genres for the genre filter buttons
     override suspend fun getGenresList(): Flow<Resource<List<Genre>>> {
         return flow {
             emit(Resource.Loading())

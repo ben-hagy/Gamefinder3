@@ -30,4 +30,5 @@
     <string name="save_note_cd">Save note</string>
     <string name="clear_note_cd">Clear note</string>
     <string name="no_screenshots_found">No screenshots found.</string>
+    <string name="network_error_home_screen">Check your network and restart the app.</string>
 </resources>

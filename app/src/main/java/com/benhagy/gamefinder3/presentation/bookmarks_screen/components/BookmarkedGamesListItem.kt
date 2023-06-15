@@ -87,7 +87,7 @@ fun BookmarkedGamesListItem(
                 MaterialTheme.colorScheme.background
                     .copy(alpha = 0.1f)
             )
-                // full card can be clicked to go to details screen for the clicked game
+            // full card can be clicked to go to details screen for the clicked game
             .clickable {
                 navigator.navigate(GameDetailsScreenDestination(game.id!!))
             }
@@ -141,7 +141,6 @@ fun BookmarkedGamesListItem(
                         Spacer(modifier = Modifier.height(2.dp))
 
                         // date the game was added
-                        // this is also how the list is sorted for display (newer dates go on list bottom)
                         Row {
                             Text(
                                 text = stringResource(R.string.date_added_display_text),
@@ -160,6 +159,7 @@ fun BookmarkedGamesListItem(
                         }
                         Spacer(modifier = Modifier.height(2.dp))
                         Row {
+                            // rating bar
                             UserRatingBar(
                                 rating = userRating,
                                 onRatingChange = {

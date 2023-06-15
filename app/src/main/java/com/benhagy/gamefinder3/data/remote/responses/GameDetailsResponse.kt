@@ -3,13 +3,17 @@ package com.benhagy.gamefinder3.data.remote.responses
 import com.benhagy.gamefinder3.domain.models.GameDetails
 import com.google.gson.annotations.SerializedName
 
+// response object and mapper for GameDetails
+// called by repo functions when the api call occurs
+
 data class GameDetailsResponse(
     val id: Int?,
     val name: String?,
     val description: String?,
     val metacritic: Int?,
     val released: String?,
-    @SerializedName("background_image") val backgroundImage: String?,
+    @SerializedName("background_image")
+    val backgroundImage: String?,
     val website: String?,
     val playtime: Int?,
     val platforms: List<PlatformResponse>,

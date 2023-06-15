@@ -28,7 +28,6 @@ import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 fun ListedGameItem(
     game: ListedGame,
     modifier: Modifier = Modifier,
-    isRefreshing: Boolean
 ) {
     Card(
         modifier = modifier
@@ -61,7 +60,6 @@ fun ListedGameItem(
         ) {
             PlatformsList(
                 platforms = game.platforms ?: emptyList(),
-                isRefreshing
             )
             Text(
                 text = game.name,

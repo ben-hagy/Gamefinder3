@@ -12,6 +12,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+// dependency injection module to provide our api service instantiation where needed
+// these modules also ensure only a single instance of these objects live in memory
+
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {

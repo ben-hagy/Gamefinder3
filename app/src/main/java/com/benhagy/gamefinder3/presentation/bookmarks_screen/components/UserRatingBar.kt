@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.smarttoolfactory.ratingbar.RatingBar
 import com.smarttoolfactory.ratingbar.model.Shimmer
 
+// rating bar implemented via github library
+
 @Composable
 fun UserRatingBar(
     rating: Float?,
@@ -34,7 +36,7 @@ fun UserRatingBar(
             )
         ),
         tintEmpty = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
-        itemSize = 36.dp,
+        itemSize = 32.dp,
         onRatingChange = onRatingChange
     )
 }

@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 /*
 entity representing primary database table for saving/deleting favorites.
 
-represented as simple objects only presenting what will be seen on the individual list items, plus
-a primary key, because the details screen is a shared destination for favorites and search results.
+local-datetime is taken the instant an item is added to the db, to help logic for sorting the display
+order of the favorites list
  */
 
 

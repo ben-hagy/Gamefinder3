@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlatformsList(
     platforms: List<Platform>,
-    isRefreshing: Boolean
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -33,9 +32,6 @@ fun PlatformsList(
             .padding(horizontal = 4.dp, vertical = 6.dp),
         state = listState
     ) {
-        if (isRefreshing) {
-            coroutineScope.launch { listState.animateScrollToItem(0) }
-        }
         items(platforms.size) { i ->
             val platform = platforms[i].name.toString()
             Card(

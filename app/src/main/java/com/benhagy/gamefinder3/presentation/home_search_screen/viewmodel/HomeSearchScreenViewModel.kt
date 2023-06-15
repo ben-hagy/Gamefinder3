@@ -27,6 +27,7 @@ class HomeSearchScreenViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+    // get list of genres, then copy list of games to the provided state variable
     init {
         getGenresList()
 
@@ -34,7 +35,7 @@ class HomeSearchScreenViewModel @Inject constructor(
             games = getGamesList(query = state.searchQuery, null)
         )
     }
-
+    // event calls to be used in the screen
     fun onEvent(event: HomeSearchScreenEvent) {
         when (event) {
             is HomeSearchScreenEvent.OnSearchQueryChanged -> {
@@ -49,7 +50,7 @@ class HomeSearchScreenViewModel @Inject constructor(
             }
 
             is HomeSearchScreenEvent.OnGenreButtonClicked -> {
-                state = state.copy(genreId = event.genreId, isRefreshing = true)
+                state = state.copy(genreId = event.genreId)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(SEARCH_DELAY_TIME)
@@ -57,18 +58,6 @@ class HomeSearchScreenViewModel @Inject constructor(
                         games = getGamesList(genreId = event.genreId, query = "")
                     )
                 }
-                state = state.copy(isRefreshing = false)
-            }
-
-            is HomeSearchScreenEvent.OnSearchClearClicked -> {
-                state = state.copy(searchQuery = "")
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    state = state.copy(
-                        games = getGamesList(query = state.searchQuery, null)
-                    )
-                }
-                state = state.copy(isRefreshing = false)
             }
         }
     }
@@ -88,7 +77,7 @@ class HomeSearchScreenViewModel @Inject constructor(
                     is Resource.Error -> state = state.copy(error = "An error occurred!")
 
                     is Resource.Loading -> {
-                        state = state.copy(isLoading = result.isLoading)
+                        state = state.copy(contentIsLoading = result.isLoading)
                     }
                 }
             }

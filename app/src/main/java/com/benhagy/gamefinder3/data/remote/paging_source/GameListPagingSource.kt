@@ -9,6 +9,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/*
+this paging source handles our primary search api call for populating the paginated list of results
+on the home/search screen. we can pass a search query and/or a genreId to filter our search results
+as per the api queries.
+
+nextKey only goes up to 5, thus ensuring we only load 100 total items per search query (api will
+return many more results if we don't limit it)
+ */
+
 class GameListPagingSource @Inject constructor(
     private val api: GamefinderApi,
     private val query: String?,
@@ -33,7 +42,13 @@ class GameListPagingSource @Inject constructor(
             LoadResult.Page(
                 data = games,
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = if (games.isEmpty()) null else nextPageNumber + 1
+                nextKey = if (games.isEmpty()) {
+                    null
+                } else if (nextPageNumber != 6) {
+                    nextPageNumber + 1
+                } else {
+                    null
+                }
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

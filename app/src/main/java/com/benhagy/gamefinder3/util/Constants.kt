@@ -1,5 +1,12 @@
 package com.benhagy.gamefinder3.util
 
+/*
+these values are used throughout the app and never change.
+"SEARCH_DELAY_TIME" is also used to artifically delay scroll to the top of the home screen list when
+query or genreId parameters change, for smoother UX
+"DELETE_DELAY_TIME" is similarly used to improve UX feedback when users delete bookmarked items
+ */
+
 object Constants {
 
     const val BASE_URL = "https://api.rawg.io/api/"

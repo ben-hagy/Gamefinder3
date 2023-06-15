@@ -1,5 +1,7 @@
 package com.benhagy.gamefinder3.domain.usecases
 
+// container provided to our view-models to perform data layer repo actions
+
 data class UseCaseContainer(
     val getAndSearchGamesList: GetAndSearchGamesList,
     val getGameDetails: GetGameDetails,
