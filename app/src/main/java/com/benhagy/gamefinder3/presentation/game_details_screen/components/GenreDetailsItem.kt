@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.domain.models.Genre
+import com.benhagy.gamefinder3.presentation.common_components.DefaultSpacer
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 
 @Composable
@@ -55,7 +56,7 @@ fun GenreDetailsItem(
                     .clip(RoundedCornerShape(10)),
                 contentDescription = genre.backgroundImage ?: "",
             )
-            Spacer(Modifier.height(6.dp))
+            DefaultSpacer()
             Row(
                 modifier = Modifier
                     .height(60.dp),

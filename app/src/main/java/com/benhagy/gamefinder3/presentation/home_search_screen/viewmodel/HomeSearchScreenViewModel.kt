@@ -50,7 +50,7 @@ class HomeSearchScreenViewModel @Inject constructor(
             }
 
             is HomeSearchScreenEvent.OnGenreButtonClicked -> {
-                state = state.copy(genreId = event.genreId)
+                state = state.copy(genreId = event.genreId, searchQuery = "")
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(SEARCH_DELAY_TIME)

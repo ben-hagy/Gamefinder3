@@ -24,6 +24,11 @@ fun ThinSpacer() {
 }
 
 @Composable
+fun FinalSpacer() {
+    Spacer(modifier = Modifier.height(30.dp))
+}
+
+@Composable
 fun DefaultDivider() {
     Divider(
         thickness = 0.5.dp,

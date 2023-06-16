@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.presentation.common_components.ThinSpacer
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseReleaseDate
@@ -96,7 +97,7 @@ fun DetailsTitleCard(
                         )
                     }
                 }
-                Spacer(Modifier.height(2.dp))
+                ThinSpacer()
 
                 // playtime
                 Row(
@@ -117,9 +118,9 @@ fun DetailsTitleCard(
                         style = Typography.labelSmall
                     )
                 }
-                Spacer(Modifier.height(2.dp))
-                // metascore
+                ThinSpacer()
 
+                // metascore
                 Row(
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     verticalAlignment = Alignment.Bottom,

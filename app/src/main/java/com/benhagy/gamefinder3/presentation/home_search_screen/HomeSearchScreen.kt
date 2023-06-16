@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,8 +27,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
@@ -34,6 +40,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.domain.models.ListedGame
+import com.benhagy.gamefinder3.presentation.common_components.ThinSpacer
+import com.benhagy.gamefinder3.presentation.common_components.WideSpacer
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.home_search_screen.components.ListedGameItem
 import com.benhagy.gamefinder3.presentation.home_search_screen.components.ListedGenreItem
@@ -48,6 +56,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @RootNavGraph(start = true)
 @Destination
@@ -60,6 +69,11 @@ fun HomeSearchScreen(
     val listState = rememberLazyGridState()
     // coroutineScope used to handle delays and scroll position changes
     val coroutineScope = rememberCoroutineScope()
+
+    // values to handle focus and keyboard actions for the search field
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val localFocusManager = LocalFocusManager.current
+
 
     // reference used on this screen for our paged items
     val games: LazyPagingItems<ListedGame> = state.games.collectAsLazyPagingItems()
@@ -76,6 +90,7 @@ fun HomeSearchScreen(
             Text(
                 text = state.error.toString(), style = Typography.titleLarge
             )
+            ThinSpacer()
             Text(
                 text = stringResource(R.string.network_error_home_screen),
                 style = Typography.labelMedium
@@ -97,9 +112,16 @@ fun HomeSearchScreen(
                         delay(SEARCH_DELAY_TIME)
                         listState.scrollToItem(0)
                     }
-                }, modifier = Modifier
+                },
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        localFocusManager.clearFocus()
+                        keyboardController?.hide()
+                    }),
                 trailingIcon = {
                     // clear button on the search box
                     Icon(Icons.Filled.Clear,
@@ -123,8 +145,9 @@ fun HomeSearchScreen(
                         fontFamily = montserratFonts
                     )
                 }
+
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            WideSpacer()
 
             // genre buttons row
             LazyRow(
