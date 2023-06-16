@@ -3,6 +3,7 @@ package com.benhagy.gamefinder3.presentation.game_details_screen.components
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,77 +46,80 @@ fun DetailsTopAppBar(
 
     state.gameDetails?.let { gameDetails ->
 
-
-        TopAppBar(
-            title = {},
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            actions = {
-                Row(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    IconButton(
-                        onClick = {
-                            navigator.popBackStack()
-                        }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.go_back_cd),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                if (state.isBookmarked) {
-                                    viewModel.onEvent(
-                                        GameDetailsScreenEvent.RemoveGameFromBookmarks(
-                                            id = state.gameDetails.id!!
-                                        )
-                                    )
-                                    Toast.makeText(
-                                        context,
-                                        "${gameDetails.name} removed from Bookmarks.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
-
-                                } else {
-                                    viewModel.onEvent(
-                                        GameDetailsScreenEvent.BookmarkGame(game = state.gameDetails)
-                                    )
-                                    Toast.makeText(
-                                        context,
-                                        "${gameDetails.name} added to Bookmarks.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
-                                }
-                            }
-                        }, modifier = Modifier.padding(4.dp)
+        Column(
+            modifier = Modifier.padding(4.dp)
+        ) {
+            TopAppBar(
+                title = {},
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                actions = {
+                    Row(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Icon(
-                            imageVector = if (state.isBookmarked) {
-                                Icons.Default.Bookmark
-                            } else {
-                                Icons.Default.BookmarkBorder
-                            },
-                            contentDescription = stringResource(R.string.add_to_bookmarks_cd),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                }
+                        IconButton(
+                            onClick = {
+                                navigator.popBackStack()
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = stringResource(R.string.go_back_cd),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    if (state.isBookmarked) {
+                                        viewModel.onEvent(
+                                            GameDetailsScreenEvent.RemoveGameFromBookmarks(
+                                                id = state.gameDetails.id!!
+                                            )
+                                        )
+                                        Toast.makeText(
+                                            context,
+                                            "${gameDetails.name} removed from Bookmarks.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
 
-            },
-            scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-        )
+
+                                    } else {
+                                        viewModel.onEvent(
+                                            GameDetailsScreenEvent.BookmarkGame(game = state.gameDetails)
+                                        )
+                                        Toast.makeText(
+                                            context,
+                                            "${gameDetails.name} added to Bookmarks.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                    }
+                                }
+                            }, modifier = Modifier.padding(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (state.isBookmarked) {
+                                    Icons.Default.Bookmark
+                                } else {
+                                    Icons.Default.BookmarkBorder
+                                },
+                                contentDescription = stringResource(R.string.add_to_bookmarks_cd),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
+
+                },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+            )
+        }
     }
 }

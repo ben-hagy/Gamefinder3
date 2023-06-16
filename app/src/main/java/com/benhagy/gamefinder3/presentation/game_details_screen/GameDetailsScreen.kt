@@ -25,6 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.presentation.common_components.DefaultDivider
+import com.benhagy.gamefinder3.presentation.common_components.DefaultSpacer
+import com.benhagy.gamefinder3.presentation.common_components.ThinSpacer
+import com.benhagy.gamefinder3.presentation.common_components.WideSpacer
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.DescriptionDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.DetailsScreenshotPager
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.DetailsTitleCard
@@ -50,7 +54,7 @@ fun GameDetailsScreen(
 ) {
     val state = viewModel.state
 
-    val overviewScroll = rememberScrollState() // for whole screen scrolling
+    val overviewScroll = rememberScrollState() // for parent screen scrolling
 
     state.gameDetails?.let { gameDetails ->
 
@@ -80,13 +84,9 @@ fun GameDetailsScreen(
                     .fillMaxSize()
                     .padding(4.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(4.dp)
-                ) {
-                    // top app bar with back button and bookmarks icon buttons
-                    DetailsTopAppBar(navigator = navigator)
-                }
+                // top app bar with back button and bookmarks icon buttons
+                DetailsTopAppBar(navigator = navigator)
+
                 // parent content column
                 Column(
                     modifier = Modifier
@@ -96,25 +96,22 @@ fun GameDetailsScreen(
                 ) {
                     DetailsTitleCard()
 
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Divider(
-                        thickness = 0.5.dp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    DefaultSpacer()
+                    DefaultDivider()
+                    DefaultSpacer()
 
                     // screenshots pager
                     DetailsScreenshotPager()
 
-                    Divider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.onBackground)
-                    Spacer(modifier = Modifier.height(4.dp))
+                    DefaultDivider()
+                    DefaultSpacer()
 
                     // middle window with platforms list, and esrb/tags window
 
                     PlatformsDetailsItem()
                     EsrbAndTagsWindow()
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    WideSpacer()
 
                     // genres item
                     if (gameDetails.genres.isNotEmpty()) {
@@ -203,15 +200,12 @@ fun GameDetailsScreen(
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
-                        Divider(
-                            thickness = 0.5.dp,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
-                        )
+                        DefaultDivider()
                         Spacer(modifier = Modifier.height(2.dp))
                         DescriptionDetailsItem()
                     }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    ThinSpacer()
 
                     // weblink item
                     WeblinkDetailsItem()

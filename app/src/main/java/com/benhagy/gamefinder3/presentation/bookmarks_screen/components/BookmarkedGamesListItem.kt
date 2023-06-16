@@ -48,6 +48,8 @@ import com.benhagy.gamefinder3.R
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenEvent
 import com.benhagy.gamefinder3.presentation.bookmarks_screen.viewmodel.BookmarksScreenViewModel
+import com.benhagy.gamefinder3.presentation.common_components.DefaultSpacer
+import com.benhagy.gamefinder3.presentation.common_components.ThinSpacer
 import com.benhagy.gamefinder3.presentation.destinations.GameDetailsScreenDestination
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.util.parseDate
@@ -123,7 +125,7 @@ fun BookmarkedGamesListItem(
                             contentDescription = game.backgroundImage ?: "",
                         )
                     }
-                    Spacer(modifier = Modifier.width(4.dp))
+                    DefaultSpacer()
                     Column(
                         modifier = Modifier
                             .weight(3f)
@@ -138,7 +140,7 @@ fun BookmarkedGamesListItem(
                             overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onBackground
                         )
-                        Spacer(modifier = Modifier.height(2.dp))
+                        ThinSpacer()
 
                         // date the game was added
                         Row {
@@ -157,7 +159,7 @@ fun BookmarkedGamesListItem(
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                         }
-                        Spacer(modifier = Modifier.height(2.dp))
+                        ThinSpacer()
                         Row {
                             // rating bar
                             UserRatingBar(

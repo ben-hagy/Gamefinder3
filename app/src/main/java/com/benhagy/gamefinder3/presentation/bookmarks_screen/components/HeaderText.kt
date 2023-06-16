@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.benhagy.gamefinder3.presentation.common_components.ThickDivider
+import com.benhagy.gamefinder3.presentation.common_components.ThinSpacer
+import com.benhagy.gamefinder3.presentation.common_components.WideSpacer
 
 // reusable header
 
@@ -28,15 +31,12 @@ fun HeaderText(
         modifier = modifier
     )
     if (hasFluffText) {
-        Spacer(modifier = modifier.height(8.dp))
+        WideSpacer()
         Text(
             text = fluffText ?: ""
         )
     } else {
-        Spacer(modifier = Modifier.height(2.dp))
-        Divider(
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        ThinSpacer()
+        ThickDivider()
     }
 }
