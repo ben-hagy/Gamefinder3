@@ -36,8 +36,7 @@ fun PublisherDetailsItem(
             .fillMaxWidth()
             .padding(2.dp)
             .background(
-                MaterialTheme.colorScheme.secondaryContainer
-                    .copy(alpha = 0.1f)
+                MaterialTheme.colorScheme.background
             )
     ) {
         Row(

@@ -19,6 +19,7 @@ class GameDetailsScreenViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val useCaseContainer: UseCaseContainer
 ) : ViewModel() {
+
     var state by mutableStateOf(GameDetailsScreenState())
 
     init {

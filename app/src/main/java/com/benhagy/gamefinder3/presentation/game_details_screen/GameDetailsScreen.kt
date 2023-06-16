@@ -1,96 +1,46 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen
 
-import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.CalendarMonth
-import androidx.compose.material.icons.rounded.Public
-import androidx.compose.material.icons.rounded.Schedule
-import androidx.compose.material.icons.rounded.StarRate
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.benhagy.gamefinder3.R
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.DescriptionDetailsItem
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.DetailsScreenshotPager
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.DetailsTitleCard
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.DetailsTopAppBar
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.DeveloperDetailsItem
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.EsrbAndTagsWindow
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.GenreDetailsItem
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.PlatformsDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.components.PublisherDetailsItem
-import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenEvent
+import com.benhagy.gamefinder3.presentation.game_details_screen.components.WeblinkDetailsItem
 import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDetailsScreenViewModel
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
-import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
-import com.benhagy.gamefinder3.util.parse
-import com.benhagy.gamefinder3.util.parseEsrbAsLogo
-import com.benhagy.gamefinder3.util.parseEsrbFluffText
-import com.benhagy.gamefinder3.util.parsePlatformsList
-import com.benhagy.gamefinder3.util.parseReleaseDate
-import com.benhagy.gamefinder3.util.parseTagsList
-import com.benhagy.gamefinder3.util.parseWebsiteAsHyperlink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Destination
 fun GameDetailsScreen(
@@ -100,439 +50,80 @@ fun GameDetailsScreen(
 ) {
     val state = viewModel.state
 
-    val scroll = rememberScrollState(0) // for text scroller
     val overviewScroll = rememberScrollState() // for whole screen scrolling
-    val coroutineScope = rememberCoroutineScope() // for async tasks
-    val context = LocalContext.current // for the toasts, and the website intent
 
     state.gameDetails?.let { gameDetails ->
 
-        val pagerState = rememberPagerState(
-            initialPage = 0,
-            initialPageOffsetFraction = 0f
-        ) {
-            gameDetails.screenshots.size
-        }
-
-        // ensures the bookmark icon is filled/unfilled appropriately
+        // ensures the bookmark icon is filled appropriately on screen launch
         LaunchedEffect(gameDetails.id) {
             gameDetails.id?.let { viewModel.isBookmarked(gameId = it) }
         }
 
+        // if there's a network error, show the error
         if (state.error != null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp),
+                    .padding(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = state.error.toString(),
+                    text = { state.error + (R.string.network_error_home_screen) }.toString(),
                     style = Typography.titleLarge
                 )
             }
+            // otherwise, show the screen
         } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(4.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .padding(4.dp)
                 ) {
                     // top app bar with back button and bookmarks icon buttons
-                    TopAppBar(
-                        title = {},
-                        modifier = Modifier
-                            .background(color = MaterialTheme.colorScheme.background)
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        actions = {
-                            Row(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        navigator.popBackStack()
-                                    }) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = stringResource(R.string.go_back_cd),
-                                        tint = MaterialTheme.colorScheme.onBackground,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
-                                IconButton(
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            if (state.isBookmarked) {
-                                                viewModel.onEvent(
-                                                    GameDetailsScreenEvent.RemoveGameFromBookmarks(
-                                                        id = state.gameDetails.id!!
-                                                    )
-                                                )
-                                                Toast.makeText(
-                                                    context,
-                                                    "${gameDetails.name} removed from Bookmarks.",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-
-
-                                            } else {
-                                                viewModel.onEvent(
-                                                    GameDetailsScreenEvent.BookmarkGame(game = state.gameDetails)
-                                                )
-                                                Toast.makeText(
-                                                    context,
-                                                    "${gameDetails.name} added to Bookmarks.",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-
-                                            }
-                                        }
-                                    }, modifier = Modifier.padding(4.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = if (state.isBookmarked) {
-                                            Icons.Default.Bookmark
-                                        } else {
-                                            Icons.Default.BookmarkBorder
-                                        },
-                                        contentDescription = stringResource(R.string.add_to_bookmarks_cd),
-                                        tint = MaterialTheme.colorScheme.onBackground,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
-                            }
-
-                        },
-                        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-                    )
+                    DetailsTopAppBar(navigator = navigator)
                 }
+                // parent content column
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(4.dp)
                         .verticalScroll(overviewScroll)
                 ) {
-                    // second row with game icon, game name, release date, average playtime, & metascore
-                    Row {
-                        AsyncImage(
-                            model = gameDetails.backgroundImage ?: "",
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            alignment = Alignment.TopCenter,
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .size(80.dp)
-                                .clipToBounds()
-                                .border(
-                                    width = 2.dp,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = CircleShape
-                                )
-                                .clip(CircleShape)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .padding(8.dp)
-                        ) {
-                            // game name
-                            Text(
-                                modifier = Modifier.padding(
-                                    vertical = 4.dp, horizontal = 8.dp
-                                ),
-                                text = gameDetails.name.toString(),
-                                style = Typography.titleLarge
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                // release date
-                                Row(
-                                    modifier = Modifier.padding(
-                                        horizontal = 6.dp, vertical = 2.dp
-                                    ),
-                                    verticalAlignment = Alignment.Bottom,
-                                    horizontalArrangement = Arrangement.Start
-                                ) {
-                                    Icon(
-                                        modifier = Modifier.size(20.dp),
-                                        imageVector = Icons.Rounded.CalendarMonth,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.secondary
-                                    )
-                                    Text(
-                                        modifier = Modifier.padding(horizontal = 4.dp),
-                                        text = stringResource(R.string.released_header) +
-                                                parseReleaseDate(gameDetails.released.toString()),
-                                        style = Typography.labelSmall
-                                    )
-                                }
-                            }
-                            Spacer(Modifier.height(2.dp))
-                            // playtime
-                            Row(
-                                modifier = Modifier.padding(horizontal = 6.dp),
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = Icons.Rounded.Schedule,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                    text = stringResource(R.string.average_playtime_header) +
-                                            "${gameDetails.playtime ?: 0}h",
-                                    style = Typography.labelSmall
-                                )
-                            }
-                            // metascore
-                            Spacer(Modifier.height(2.dp))
-                            Row(
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = Icons.Rounded.StarRate,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                                Text(
-                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                    text = stringResource(R.string.metascore_header) +
-                                            "${gameDetails.metacritic ?: "N/A"}",
-                                    style = Typography.labelSmall
-                                )
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    DetailsTitleCard()
+
+                    Spacer(modifier = Modifier.height(4.dp))
                     Divider(
-                        thickness = 0.5.dp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     // screenshots pager
-                    if (gameDetails.screenshots.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            HorizontalPager(
-                                modifier = Modifier,
-                                state = pagerState,
-                                pageSpacing = 0.dp,
-                                userScrollEnabled = true,
-                                reverseLayout = false,
-                                contentPadding = PaddingValues(0.dp),
-                                beyondBoundsPageCount = 0,
-                                pageSize = PageSize.Fill,
-                                flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
-                                key = { gameDetails.screenshots[it] },
-                                pageNestedScrollConnection = PagerDefaults.pageNestedScrollConnection(
-                                    Orientation.Horizontal
-                                ),
-                                pageContent = { index ->
-                                    AsyncImage(
-                                        model = gameDetails.screenshots[index].image,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(bottom = 8.dp)
-                                            .clip(
-                                                RoundedCornerShape(8.dp)
-                                            )
-                                            .height(232.dp),
-                                        contentDescription = null
-                                    )
-                                }
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .offset(y = -(24).dp)
-                                .fillMaxWidth(0.5f)
-                                .clip(RoundedCornerShape(100))
-                                .background(Color.Transparent)
-                                .padding(8.dp)
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(
-                                            pagerState.currentPage - 1
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.align(Alignment.CenterStart)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowLeft,
-                                    contentDescription = stringResource(R.string.go_back_cd),
-                                    modifier = Modifier.size(60.dp),
-                                    tint = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
-                            IconButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(
-                                            pagerState.currentPage + 1
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.align(Alignment.CenterEnd)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.KeyboardArrowRight,
-                                    contentDescription = stringResource(R.string.go_forward_cd),
-                                    modifier = Modifier.size(60.dp),
-                                    tint = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
-                        }
-                    } else {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(232.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
+                    DetailsScreenshotPager()
 
-                            Text(
-                                text = stringResource(R.string.no_screenshots_found),
-                                style = Typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .3f)
-                            )
-                        }
-                        Divider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.onBackground)
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                    Row(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth()
-                    ) {
-                        // platforms text list
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.platforms_title),
-                                style = Typography.titleMedium
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(2f)
-                        ) {
-                            if (gameDetails.platforms.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.null_platforms_response),
-                                    style = Typography.labelSmall,
-                                )
-                            } else {
-                                Text(
-                                    text = parsePlatformsList(gameDetails.platforms),
-                                    style = Typography.labelSmall,
-                                    maxLines = 10,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                    }
-                    // esrb, platforms, and tags window
-                    Row(
-                        modifier = Modifier
-                            .padding(vertical = 6.dp, horizontal = 4.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            // rating image and description
-                            Column(
-                                modifier = Modifier.wrapContentSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Image(
-                                    painter = painterResource(
-                                        id = parseEsrbAsLogo(
-                                            gameDetails.esrb?.name ?: stringResource(
-                                                R.string.unknown_text
-                                            )
-                                        )
-                                    ),
-                                    contentDescription = stringResource(R.string.esrb_logo_cd),
-                                    contentScale = ContentScale.Inside,
-                                    alignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .height(120.dp)
-                                        .width(80.dp)
-                                )
-                                Text(
-                                    text = parseEsrbFluffText(
-                                        gameDetails.esrb?.name ?: stringResource(
-                                            R.string.unknown_text
-                                        )
-                                    ),
-                                    style = Typography.labelSmall,
-                                    textAlign = TextAlign.Start,
-                                    maxLines = 3
-                                )
-                            }
-                        }
-                        // tags
-                        Column(
-                            modifier = Modifier
-                                .weight(2f)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.tags_title),
-                                style = Typography.titleMedium
-                            )
-                            if (gameDetails.tags.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.null_tags_response),
-                                    style = Typography.labelSmall,
-                                )
-                            } else {
-                                Text(
-                                    text = parseTagsList(gameDetails.tags),
-                                    style = Typography.labelSmall,
-                                    maxLines = 10,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
+                    Divider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.onBackground)
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    }
+                    // middle window with platforms list, and esrb/tags window
+
+                    PlatformsDetailsItem()
+                    EsrbAndTagsWindow()
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    // genres item
                     if (gameDetails.genres.isNotEmpty()) {
                         Text(
                             modifier = Modifier
-                                .padding(top = 2.dp, bottom = 4.dp),
+                                .padding(top = 4.dp, bottom = 4.dp),
                             text = stringResource(R.string.genres_title),
                             style = Typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
                         Column(
@@ -550,13 +141,14 @@ fun GameDetailsScreen(
                             }
                         }
                     }
+                    // developer item
                     if (gameDetails.developers.isNotEmpty()) {
                         Text(
                             modifier = Modifier
-                                .padding(top = 2.dp, bottom = 4.dp),
+                                .padding(top = 4.dp, bottom = 4.dp),
                             text = stringResource(R.string.developers_title),
                             style = Typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
                         Column(
@@ -574,13 +166,15 @@ fun GameDetailsScreen(
                             }
                         }
                     }
+
+                    // publisher item
                     if (gameDetails.publishers.isNotEmpty()) {
                         Text(
                             modifier = Modifier
-                                .padding(top = 2.dp, bottom = 4.dp),
+                                .padding(top = 4.dp, bottom = 4.dp),
                             text = stringResource(R.string.publishers_title),
                             style = Typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
                         Column(
@@ -598,72 +192,29 @@ fun GameDetailsScreen(
                             }
                         }
                     }
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 4.dp, bottom = 4.dp),
-                        text = stringResource(R.string.description_title),
-                        style = Typography.titleLarge,
-                        color = MaterialTheme.colorScheme.secondary,
-                        textAlign = TextAlign.Center
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(
-                            text = parse(gameDetails.description.toString()),
-                            style = Typography.bodyMedium,
-                            textAlign = TextAlign.Justify,
-                            modifier = Modifier
-                                .height(350.dp)
-                                .verticalScroll(scroll)
-                                .padding(4.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize()
-                            .padding(4.dp)
 
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Public,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(20.dp)
+                    // description item
+                    if (!gameDetails.description.isNullOrEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 4.dp, bottom = 4.dp),
+                            text = stringResource(R.string.description_title),
+                            style = Typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
                         )
-                        if (!gameDetails.website.isNullOrEmpty()) {
-                            ClickableText(
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp),
-                                text = parseWebsiteAsHyperlink(gameDetails.website),
-                                style = TextStyle(
-                                    fontFamily = montserratFonts,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 16.sp,
-                                    lineHeight = 18.sp,
-                                    letterSpacing = 0.2.sp
-                                ),
-                                softWrap = true,
-                                onClick = {
-                                    context.startActivity(
-                                        Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(gameDetails.website)
-                                        )
-                                    )
-                                }
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.null_website_text),
-                                style = Typography.titleMedium,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
+                        Divider(
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        DescriptionDetailsItem()
                     }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // weblink item
+                    WeblinkDetailsItem()
                 }
             }
         }
