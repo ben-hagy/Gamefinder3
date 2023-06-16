@@ -93,20 +93,20 @@ fun parseReleaseDate(input: String?): String {
 // assigns correct esrb logos
 fun parseEsrbAsLogo(rating: String): Int {
     return when(rating) {
-        "Everyone" -> R.drawable.everyone
-        "Everyone 10+" -> R.drawable.everyone
-        "Teen" -> R.drawable.teen
-        "Mature" -> R.drawable.mature
-        "Adults Only" -> R.drawable.adults_only
-        else -> R.drawable.rating_pending
+        "Everyone" -> R.drawable.esrb_everyone
+        "Everyone 10+" -> R.drawable.esrb_everyone_10
+        "Teen" -> R.drawable.esrb_teen
+        "Mature" -> R.drawable.esrb_mature
+        "Adults Only" -> R.drawable.esrb_adults_only
+        else -> R.drawable.esrb_rating_pending
     }
 }
 // assigns correct esrb fluff text
 fun parseEsrbFluffText(rating: String): String {
     return when(rating) {
         "Everyone" -> "Rated E for Everyone"
-        "Everyone 10+" -> "Rated E for Everyone"
-        "Teen" -> "Rated T for Teen"
+        "Everyone 10+" -> "Rated E10+ for Everyone 10+"
+        "Teen" -> "Rated T for \nTeen"
         "Mature" -> "Rated M for Mature"
         "Adults Only" -> "Rated AO for Adults Only"
         else -> "Rating unknown or pending"

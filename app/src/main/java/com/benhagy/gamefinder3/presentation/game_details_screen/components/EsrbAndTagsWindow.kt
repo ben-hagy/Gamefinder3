@@ -62,7 +62,7 @@ fun EsrbAndTagsWindow(
                             )
                         ),
                         contentDescription = stringResource(R.string.esrb_logo_cd),
-                        contentScale = ContentScale.Inside,
+                        contentScale = ContentScale.Fit,
                         alignment = Alignment.Center,
                         modifier = Modifier
                             .height(120.dp)

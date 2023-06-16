@@ -10,20 +10,17 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.benhagy.gamefinder3.domain.models.Platform
 import com.benhagy.gamefinder3.presentation.ui.theme.Typography
 import com.benhagy.gamefinder3.presentation.ui.theme.montserratFonts
-import kotlinx.coroutines.launch
 
 @Composable
 fun PlatformsList(
     platforms: List<Platform>,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
     LazyRow(

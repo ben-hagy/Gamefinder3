@@ -31,4 +31,10 @@
     <string name="clear_note_cd">Clear note</string>
     <string name="no_screenshots_found">No screenshots found.</string>
     <string name="network_error_home_screen">Check your network and restart the app.</string>
+    <string name="rated_e_for_everyone">Rated E for Everyone</string>
+    <string name="rated_e10_for_everyone10">Rated E10+ for Everyone 10+</string>
+    <string name="rated_t_for_teen">Rated T for \nTeen</string>
+    <string name="rated_m_for_mature">Rated M for Mature</string>
+    <string name="rated_ao_for_adults_only">Rated AO for Adults Only</string>
+    <string name="rating_pending">Rating unknown or pending</string>
 </resources>
