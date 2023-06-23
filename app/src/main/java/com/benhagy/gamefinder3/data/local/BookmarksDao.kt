@@ -38,8 +38,6 @@ interface BookmarksDao {
         SET userRating = :rating
         WHERE id = :id
     """)
-    suspend fun upsertUserRating(rating: Float, id: Int)
-
-//    fun filterBookmarks()
+    fun upsertUserRating(rating: Float, id: Int)
 
 }

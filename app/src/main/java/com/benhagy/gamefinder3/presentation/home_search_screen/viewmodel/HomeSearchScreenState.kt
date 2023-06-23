@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.flow
 
 // state objects that act as containers for data objects that change on the home screen
 
-
 data class HomeSearchScreenState(
     val games: Flow<PagingData<ListedGame>> = flow { },
     val genres: List<Genre> = emptyList(),

@@ -101,6 +101,7 @@ fun parseEsrbAsLogo(rating: String): Int {
         else -> R.drawable.esrb_rating_pending
     }
 }
+
 // assigns correct esrb fluff text
 fun parseEsrbFluffText(rating: String): String {
     return when(rating) {

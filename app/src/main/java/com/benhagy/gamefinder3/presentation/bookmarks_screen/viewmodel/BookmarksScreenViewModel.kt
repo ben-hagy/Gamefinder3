@@ -87,7 +87,7 @@ class BookmarksScreenViewModel @Inject constructor(
     }
 
     private fun upsertUserRating(rating: Float, id: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             useCaseContainer.upsertUserRating(rating, id)
         }
     }

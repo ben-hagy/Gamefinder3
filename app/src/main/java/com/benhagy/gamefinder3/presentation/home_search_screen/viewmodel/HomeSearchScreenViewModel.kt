@@ -35,6 +35,7 @@ class HomeSearchScreenViewModel @Inject constructor(
             games = getGamesList(query = state.searchQuery, null)
         )
     }
+
     // event calls to be used in the screen
     fun onEvent(event: HomeSearchScreenEvent) {
         when (event) {
@@ -85,7 +86,9 @@ class HomeSearchScreenViewModel @Inject constructor(
     }
 
     private fun getGamesList(query: String?, genreId: String?): Flow<PagingData<ListedGame>> {
-        return useCaseContainer.getAndSearchGamesList(query, genreId).cachedIn(viewModelScope)
+        return useCaseContainer
+            .getAndSearchGamesList(query, genreId)
+            .cachedIn(viewModelScope)
     }
 
 }

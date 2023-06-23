@@ -17,7 +17,7 @@ data class BookmarkedGameEntity(
     @PrimaryKey val id: Int?,
     val name: String?,
     val backgroundImage: String?,
-    val dateAdded: LocalDateTime = LocalDateTime.now(),
+    val dateAdded: LocalDateTime,
     val userNote: String,
     val userRating: Float?
 )

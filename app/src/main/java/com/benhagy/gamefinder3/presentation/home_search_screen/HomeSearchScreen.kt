@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -177,8 +178,8 @@ fun HomeSearchScreen(
                 }
             }
             // show loading box when list is loading
-            when (games.itemCount) {
-                0 -> {
+            when (games.loadState.refresh) {
+                  LoadState.Loading -> {
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),

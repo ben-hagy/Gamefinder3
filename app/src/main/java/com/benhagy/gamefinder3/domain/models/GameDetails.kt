@@ -1,6 +1,7 @@
 package com.benhagy.gamefinder3.domain.models
 
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
+import java.time.LocalDateTime
 
 
 /* primary model for Game details data objects
@@ -31,6 +32,7 @@ data class GameDetails(
             id = id,
             name = name,
             backgroundImage = backgroundImage,
+            dateAdded = LocalDateTime.now(),
             userNote = "",
             userRating = null
         )
