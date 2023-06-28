@@ -11,84 +11,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = md_theme_dark_primary,
-    onPrimary = md_theme_dark_onPrimary,
-    primaryContainer = md_theme_dark_primaryContainer,
-    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
-    secondary = md_theme_dark_secondary,
-    onSecondary = md_theme_dark_onSecondary,
-    secondaryContainer = md_theme_dark_secondaryContainer,
-    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
-    tertiary = md_theme_dark_tertiary,
-    onTertiary = md_theme_dark_onTertiary,
-    tertiaryContainer = md_theme_dark_tertiaryContainer,
-    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
-    error = md_theme_dark_error,
-    errorContainer = md_theme_dark_errorContainer,
-    onError = md_theme_dark_onError,
-    onErrorContainer = md_theme_dark_onErrorContainer,
-    background = md_theme_dark_background,
-    onBackground = md_theme_dark_onBackground,
-    surface = md_theme_dark_surface,
-    onSurface = md_theme_dark_onSurface,
-    surfaceVariant = md_theme_dark_surfaceVariant,
-    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
-    outline = md_theme_dark_outline,
-    inverseOnSurface = md_theme_dark_inverseOnSurface,
-    inverseSurface = md_theme_dark_inverseSurface,
-    inversePrimary = md_theme_dark_inversePrimary,
-    surfaceTint = md_theme_dark_surfaceTint,
-    outlineVariant = md_theme_dark_outlineVariant,
-    scrim = md_theme_dark_scrim,
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = md_theme_light_primary,
-    onPrimary = md_theme_light_onPrimary,
-    primaryContainer = md_theme_light_primaryContainer,
-    onPrimaryContainer = md_theme_light_onPrimaryContainer,
-    secondary = md_theme_light_secondary,
-    onSecondary = md_theme_light_onSecondary,
-    secondaryContainer = md_theme_light_secondaryContainer,
-    onSecondaryContainer = md_theme_light_onSecondaryContainer,
-    tertiary = md_theme_light_tertiary,
-    onTertiary = md_theme_light_onTertiary,
-    tertiaryContainer = md_theme_light_tertiaryContainer,
-    onTertiaryContainer = md_theme_light_onTertiaryContainer,
-    error = md_theme_light_error,
-    errorContainer = md_theme_light_errorContainer,
-    onError = md_theme_light_onError,
-    onErrorContainer = md_theme_light_onErrorContainer,
-    background = md_theme_light_background,
-    onBackground = md_theme_light_onBackground,
-    surface = md_theme_light_surface,
-    onSurface = md_theme_light_onSurface,
-    surfaceVariant = md_theme_light_surfaceVariant,
-    onSurfaceVariant = md_theme_light_onSurfaceVariant,
-    outline = md_theme_light_outline,
-    inverseOnSurface = md_theme_light_inverseOnSurface,
-    inverseSurface = md_theme_light_inverseSurface,
-    inversePrimary = md_theme_light_inversePrimary,
-    surfaceTint = md_theme_light_surfaceTint,
-    outlineVariant = md_theme_light_outlineVariant,
-    scrim = md_theme_light_scrim,
-
-)
-
 @Composable
 fun Gamefinder3Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-//    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//            val context = LocalContext.current
-//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -107,3 +35,67 @@ fun Gamefinder3Theme(
         content = content
     )
 }
+
+private val DarkColorScheme = darkColorScheme(
+    primary = gf3_dark_primary,
+    onPrimary = gf3_dark_onPrimary,
+    primaryContainer = gf3_dark_primaryContainer,
+    onPrimaryContainer = gf3_dark_onPrimaryContainer,
+    secondary = gf3_dark_secondary,
+    onSecondary = gf3_dark_onSecondary,
+    secondaryContainer = gf3_dark_secondaryContainer,
+    onSecondaryContainer = gf3_dark_onSecondaryContainer,
+    tertiary = gf3_dark_tertiary,
+    onTertiary = gf3_dark_onTertiary,
+    tertiaryContainer = gf3_dark_tertiaryContainer,
+    onTertiaryContainer = gf3_dark_onTertiaryContainer,
+    error = gf3_dark_error,
+    errorContainer = gf3_dark_errorContainer,
+    onError = gf3_dark_onError,
+    onErrorContainer = gf3_dark_onErrorContainer,
+    background = gf3_dark_background,
+    onBackground = gf3_dark_onBackground,
+    surface = gf3_dark_surface,
+    onSurface = gf3_dark_onSurface,
+    surfaceVariant = gf3_dark_surfaceVariant,
+    onSurfaceVariant = gf3_dark_onSurfaceVariant,
+    outline = gf3_dark_outline,
+    inverseOnSurface = gf3_dark_inverseOnSurface,
+    inverseSurface = gf3_dark_inverseSurface,
+    inversePrimary = gf3_dark_inversePrimary,
+    surfaceTint = gf3_dark_surfaceTint,
+    outlineVariant = gf3_dark_outlineVariant,
+    scrim = gf3_dark_scrim,
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = gf3_light_primary,
+    onPrimary = gf3_light_onPrimary,
+    primaryContainer = gf3_light_primaryContainer,
+    onPrimaryContainer = gf3_light_onPrimaryContainer,
+    secondary = gf3_light_secondary,
+    onSecondary = gf3_light_onSecondary,
+    secondaryContainer = gf3_light_secondaryContainer,
+    onSecondaryContainer = gf3_light_onSecondaryContainer,
+    tertiary = gf3_light_tertiary,
+    onTertiary = gf3_light_onTertiary,
+    tertiaryContainer = gf3_light_tertiaryContainer,
+    onTertiaryContainer = gf3_light_onTertiaryContainer,
+    error = gf3_light_error,
+    errorContainer = gf3_light_errorContainer,
+    onError = gf3_light_onError,
+    onErrorContainer = gf3_light_onErrorContainer,
+    background = gf3_light_background,
+    onBackground = gf3_light_onBackground,
+    surface = gf3_light_surface,
+    onSurface = gf3_light_onSurface,
+    surfaceVariant = gf3_light_surfaceVariant,
+    onSurfaceVariant = gf3_light_onSurfaceVariant,
+    outline = gf3_light_outline,
+    inverseOnSurface = gf3_light_inverseOnSurface,
+    inverseSurface = gf3_light_inverseSurface,
+    inversePrimary = gf3_light_inversePrimary,
+    surfaceTint = gf3_light_surfaceTint,
+    outlineVariant = gf3_light_outlineVariant,
+    scrim = gf3_light_scrim,
+)
