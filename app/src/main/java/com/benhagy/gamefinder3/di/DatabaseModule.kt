@@ -33,5 +33,4 @@ object DatabaseModule {
     @Singleton
     fun provideBookmarksDao(bookmarksDatabase: BookmarksDatabase) = bookmarksDatabase.bookmarksDao()
 
-
 }

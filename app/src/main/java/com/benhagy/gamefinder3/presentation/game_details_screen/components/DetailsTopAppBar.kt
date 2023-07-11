@@ -1,6 +1,6 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen.components
 
-import android.widget.Toast
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
@@ -23,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,16 +35,17 @@ import com.benhagy.gamefinder3.presentation.game_details_screen.viewmodel.GameDe
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 @ExperimentalMaterial3Api
 fun DetailsTopAppBar(
     viewModel: GameDetailsScreenViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    scaffoldState: ScaffoldState
 ) {
     val state = viewModel.state
 
     val coroutineScope = rememberCoroutineScope() // for async tasks
-    val context = LocalContext.current // for the toasts, and the website intent
 
     state.gameDetails?.let { gameDetails ->
 
@@ -83,22 +86,46 @@ fun DetailsTopAppBar(
                                                 id = state.gameDetails.id!!
                                             )
                                         )
-                                        Toast.makeText(
-                                            context,
-                                            "${gameDetails.name} removed from Bookmarks.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        val snackbarResult =
+                                            scaffoldState.snackbarHostState.showSnackbar(
+                                                message = "${gameDetails.name} removed from Bookmarks.",
+                                                actionLabel = "UNDO",
+                                                duration = SnackbarDuration.Short
+                                            )
+                                        when (snackbarResult) {
+                                            SnackbarResult.ActionPerformed -> {
+                                                viewModel.onEvent(
+                                                    GameDetailsScreenEvent.BookmarkGame(
+                                                        game = state.gameDetails
+                                                    )
+                                                )
+                                            }
+
+                                            else -> Unit
+                                        }
 
 
                                     } else {
                                         viewModel.onEvent(
                                             GameDetailsScreenEvent.BookmarkGame(game = state.gameDetails)
                                         )
-                                        Toast.makeText(
-                                            context,
-                                            "${gameDetails.name} added to Bookmarks.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        val snackbarResult =
+                                            scaffoldState.snackbarHostState.showSnackbar(
+                                                message = "${gameDetails.name} added to Bookmarks!",
+                                                actionLabel = "UNDO",
+                                                duration = SnackbarDuration.Short
+                                            )
+                                        when (snackbarResult) {
+                                            SnackbarResult.ActionPerformed -> {
+                                                viewModel.onEvent(
+                                                    GameDetailsScreenEvent.RemoveGameFromBookmarks(
+                                                        id = state.gameDetails.id!!
+                                                    )
+                                                )
+                                            }
+
+                                            else -> Unit
+                                        }
 
                                     }
                                 }

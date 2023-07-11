@@ -26,15 +26,14 @@ class GamefinderRepositoryImpl @Inject constructor(
     private val dao: BookmarksDao
 ) : GamefinderRepository {
 
-    // api calls:
-
+        // API CALLS:
 
     // this function returns paginated results for the home screen games list
     override fun getGamesList(query: String?, genreId: String?): Flow<PagingData<ListedGame>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                enablePlaceholders = false,
+                enablePlaceholders = true,
             ),
             pagingSourceFactory = {
                 GameListPagingSource(api, query, genreId)
@@ -102,7 +101,7 @@ class GamefinderRepositoryImpl @Inject constructor(
         )
     }
 
-    // database calls:
+        // DATABASE CALLS:
 
     override suspend fun bookmarkGame(game: GameDetails) {
         dao.upsertBookmark(game.toBookmarkedGameEntity())

@@ -4,11 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -75,7 +73,6 @@ fun HomeSearchScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val localFocusManager = LocalFocusManager.current
 
-
     // reference used on this screen for our paged items
     val games: LazyPagingItems<ListedGame> = state.games.collectAsLazyPagingItems()
 
@@ -93,7 +90,7 @@ fun HomeSearchScreen(
             )
             ThinSpacer()
             Text(
-                text = stringResource(R.string.network_error_home_screen),
+                text = stringResource(R.string.network_error_message),
                 style = Typography.labelMedium
             )
         }
@@ -179,7 +176,7 @@ fun HomeSearchScreen(
             }
             // show loading box when list is loading
             when (games.loadState.refresh) {
-                  LoadState.Loading -> {
+                is LoadState.Loading -> {
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -190,7 +187,6 @@ fun HomeSearchScreen(
                 }
                 // otherwise show paginated list results
                 else -> {
-
                     LazyVerticalGrid(
                         modifier = Modifier.fillMaxHeight(),
                         columns = GridCells.Fixed(2),
@@ -211,7 +207,6 @@ fun HomeSearchScreen(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(30.dp))
                 }
             }
         }
