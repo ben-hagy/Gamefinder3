@@ -48,12 +48,12 @@ class GameDetailsScreenViewModel @Inject constructor(
     fun onEvent(event: GameDetailsScreenEvent) {
         when (event) {
             is GameDetailsScreenEvent.BookmarkGame -> {
-                addToFavorites(event.game)
+                addBookmarkedGame(event.game)
 
             }
 
             is GameDetailsScreenEvent.RemoveGameFromBookmarks -> {
-                removeFromFavorites(event.id)
+                removeBookmarkedGame(event.id)
             }
         }
     }
@@ -67,14 +67,14 @@ class GameDetailsScreenViewModel @Inject constructor(
     }
 
 
-    private fun addToFavorites(gameDetail: GameDetails) {
+    private fun addBookmarkedGame(gameDetail: GameDetails) {
         viewModelScope.launch(Dispatchers.IO) {
             useCaseContainer.addBookmark(gameDetail)
             state = state.copy(isBookmarked = true)
         }
     }
 
-    private fun removeFromFavorites(id: Int) {
+    private fun removeBookmarkedGame(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             useCaseContainer.deleteBookmark(id)
             state = state.copy(isBookmarked = false)

@@ -2,6 +2,7 @@ package com.benhagy.gamefinder3.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.benhagy.gamefinder3.domain.models.GameDetails
 import java.time.LocalDateTime
 
 /*

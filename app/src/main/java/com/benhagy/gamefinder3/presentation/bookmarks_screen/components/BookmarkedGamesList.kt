@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
@@ -55,7 +56,8 @@ fun BookmarkedGameList(
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        backgroundColor = Color.Transparent
     ) {
         LazyColumn(
             state = listState,
@@ -77,7 +79,6 @@ fun BookmarkedGameList(
                                 )
                                 scaffoldState.snackbarHostState.showSnackbar(
                                     message = "${game.name} removed from Bookmarks.",
-                                    actionLabel = null,
                                     duration = SnackbarDuration.Short
                                 )
                             }

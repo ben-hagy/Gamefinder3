@@ -48,13 +48,6 @@ fun BottomBar(
     navController: NavController,
 ) {
     val currentDestination: NavDestination? = navController.currentDestination
-//    val colors = NavigationBarItemDefaults.colors(
-//        selectedIconColor = Color.Blue,
-//        selectedTextColor = Color.Blue,
-//        indicatorColor = Color.Red,
-//        unselectedIconColor = Color.Red,
-//        unselectedTextColor = Color.Red
-//    )
 
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.background,
@@ -63,7 +56,6 @@ fun BottomBar(
         BottomNavItem.values().forEach { destination ->
             NavigationBarItem(
                 selected = currentDestination == destination.direction,
-//                colors = colors,
                 onClick = {
                     navController.navigate(destination.direction.route) {
                         launchSingleTop = true
