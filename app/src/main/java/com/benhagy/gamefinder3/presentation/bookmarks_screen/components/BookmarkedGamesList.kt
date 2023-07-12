@@ -109,7 +109,7 @@ fun BookmarkedGameList(
                         )
 
                         val scale by animateFloatAsState(
-                            if (dismissState.targetValue == DismissValue.Default) 1f else 1.33f
+                            if (dismissState.targetValue == DismissValue.Default) 0f else 1.33f
                         )
                         Box(
                             modifier = Modifier

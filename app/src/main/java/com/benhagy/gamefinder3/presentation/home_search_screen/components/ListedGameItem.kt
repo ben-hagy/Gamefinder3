@@ -34,12 +34,13 @@ fun ListedGameItem(
             .padding(horizontal = 4.dp)
             .wrapContentWidth(),
         shape = RoundedCornerShape(12),
-        border = BorderStroke(0.33.dp, MaterialTheme.colorScheme.onSurfaceVariant),
+        border = BorderStroke(
+            0.33.dp,
+            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+        ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
-                alpha = 0.075f
-            )
-        )
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                .copy(alpha = 0.075f))
     ) {
         AsyncImage(
             model = game.backgroundImage ?: "",

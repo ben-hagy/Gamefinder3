@@ -1,7 +1,6 @@
 package com.benhagy.gamefinder3.presentation.bookmarks_screen.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -80,14 +80,11 @@ fun BookmarkedGamesListItem(
     Card(
         border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onBackground),
         shape = RoundedCornerShape(10),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.35f)),
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(unbounded = true)
             .padding(2.dp)
-            .background(
-                MaterialTheme.colorScheme.background
-                    .copy(alpha = 0.1f)
-            )
             // full card can be clicked to go to details screen for the clicked game
             .clickable {
                 navigator.navigate(GameDetailsScreenDestination(game.id!!))
@@ -205,7 +202,8 @@ fun BookmarkedGamesListItem(
                 textStyle = Typography.labelSmall,
                 placeholder = {
                     Text(
-                        text = stringResource(R.string.enter_your_note_hint)
+                        text = stringResource(R.string.enter_your_note_hint),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
                     )
                 },
                 trailingIcon = {
@@ -219,7 +217,9 @@ fun BookmarkedGamesListItem(
                     }) {
                         Icon(
                             Icons.Default.Clear,
-                            contentDescription = stringResource(R.string.clear_note_cd)
+                            contentDescription = stringResource(R.string.clear_note_cd),
+                            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
+
                         )
                     }
                 },

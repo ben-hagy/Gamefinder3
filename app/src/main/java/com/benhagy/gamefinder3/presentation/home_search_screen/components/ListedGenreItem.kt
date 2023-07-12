@@ -37,11 +37,12 @@ fun ListedGenreItem(
             .padding(horizontal = 1.dp, vertical = 1.dp)
             .clip(RoundedCornerShape(4.dp)),
         colors = CardDefaults.cardColors(
-            MaterialTheme.colorScheme.secondaryContainer.copy(
+            MaterialTheme.colorScheme.background.copy(
                 alpha = 0.1f
             )
         )
     ) {
+        // conditional handles long titles vs short ones for more uniformity
         if (genre.name!!.length < 12) {
             Column(
                 modifier = Modifier

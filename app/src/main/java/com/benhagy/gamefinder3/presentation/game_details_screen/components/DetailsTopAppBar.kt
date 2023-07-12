@@ -1,7 +1,6 @@
 package com.benhagy.gamefinder3.presentation.game_details_screen.components
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +46,7 @@ fun DetailsTopAppBar(
 
     val coroutineScope = rememberCoroutineScope() // for async tasks
 
+
     state.gameDetails?.let { gameDetails ->
 
         Column(
@@ -55,9 +55,11 @@ fun DetailsTopAppBar(
             TopAppBar(
                 title = {},
                 modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
                     .wrapContentHeight(),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                ),
                 actions = {
                     Row(
                         modifier = Modifier

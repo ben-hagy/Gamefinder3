@@ -26,7 +26,7 @@ fun UserRatingBar(
         imageVectorEmpty = Icons.Default.StarOutline,
         imageVectorFFilled = Icons.Default.Star,
         shimmer = Shimmer(
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.35f),
             animationSpec = infiniteRepeatable(
                 animation = tween(
                     durationMillis = 2500,
@@ -36,6 +36,7 @@ fun UserRatingBar(
             )
         ),
         tintEmpty = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
+        tintFilled = MaterialTheme.colorScheme.tertiary,
         itemSize = 32.dp,
         onRatingChange = onRatingChange
     )

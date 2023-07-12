@@ -32,11 +32,11 @@ fun PlatformsList(
         items(platforms.size) { i ->
             val platform = platforms[i].name.toString()
             Card(
-                shape = RoundedCornerShape(15),
+                shape = RoundedCornerShape(6.dp),
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
                     .background(
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
                     )
             ) {
                 Text(

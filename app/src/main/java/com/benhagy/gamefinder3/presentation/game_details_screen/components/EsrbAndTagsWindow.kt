@@ -67,6 +67,7 @@ fun EsrbAndTagsWindow(
                         modifier = Modifier
                             .height(120.dp)
                             .width(80.dp)
+                            .padding(bottom = 2.dp)
                     )
                     Text(
                         text = parseEsrbFluffText(

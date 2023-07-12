@@ -50,7 +50,7 @@ fun BottomBar(
     val currentDestination: NavDestination? = navController.currentDestination
 
     BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.65f),
         modifier = Modifier.fillMaxWidth()
     ) {
         BottomNavItem.values().forEach { destination ->
@@ -92,12 +92,14 @@ fun BottomBar(
                         Icon(
                             destination.icon,
                             contentDescription = stringResource(destination.label),
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 label = {
                     Text(
                         text = stringResource(destination.label),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             )
