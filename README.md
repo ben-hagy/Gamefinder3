@@ -33,7 +33,6 @@ I consider this my "final learning project" with regard to Android development, 
 
 The image shows the project's folder structure. Clean Architecture guidelines were used to organize the app's structure as follows:
 
-
 * data
 * * Data layer classes live here. These include the remote API, the local database, and the repository implementation class. 
 * di
@@ -75,3 +74,4 @@ This also makes it easier to introduce new features, to handle unit and instrume
 * * Used to handle our paginated list results on the home screen
 * Room
 * * Local database library. used to handle the app's local databasing for the Bookmarks screen
+* RatingBar...

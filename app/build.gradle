@@ -70,11 +70,17 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
+    // Optional -- Mockito framework
+    testImplementation "org.mockito:mockito-core:5.4.0"
+    // Optional -- mockito-kotlin
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.0.0"
+
 
     // Material 3 UI Components
     implementation 'androidx.compose.material3:material3-android:1.2.0-alpha02'
     // Material 2 UI Components (used for SwipeToDismiss, Snackbars)
     implementation 'androidx.compose.material:material-android:1.5.0-beta01'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
 
 
     // Viewmodel for Compose

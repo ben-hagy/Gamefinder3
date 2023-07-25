@@ -39,8 +39,8 @@ fun ListedGameItem(
             MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
         ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-                .copy(alpha = 0.075f))
+            containerColor = MaterialTheme.colorScheme.background
+                .copy(alpha = 0.6f))
     ) {
         AsyncImage(
             model = game.backgroundImage ?: "",

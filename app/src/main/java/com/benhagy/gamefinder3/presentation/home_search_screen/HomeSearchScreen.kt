@@ -105,13 +105,12 @@ fun HomeSearchScreen(
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = {
+                    coroutineScope.launch {
+                        listState.scrollToItem(0)
+                    }
                     viewModel.onEvent(
                         HomeSearchScreenEvent.OnSearchQueryChanged(it)
                     )
-                    coroutineScope.launch {
-                        delay(SEARCH_DELAY_TIME)
-                        listState.scrollToItem(0)
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
