@@ -12,10 +12,10 @@ import javax.inject.Inject
 /*
 this paging source handles our primary search api call for populating the paginated list of results
 on the home/search screen. we can pass a search query and/or a genreId to filter our search results
-as per the api queries.
+as per the allowed api queries.
 
-nextKey only goes up to 5, thus ensuring we only load 100 total items per search query (api will
-return many more results if we don't limit it)
+"nextKey" does not increase above 5, ensuring we only load 100 total items per search query (api will
+return many more results if we don't limit it, 20 results are shown per 'page')
  */
 
 class GameListPagingSource @Inject constructor(

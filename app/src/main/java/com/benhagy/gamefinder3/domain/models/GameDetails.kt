@@ -4,7 +4,8 @@ import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import java.time.LocalDateTime
 
 
-/* primary model for Game details data objects
+/*
+primary model for Game Details data objects
 response objects are mapped to this model for use in our screens
 this model also maps to our database entities, only saving the items we need for our bookmarked games
 mapping action happens in the repository when the dao function to save a bookmark is called

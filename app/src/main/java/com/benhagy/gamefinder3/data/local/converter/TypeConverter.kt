@@ -4,9 +4,9 @@ import androidx.room.TypeConverter
 import java.time.LocalDateTime
 
 /*
-converter handles database storage of local dates, since Room can't store non-primitives
+because Room can't store non-primitive data types in a SQL database, this converter helps us store LDTs.
 
-this converter stores the LDT as a string, then converts it back to an LDT when retrieved from the db
+Room uses the converter to store the LDT as a string, then converts it back to an LDT when retrieved from the db
  */
 
 class TypeConverter {

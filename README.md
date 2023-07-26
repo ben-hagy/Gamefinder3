@@ -1,11 +1,11 @@
 
 # Gamefinder3
 
-Gamefinder3 is a relatively simple app that uses Jetpack Compose for UI and various contemporary libraries to expose data from the RAWG.io API to allow users to browse, bookmark, and rate video games.
+Gamefinder3 is a search app that uses Jetpack Compose for UI and various contemporary libraries to expose data from the RAWG.io API to allow users to browse, bookmark, rate, and keep notes on video games.
 
-I consider this my "final learning project" with regard to Android development, and intend for the repo to be used freely by anyone who wishes to learn.
+The repo is offered freely as a learning project for anyone. The app is also available on the Google Play Store.
 
-![Cover Image](--path)
+![Screenshots](--path for light and dark mode screenshots)
 
 ## Contents
 
@@ -19,12 +19,12 @@ I consider this my "final learning project" with regard to Android development, 
 
 --path for preview video
 
-## Run It
+## Instructions to Run
 
 * Clone or download the repository
 * Go to RAWG.io and generate your own free API key
-* In the "Constants" file, uncomment the API const val and define it as your API key
-* Everything should be good to go from here
+* In the "Constants" file, uncomment "API_KEY" and define it as your own
+* As long as everything is correct, the app should now run!
 
 
 ## Project Architecture
@@ -49,6 +49,8 @@ Obviously, this is a relatively simple app, so certain Clean Architecture princi
 However, this app still pays careful attention to architecture, most specifically in only allowing the Domain layer to speak to both the Data and Presentation layers.
 This separation ensures that view-models are only given access to domain-level interfaces, which in turn ensures that we could completely re-write or change elements of the data or presentation layers without upsetting the entire app's structure.
 This also makes it easier to introduce new features, to handle unit and instrumentation tests, and to ensure our app structure is readable to others.
+
+Please also note that two sample integration tests are included in the repo in the (test) directory. These are proof-of-concept tests that also serve as an example of how to test suspend functions.
 
 ## Dependencies
 

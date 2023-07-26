@@ -8,7 +8,7 @@ import com.benhagy.gamefinder3.domain.models.ListedGame
 import com.benhagy.gamefinder3.util.Resource
 import kotlinx.coroutines.flow.Flow
 
-// interface through which we access the data layer repo functions, via our use-cases
+// interface through which we access the data layer repo functions (via our use-cases)
 
 interface GamefinderRepository {
 

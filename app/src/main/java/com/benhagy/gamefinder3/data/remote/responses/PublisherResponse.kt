@@ -3,7 +3,7 @@ package com.benhagy.gamefinder3.data.remote.responses
 import com.benhagy.gamefinder3.domain.models.Publisher
 import com.google.gson.annotations.SerializedName
 
-
+// response object and mapper for publisher info
 
 data class PublisherResponse(
     val id: Int?,

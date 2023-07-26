@@ -7,8 +7,8 @@ import com.benhagy.gamefinder3.data.local.entity.BookmarkedGameEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
-dao contains functions to interact with our db; namely: saving, deleting, fetching all saved items,
-and checking if an item is currently in the db, and updating user notes/ratings for individual objects
+the Dao contains functions to interact with our database: saving, deleting, fetching saved items,
+checking if an item is currently in the db, and updating user notes/ratings for stored objects
  */
 
 @Dao
