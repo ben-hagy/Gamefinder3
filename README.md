@@ -5,7 +5,7 @@ Gamefinder3 is a search app that uses Jetpack Compose for UI and various contemp
 
 The repo is offered freely as a learning project for anyone. The app is also available on the Google Play Store.
 
-![Screenshots]
+## Screenshots
 
 <img width="307" alt="home screen light" src="https://github.com/ben-hagy/Gamefinder3/assets/107595511/25c96a0a-f4f2-4c17-998d-12d5f64b5e4a">
 <img width="307" alt="details screen light" src="https://github.com/ben-hagy/Gamefinder3/assets/107595511/91148050-b466-4759-a708-f92cc16857ad">
@@ -17,7 +17,7 @@ The repo is offered freely as a learning project for anyone. The app is also ava
 
 ## Preview (Video)
 
-```https://drive.google.com/file/d/1gVJPoNBOfhjkr4S8TRxTH7as1maEBRVk/view?t=1s```
+[Preview Video is Hosted Here]([url](https://drive.google.com/file/d/1gVJPoNBOfhjkr4S8TRxTH7as1maEBRVk/view?t=1s))
 
 ## Instructions to Run
 
