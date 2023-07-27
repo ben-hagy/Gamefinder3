@@ -17,8 +17,7 @@ The repo is offered freely as a learning project for anyone. The app is also ava
 
 ## Preview (Video)
 
-[[Preview Video is Hosted Here]([url](https://drive.google.com/file/d/1gVJPoNBOfhjkr4S8TRxTH7as1maEBRVk/view?t=1s))
-](https://drive.google.com/file/d/1gVJPoNBOfhjkr4S8TRxTH7as1maEBRVk/view?t=1s)
+https://drive.google.com/file/d/1gVJPoNBOfhjkr4S8TRxTH7as1maEBRVk/view?t=1s
 
 ## Instructions to Run
 
